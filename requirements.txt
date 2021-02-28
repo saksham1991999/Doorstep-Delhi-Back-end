@@ -34,3 +34,7 @@ typing-extensions==3.7.4.3
 urllib3==1.26.3
 zipp==3.4.0
 python-magic-bin==0.4.14
+psycopg2-binary>=2.8
+celery
+redis
+django-redis
