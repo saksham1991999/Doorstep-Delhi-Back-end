@@ -10,10 +10,12 @@ from versatileimagefield.fields import VersatileImageField
 
 from .validators import validate_possible_number
 
+
 class PossiblePhoneNumberField(PhoneNumberField):
     """Less strict field for phone numbers written to database."""
 
     default_validators = [validate_possible_number]
+
 
 class User(AbstractUser):
     profile_pic = VersatileImageField(upload_to="user-profile-pics",blank=True, null=True)
@@ -23,6 +25,7 @@ class User(AbstractUser):
     default_billing_address = models.ForeignKey(
         "accounts.Address", related_name="+", null=True, blank=True, on_delete=models.SET_NULL
     )
+
 
 class Address(models.Model):
     user = models.ForeignKey("accounts.user", on_delete=models.CASCADE)

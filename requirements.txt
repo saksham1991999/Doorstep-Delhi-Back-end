@@ -38,3 +38,4 @@ psycopg2-binary>=2.8
 celery
 redis
 django-redis
+django-measurement
