@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
 
 
 website_category_choices = (
@@ -43,10 +45,10 @@ class Website(models.Model):
 
 
 website_hit_type_choices = (
-    ("", "App On-Screen"),
-    ("", "App Background"),
-    ("", "Website"),
-    ("", "Desktop Application"),
+    ("O", "App On-Screen"),
+    ("B", "App Background"),
+    ("W", "Website"),
+    ("D", "Desktop Application"),
 )
 
 
@@ -54,4 +56,26 @@ class WebsiteHit(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.SET_NULL, null=True)
     website = models.ForeignKey("webtraffic.Website", on_delete=models.CASCADE)
     type = models.CharField(max_length=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+@receiver(pre_save, sender = Website)
+def my_call(sender, instance,*args,**kwargs):
+    cost = 2*instance.timer
+    if instance.category == "WS":
+        cost += 10
+    elif instance.category == "P":
+        cost += 25
+    elif instance.category == "A":
+        cost += 20
+
+    if instance.high_quality:
+        cost += 40
+    if instance.page_scroll:
+        cost += 20
+    if instance.clicks:
+        cost += 20
+    if instance.reload_page:
+        cost += 20
+    instance.cost_per_visit = cost
 
