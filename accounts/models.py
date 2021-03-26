@@ -8,14 +8,6 @@ from django.forms.models import model_to_dict
 from phonenumber_field.modelfields import PhoneNumber, PhoneNumberField
 from versatileimagefield.fields import VersatileImageField
 
-from .validators import validate_possible_number
-
-
-class PossiblePhoneNumberField(PhoneNumberField):
-    """Less strict field for phone numbers written to database."""
-
-    default_validators = [validate_possible_number]
-
 
 class User(AbstractUser):
     profile_pic = VersatileImageField(upload_to="user-profile-pics",blank=True, null=True)
@@ -28,7 +20,7 @@ class User(AbstractUser):
 
 
 class Address(models.Model):
-    user = models.ForeignKey("accounts.user", on_delete=models.CASCADE)
+    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     full_name = models.CharField(max_length=512, blank=True)
     street_address_1 = models.CharField(max_length=256, blank=True)
     street_address_2 = models.CharField(max_length=256, blank=True)
@@ -37,7 +29,7 @@ class Address(models.Model):
     postal_code = models.CharField(max_length=20, blank=True)
     country = CountryField()
     country_area = models.CharField(max_length=128, blank=True)
-    phone = PossiblePhoneNumberField(blank=True, default="")
+    phone = models.CharField(max_length = 15, blank=True)
 
     class Meta:
         ordering = ("pk",)

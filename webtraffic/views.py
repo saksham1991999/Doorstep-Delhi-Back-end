@@ -22,6 +22,13 @@ class WebsiteAPIViewSet(viewsets.ModelViewSet):
             search = self.request.query_params.get('search', None)
             websites = websites.filter(Q(name__icontains=search) | Q(url__icontains=search))
 
+        if self.request.query_params.get('namesort', None):
+            sort = self.request.query_params.get('namesort', None)
+            if sort=='asc':
+                websites = websites.order_by('name')
+            elif sort == 'dsc':
+                websites = websites.order_by('-name')
+
         if self.request.query_params.get('sort', None):
             sort = self.request.query_params.get('sort', None)
             if sort=='nameasc':

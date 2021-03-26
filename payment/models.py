@@ -5,7 +5,9 @@ from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import JSONField  # type: ignore
+from django.db.models import JSONField
+
+from .choices import payment_charge_choices, transaction_kind_choices, transaction_error_choices
 
 
 class Payment(models.Model):
@@ -15,7 +17,7 @@ class Payment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     charge_status = models.CharField(
-        max_length=20, choices=ChargeStatus.CHOICES, default=ChargeStatus.NOT_CHARGED
+        max_length=20, choices=payment_charge_choices, default= "not-charged"
     )
     total = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
@@ -27,11 +29,8 @@ class Payment(models.Model):
         decimal_places=settings.DEFAULT_DECIMAL_PLACES,
         default=Decimal("0.0"),
     )
-    checkout = models.ForeignKey(
-        Checkout, null=True, related_name="payments", on_delete=models.SET_NULL
-    )
     order = models.ForeignKey(
-        Order, null=True, related_name="payments", on_delete=models.PROTECT
+        "shop.Order", null=True, related_name="payments", on_delete=models.PROTECT
     )
 
     billing_email = models.EmailField(blank=True)
@@ -79,20 +78,19 @@ class Transaction(models.Model):
     payment = models.ForeignKey(
         Payment, related_name="transactions", on_delete=models.PROTECT
     )
-    kind = models.CharField(max_length=25, choices=TransactionKind.CHOICES)
+    kind = models.CharField(max_length=25, choices=transaction_kind_choices)
     is_success = models.BooleanField(default=False)
     action_required = models.BooleanField(default=False)
     action_required_data = JSONField(
         blank=True, default=dict, encoder=DjangoJSONEncoder
     )
-    currency = models.CharField(max_length=settings.DEFAULT_CURRENCY_CODE_LENGTH)
     amount = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
         decimal_places=settings.DEFAULT_DECIMAL_PLACES,
         default=Decimal("0.0"),
     )
     error = models.CharField(
-        choices=[(tag, tag.value) for tag in TransactionError],
+        choices=transaction_error_choices,
         max_length=256,
         null=True,
     )
@@ -100,4 +98,3 @@ class Transaction(models.Model):
     gateway_response = JSONField(encoder=DjangoJSONEncoder)
     already_processed = models.BooleanField(default=False)
     searchable_key = models.CharField(max_length=512, null=True, blank=True)
-

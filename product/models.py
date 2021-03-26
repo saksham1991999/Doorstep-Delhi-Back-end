@@ -20,6 +20,15 @@ class ProductType(models.Model):
         return self.name
 
 
+class Variation(models.Model):
+    name = models.CharField(max_length=50)
+
+
+class Customization(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+
+
 class Product(models.Model):
     product_type = models.ForeignKey(
         ProductType, related_name="products", on_delete=models.CASCADE
@@ -44,6 +53,8 @@ class Product(models.Model):
         related_name="+",
     )
     visible_in_listings = models.BooleanField(default=False)
+    variations = models.ManyToManyField("product.Variation")
+    customizations = models.ManyToManyField("product.Customization")
 
     def __iter__(self):
         if not hasattr(self, "__variants"):
@@ -57,11 +68,33 @@ class Product(models.Model):
 class ProductVariant(models.Model):
     name = models.CharField(max_length=255, blank=True)
     product = models.ForeignKey(
-        Product, related_name="variants", on_delete=models.CASCADE
+        "product.Product", related_name="variants", on_delete=models.CASCADE
+    )
+    variant = models.ForeignKey(
+        "product.Variation", related_name="products", on_delete=models.PROTECT
     )
     images = models.ManyToManyField("ProductImage", through="VariantImage")
     track_inventory = models.BooleanField(default=True)
     product_qty = models.FloatField()
+    price = models.FloatField()
+    discounted_price = models.FloatField()
+
+
+class WholesaleProductVariant(models.Model):
+    name = models.CharField(max_length=255, blank=True)
+    store = models.ForeignKey("store.Store", related_name="wholesale_products", on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        "product.Product", related_name="wholesale_variants", on_delete=models.CASCADE
+    )
+    variant = models.ForeignKey(
+        "product.Variation", related_name="wholesale_products", on_delete=models.PROTECT
+    )
+    images = models.ManyToManyField("ProductImage", through="WholesaleVariantImage")
+    min_qty = models.PositiveIntegerField()
+    per_item_qty = models.PositiveIntegerField()
+    pack_size = models.PositiveIntegerField()
+    price = models.FloatField()
+    discounted_price = models.FloatField()
 
 
 class ProductImage(models.Model):
@@ -84,6 +117,18 @@ class VariantImage(models.Model):
         unique_together = ("variant", "image")
 
 
+class WholesaleVariantImage(models.Model):
+    variant = models.ForeignKey(
+        "product.WholesaleProductVariant", related_name="wholesale_variant_images", on_delete=models.CASCADE
+    )
+    image = models.ForeignKey(
+        ProductImage, related_name="wholesale_variant_images", on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = ("variant", "image")
+
+
 class CollectionProduct(models.Model):
     collection = models.ForeignKey(
         "Collection", related_name="collectionproduct", on_delete=models.CASCADE
@@ -99,7 +144,7 @@ class CollectionProduct(models.Model):
 class Collection(models.Model):
     name = models.CharField(max_length=250, unique=True)
     products = models.ManyToManyField(
-        Product,
+        "product.Product",
         blank=True,
         related_name="collections",
         through=CollectionProduct,

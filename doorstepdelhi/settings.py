@@ -51,6 +51,11 @@ INSTALLED_APPS = [
 
     'webtraffic',
     'accounts',
+    'store',
+    'product',
+    'shop',
+    'wishlist',
+    'payment',
 ]
 
 MIDDLEWARE = [
@@ -136,10 +141,17 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 SITE_ID = 1
+
+DEFAULT_DECIMAL_PLACES = 3
+DEFAULT_MAX_DIGITS = 12
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -164,8 +176,44 @@ AUTH_USER_MODEL = 'accounts.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+EMAIL_URL = os.environ.get("EMAIL_URL")
+SENDGRID_USERNAME = os.environ.get("SENDGRID_USERNAME")
+SENDGRID_PASSWORD = os.environ.get("SENDGRID_PASSWORD")
+if not EMAIL_URL and SENDGRID_USERNAME and SENDGRID_PASSWORD:
+    EMAIL_URL = "smtp://%s:%s@smtp.sendgrid.net:587/?tls=True" % (
+        SENDGRID_USERNAME,
+        SENDGRID_PASSWORD,
+    )
+
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.UserSerializer',
+}
+
+
+VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
+    "products": [
+        ("product_gallery", "thumbnail__540x540"),
+        ("product_gallery_2x", "thumbnail__1080x1080"),
+        ("product_small", "thumbnail__60x60"),
+        ("product_small_2x", "thumbnail__120x120"),
+        ("product_list", "thumbnail__255x255"),
+        ("product_list_2x", "thumbnail__510x510"),
+    ],
+    "background_images": [("header_image", "thumbnail__1080x440")],
+    "user_avatars": [("default", "thumbnail__445x445")],
+}
+
+# VERSATILEIMAGEFIELD_SETTINGS = {
+#     # Images should be pre-generated on Production environment
+#     "create_images_on_demand": get_bool_from_env("CREATE_IMAGES_ON_DEMAND", DEBUG)
+# }
+
+PLACEHOLDER_IMAGES = {
+    60: "images/placeholder60x60.png",
+    120: "images/placeholder120x120.png",
+    255: "images/placeholder255x255.png",
+    540: "images/placeholder540x540.png",
+    1080: "images/placeholder1080x1080.png",
 }
 
 # EMAIL
