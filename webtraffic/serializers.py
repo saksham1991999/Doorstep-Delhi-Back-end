@@ -1,13 +1,4 @@
 from rest_framework import serializers
-<<<<<<< HEAD
-from .models import * # Website
-
-class WebsiteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Website
-        fields = '__all__'
-        read_only_fields = ['daily_hits', 'total_hits']
-=======
 from rest_framework.fields import CurrentUserDefault
 from datetime import datetime
 
@@ -44,4 +35,3 @@ class WebsiteSerializer(serializers.ModelSerializer):
             "updated_at",
             "cost_per_visit",
         )
->>>>>>> 4d14e6a2e2de577beb52a1de5a8e03347ab78c5d

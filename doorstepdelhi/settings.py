@@ -48,18 +48,16 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     "versatileimagefield",
+    'nested_admin',
 
-    'webtraffic',
     'accounts',
-<<<<<<< HEAD
     'webtraffic',
-=======
     'store',
     'product',
     'shop',
     'wishlist',
     'payment',
->>>>>>> 4d14e6a2e2de577beb52a1de5a8e03347ab78c5d
+
 ]
 
 MIDDLEWARE = [
@@ -149,6 +147,9 @@ STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
+
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 CORS_ORIGIN_ALLOW_ALL = True
 

@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-from django.shortcuts import render, get_object_or_404
-from .serializers import *
-from .models import *
-from rest_framework import generics,mixins
-
-=======
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -66,4 +59,3 @@ class WebsiteAPIViewSet(viewsets.ModelViewSet):
             return Response("Done", status = status.HTTP_200_OK)
         except:
             return Response("Error", status = status.HTTP_400_BAD_REQUEST)
->>>>>>> 4d14e6a2e2de577beb52a1de5a8e03347ab78c5d

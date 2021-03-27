@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from versatileimagefield.serializers import VersatileImageFieldSerializer
 
-from .models import User
+from .models import User,Address
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializes User instances"""
@@ -25,3 +25,12 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
         )
 
+
+class AddressSerializer(serializers.ModelSerializer):
+    """ Serializes Addresses """
+
+    user = UserSerializer(many = False)
+
+    class Meta:
+        model = Address
+        fields = ['user', 'full_name', 'street_address_1', 'street_address_2', 'city','state', 'postal_code', 'country', 'country_area', 'phone']
