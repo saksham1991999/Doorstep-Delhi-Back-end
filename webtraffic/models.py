@@ -1,24 +1,13 @@
 from django.db import models
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
 
-
-website_category_choices = (
-    ("S", "Safe"),
-    ("A", "Adult"),
-    ("P", "PTP"),
-    ("WS", "with Sounds"),
-)
+from webtraffic.choices import website_category_choices, traffic_source_choices, website_hit_type_choices
 
 
 class UserPreference(models.Model):
     user = models.OneToOneField("accounts.User", on_delete=models.CASCADE)
-    category = models.CharField(max_length=5, choices=website_category_choices)
-
-
-traffic_source_choices = (
-    ("D", "Direct"),
-    ("R", "Referer"),
-    ("U", "User-Agent"),
-)
+    category = models.CharField(max_length=5, choices=website_category_choices, default="S")
 
 
 class Website(models.Model):
@@ -42,16 +31,30 @@ class Website(models.Model):
     cost_per_visit = models.PositiveIntegerField()
 
 
-website_hit_type_choices = (
-    ("", "App On-Screen"),
-    ("", "App Background"),
-    ("", "Website"),
-    ("", "Desktop Application"),
-)
-
-
 class WebsiteHit(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.SET_NULL, null=True)
     website = models.ForeignKey("webtraffic.Website", on_delete=models.CASCADE)
-    type = models.CharField(max_length=1)
+    type = models.CharField(max_length=1, choices=website_hit_type_choices)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+@receiver(pre_save, sender = Website)
+def my_call(sender, instance,*args,**kwargs):
+    cost = 2*instance.timer
+    if instance.category == "WS":
+        cost += 10
+    elif instance.category == "P":
+        cost += 25
+    elif instance.category == "A":
+        cost += 20
+
+    if instance.high_quality:
+        cost += 40
+    if instance.page_scroll:
+        cost += 20
+    if instance.clicks:
+        cost += 20
+    if instance.reload_page:
+        cost += 20
+    instance.cost_per_visit = cost
 

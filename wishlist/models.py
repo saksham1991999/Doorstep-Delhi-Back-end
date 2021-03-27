@@ -1,9 +1,11 @@
 from django.db import models
 
+from product.models import Product, ProductVariant
+
 
 class Wishlist(models.Model):
     user = models.OneToOneField(
-        "core.User", related_name="wishlist", on_delete=models.CASCADE, blank=True, null=True
+        "accounts.User", related_name="wishlist", on_delete=models.CASCADE, blank=True, null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
 

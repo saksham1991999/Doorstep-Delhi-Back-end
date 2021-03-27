@@ -24,7 +24,11 @@ urlpatterns = [
     path('rest-auth/', include('rest_auth.urls')),
     path('rest-auth/registration/', include('rest_auth.registration.urls')),
 
+<<<<<<< HEAD
     path('', include('webtraffic.urls')),
+=======
+    path('webtraffic/', include('webtraffic.urls')),
+>>>>>>> 4d14e6a2e2de577beb52a1de5a8e03347ab78c5d
 ]
 
 urlpatterns += static(settings.MEDIA_URL,
