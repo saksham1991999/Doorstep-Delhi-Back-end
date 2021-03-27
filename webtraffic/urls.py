@@ -4,12 +4,12 @@ from rest_framework.routers import DefaultRouter
 from webtraffic.views import WebsiteAPIViewSet
 
 
-app_name = 'webtraffic'
+app_name = "webtraffic"
 
 
 router = DefaultRouter()
-router.register('websites', WebsiteAPIViewSet, basename='website')
+router.register("websites", WebsiteAPIViewSet, basename="website")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

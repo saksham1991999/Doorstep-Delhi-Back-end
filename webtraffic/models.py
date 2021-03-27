@@ -2,12 +2,18 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
-from webtraffic.choices import website_category_choices, traffic_source_choices, website_hit_type_choices
+from webtraffic.choices import (
+    website_category_choices,
+    traffic_source_choices,
+    website_hit_type_choices,
+)
 
 
 class UserPreference(models.Model):
     user = models.OneToOneField("accounts.User", on_delete=models.CASCADE)
-    category = models.CharField(max_length=5, choices=website_category_choices, default="S")
+    category = models.CharField(
+        max_length=5, choices=website_category_choices, default="S"
+    )
 
 
 class Website(models.Model):
@@ -19,7 +25,7 @@ class Website(models.Model):
     daily_hits = models.PositiveSmallIntegerField()
     total_hits = models.PositiveIntegerField()
     status = models.CharField(max_length=5)
-    traffic_source = models.CharField(max_length=5, choices = traffic_source_choices)
+    traffic_source = models.CharField(max_length=5, choices=traffic_source_choices)
     high_quality = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -38,9 +44,9 @@ class WebsiteHit(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-@receiver(pre_save, sender = Website)
-def my_call(sender, instance,*args,**kwargs):
-    cost = 2*instance.timer
+@receiver(pre_save, sender=Website)
+def my_call(sender, instance, *args, **kwargs):
+    cost = 2 * instance.timer
     if instance.category == "WS":
         cost += 10
     elif instance.category == "P":
@@ -57,4 +63,3 @@ def my_call(sender, instance,*args,**kwargs):
     if instance.reload_page:
         cost += 20
     instance.cost_per_visit = cost
-

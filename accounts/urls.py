@@ -4,8 +4,8 @@ from rest_framework.routers import DefaultRouter
 from accounts.views import PersonalAddressViewset
 
 router = DefaultRouter()
-router.register('personal_address', PersonalAddressViewset, basename='personal_address')
+router.register("personal_address", PersonalAddressViewset, basename="personal_address")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

@@ -11,8 +11,9 @@ class PersonalWebsiteViewset(viewsets.ModelViewSet):
     serializer_class = WebsiteSerializer
 
     def get_queryset(self):
-        queryset = Website.objects.filter(user = self.request.user.id)
+        queryset = Website.objects.filter(user=self.request.user.id)
         return queryset
+
 
 #  Display all websites apart from the ones made by the same user
 class GeneralWebsiteViewset(viewsets.ModelViewSet):
@@ -20,5 +21,5 @@ class GeneralWebsiteViewset(viewsets.ModelViewSet):
     serializer_class = WebsiteSerializer
 
     def get_queryset(self):
-        queryset = Website.objects.filter(~Q(user = self.request.user.id))
+        queryset = Website.objects.filter(~Q(user=self.request.user.id))
         return queryset

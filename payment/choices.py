@@ -23,14 +23,14 @@ transaction_kind_choices = [
 ]
 
 transaction_error_choices = [
-        ("incorrect_number", "incorrect_number"),
-        ("invalid_number", "invalid_number"),
-        ("incorrect_cvv", "incorrect_cvv"),
-        ("invalid_cvv", "invalid_cvv"),
-        ("incorrect_zip", "incorrect_zip"),
-        ("incorrect_address", "incorrect_address"),
-        ("invalid_expiry_date", "invalid_expiry_date"),
-        ("expired", "expired"),
-        ("processing_error", "processing_error"),
-        ("declined", "declined"),
+    ("incorrect_number", "incorrect_number"),
+    ("invalid_number", "invalid_number"),
+    ("incorrect_cvv", "incorrect_cvv"),
+    ("invalid_cvv", "invalid_cvv"),
+    ("incorrect_zip", "incorrect_zip"),
+    ("incorrect_address", "incorrect_address"),
+    ("invalid_expiry_date", "invalid_expiry_date"),
+    ("expired", "expired"),
+    ("processing_error", "processing_error"),
+    ("declined", "declined"),
 ]

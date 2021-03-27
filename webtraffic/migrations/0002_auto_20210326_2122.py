@@ -6,18 +6,35 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('webtraffic', '0001_initial'),
+        ("webtraffic", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='userpreference',
-            name='category',
-            field=models.CharField(choices=[('S', 'Safe'), ('A', 'Adult'), ('P', 'PTP'), ('WS', 'with Sounds')], default='S', max_length=5),
+            model_name="userpreference",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("S", "Safe"),
+                    ("A", "Adult"),
+                    ("P", "PTP"),
+                    ("WS", "with Sounds"),
+                ],
+                default="S",
+                max_length=5,
+            ),
         ),
         migrations.AlterField(
-            model_name='websitehit',
-            name='type',
-            field=models.CharField(choices=[('O', 'App On-Screen'), ('B', 'App Background'), ('W', 'Website'), ('D', 'Desktop Application')], max_length=1),
+            model_name="websitehit",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("O", "App On-Screen"),
+                    ("B", "App Background"),
+                    ("W", "Website"),
+                    ("D", "Desktop Application"),
+                ],
+                max_length=1,
+            ),
         ),
     ]

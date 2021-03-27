@@ -6,9 +6,7 @@ from .models import Website
 
 
 class WebsiteSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     status = serializers.CharField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)

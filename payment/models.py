@@ -7,7 +7,11 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
 
-from .choices import payment_charge_choices, transaction_kind_choices, transaction_error_choices
+from .choices import (
+    payment_charge_choices,
+    transaction_kind_choices,
+    transaction_error_choices,
+)
 
 
 class Payment(models.Model):
@@ -17,7 +21,7 @@ class Payment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     charge_status = models.CharField(
-        max_length=20, choices=payment_charge_choices, default= "not-charged"
+        max_length=20, choices=payment_charge_choices, default="not-charged"
     )
     total = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
