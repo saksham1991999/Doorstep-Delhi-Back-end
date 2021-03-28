@@ -1,13 +1,26 @@
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
-from product.models import Category, ProductType, Variation, Customization, Product, ProductVariant, WholesaleProductVariant, ProductImage, VariantImage, WholesaleVariantImage, CollectionProduct, Collection
+from product.models import (
+    Category,
+    ProductType,
+    Variation,
+    Customization,
+    Product,
+    ProductVariant,
+    WholesaleProductVariant,
+    ProductImage,
+    VariantImage,
+    WholesaleVariantImage,
+    CollectionProduct,
+    Collection,
+)
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = [
-            'name',
+            "name",
         ]
 
 
@@ -15,30 +28,26 @@ class ProductTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
         fields = [
-            'name',
-            'has_variants',
-            'is_shipping_required',
-            'is_digital',
-            'is_wholesale_product',
-            'qty_type',
-            'tax_percentage'
+            "name",
+            "has_variants",
+            "is_shipping_required",
+            "is_digital",
+            "is_wholesale_product",
+            "qty_type",
+            "tax_percentage",
         ]
+
 
 class VariationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variation
-        fields = [
-            'name'
-        ]
+        fields = ["name"]
 
 
 class CustomizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customization
-        fields = [
-            'name',
-            'description'
-        ]
+        fields = ["name", "description"]
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -50,17 +59,17 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'product_type',
-            'name',
-            'description',
-            'category',
-            'updated_at',
-            'charge_taxes',
-            'product_qty',
-            'default_variant',
-            'visible_in_listings',
-            'variations',
-            'customization',
+            "product_type",
+            "name",
+            "description",
+            "category",
+            "updated_at",
+            "charge_taxes",
+            "product_qty",
+            "default_variant",
+            "visible_in_listings",
+            "variations",
+            "customization",
         ]
 
 
@@ -70,9 +79,9 @@ class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = [
-            'product',
-            'image',
-            'alt',
+            "product",
+            "image",
+            "alt",
         ]
 
 
@@ -84,14 +93,14 @@ class ProductVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant
         fields = [
-            'name',
-            'product',
-            'variant',
-            'images',
-            'track_inventory',
-            'product_qty',
-            'price',
-            'discounted_price',
+            "name",
+            "product",
+            "variant",
+            "images",
+            "track_inventory",
+            "product_qty",
+            "price",
+            "discounted_price",
         ]
 
 
@@ -102,8 +111,8 @@ class VariantImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = VariantImage
         fields = [
-            'variant',
-            'image',
+            "variant",
+            "image",
         ]
 
 
@@ -116,18 +125,18 @@ class WholesalePrroductVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = WholesaleProductVariant
         fields = [
-            'name',
-            'store',
-            'product',
-            'variant',
-            'images',
-            'min_qty',
-            'per_item_qty',
-            'pack_size',
-            'price',
-            'discounted_price',
-
+            "name",
+            "store",
+            "product",
+            "variant",
+            "images",
+            "min_qty",
+            "per_item_qty",
+            "pack_size",
+            "price",
+            "discounted_price",
         ]
+
 
 class WholesaleVariantImageSerializer(serializers.ModelSerializer):
     variant = WholesaleProductVariantSerializer()
@@ -136,8 +145,8 @@ class WholesaleVariantImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = WholesaleVariantImage
         fields = [
-            'variant',
-            'image',
+            "variant",
+            "image",
         ]
 
 
@@ -162,8 +171,6 @@ class CollectionProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = CollectionProduct
         fields = [
-            'collection',
-            'product',
+            "collection",
+            "product",
         ]
-
-

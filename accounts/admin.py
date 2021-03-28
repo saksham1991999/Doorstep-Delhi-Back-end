@@ -22,8 +22,8 @@ class AddressAdmin(admin.ModelAdmin):
     ordering = ["city", "state", "postal_code", "country", "country_area"]
     search_fields = [
         "user__profile_pic",
-        #"user__default_shipping_address",
-        #"user__default_billing_address",
+        # "user__default_shipping_address",
+        # "user__default_billing_address",
         "full_name",
         "street_address_1",
         "street_address_2",

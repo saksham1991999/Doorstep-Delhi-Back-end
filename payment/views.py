@@ -18,10 +18,12 @@ class TransactionViewset(viewsets.ModelViewSet):
     @action(detail=False, methods=["get"])
     def my_transactions(self, request):
         try:
-            my_transactions = Transaction.objects.filter(payment__order__user=request.user)
+            my_transactions = Transaction.objects.filter(
+                payment__order__user=request.user
+            )
             serializer = TransactionSerializer(my_transactions, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
-            return Response("ERROR !!!", status= status.HTTP_400_BAD_REQUEST)
+            return Response("ERROR !!!", status=status.HTTP_400_BAD_REQUEST)
 
     # Create a transaction maybe ???

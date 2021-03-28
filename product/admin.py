@@ -1,5 +1,18 @@
 from django.contrib import admin
-from product.models import Category, ProductType, Variation, Customization, Product, ProductVariant, WholesaleProductVariant, ProductImage, VariantImage, WholesaleVariantImage, CollectionProduct, Collection
+from product.models import (
+    Category,
+    ProductType,
+    Variation,
+    Customization,
+    Product,
+    ProductVariant,
+    WholesaleProductVariant,
+    ProductImage,
+    VariantImage,
+    WholesaleVariantImage,
+    CollectionProduct,
+    Collection,
+)
 
 
 # Register your models here.
