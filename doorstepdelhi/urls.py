@@ -25,6 +25,7 @@ urlpatterns = [
     path("rest-auth/registration/", include("rest_auth.registration.urls")),
     path("webtraffic/", include("webtraffic.urls")),
     path("accounts/", include("accounts.urls")),
+    path("payment/", include("payment.urls")),
     path("_nested_admin/", include("nested_admin.urls")),
 ]
 

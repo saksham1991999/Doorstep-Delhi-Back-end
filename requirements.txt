@@ -21,6 +21,7 @@ django-cors-headers==3.7.0
 django-countries==7.1
 django-filter==2.4.0
 django-measurement==3.2.3
+django-nested-admin==3.3.3
 django-phonenumber-field==5.0.0
 django-phonenumbers==1.0.1
 django-redis==4.12.1
@@ -43,6 +44,7 @@ pycparser==2.20
 PyJWT==2.0.1
 python-decouple==3.4
 python-magic==0.4.15
+python-monkey-business==1.0.0
 python.py==0.0.3
 python3-openid==3.2.0
 pythonpy==0.4.11
