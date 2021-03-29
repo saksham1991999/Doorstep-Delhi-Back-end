@@ -67,6 +67,7 @@ class Payment(models.Model):
 
     class Meta:
         ordering = ("pk",)
+        verbose_name = ("Payment")
 
     def __repr__(self):
         return "Payment(gateway=%s, is_active=%s, created=%s, charge_status=%s)" % (

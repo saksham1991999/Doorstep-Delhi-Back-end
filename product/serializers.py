@@ -139,7 +139,7 @@ class WholesalePrroductVariantSerializer(serializers.ModelSerializer):
 
 
 class WholesaleVariantImageSerializer(serializers.ModelSerializer):
-    variant = WholesaleProductVariantSerializer()
+    #variant = WholesaleProductVariantSerializer()
     image = ProductImageSerializer()
 
     class Meta:

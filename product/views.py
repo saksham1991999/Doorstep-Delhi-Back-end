@@ -21,3 +21,5 @@ class ProductAPIViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
