@@ -36,12 +36,3 @@ class PersonalAddressViewset(viewsets.ModelViewSet):
                 "Error. You need to log in !", status=status.HTTP_400_BAD_REQUEST
             )
 
-    @action(detail=False, methods=["post"])
-    def create_address(self, request, pk, *args, **kwargs):
-        try:
-            Address = self.get_object()
-            user = request.user
-            serializer = AddressSerializer()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response("Error", status=status.HTTP_400_BAD_REQUEST)

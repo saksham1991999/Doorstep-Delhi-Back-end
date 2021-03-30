@@ -12,6 +12,7 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = [
+            "id",
             "gateway",
             "is_active",
             "to_confirm",
@@ -63,3 +64,11 @@ class TransactionSerializer(serializers.ModelSerializer):
             "already_processed",
             "searchable_key",
         ]
+
+
+    def create(self, validated_data):
+        payments = validated_data.pop('payment')
+        transaction = Transaction.objects.create(**validated_data)
+        for payment in payments:
+            Payment.objects.create(**payment)
+        return transaction

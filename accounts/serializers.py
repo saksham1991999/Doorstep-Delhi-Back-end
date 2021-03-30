@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            "id",
             "username",
             "first_name",
             "last_name",
@@ -47,3 +48,9 @@ class AddressSerializer(serializers.ModelSerializer):
             "country_area",
             "phone",
         ]
+    def create(self, validated_data):
+        user = validated_data.pop('user')
+        addresses = Address.objects.create(**validated_data)
+        for address in addresses:
+            Address.objects.create(user=user,**address)
+        return addresses
