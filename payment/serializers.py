@@ -65,9 +65,8 @@ class TransactionSerializer(serializers.ModelSerializer):
             "searchable_key",
         ]
 
-
     def create(self, validated_data):
-        payments = validated_data.pop('payment')
+        payments = validated_data.pop("payment")
         transaction = Transaction.objects.create(**validated_data)
         for payment in payments:
             Payment.objects.create(**payment)

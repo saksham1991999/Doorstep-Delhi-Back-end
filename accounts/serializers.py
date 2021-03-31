@@ -51,7 +51,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        user = validated_data.pop('user')
+        user = validated_data.pop("user")
         addresses = Address.objects.create(**validated_data)
         for address in addresses:
             Address.objects.create(user=user, **address)

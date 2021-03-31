@@ -6,6 +6,7 @@ from payment.models import Transaction, Payment
 
 # Register your models here.
 
+
 class TransactionAdmin(NestedInlineModelAdmin):
     model = Transaction
 

@@ -35,4 +35,3 @@ class PersonalAddressViewset(viewsets.ModelViewSet):
             return Response(
                 "Error. You need to log in !", status=status.HTTP_400_BAD_REQUEST
             )
-
