@@ -1,5 +1,5 @@
 from django.contrib import admin
-import nested_admin
+from nested_admin import NestedInlineModelAdmin, NestedModelAdmin
 from product.models import (
     Category,
     ProductType,
@@ -14,57 +14,71 @@ from product.models import (
     CollectionProduct,
     Collection,
 )
+from store.models import Store
 
 
 # Register your models here.
-
-admin.site.register(Category)
+#admin.site.register(Customization)
 #admin.site.register(ProductType)
-admin.site.register(Variation)
-admin.site.register(Customization)
-##admin.site.register(Product)
-admin.site.register(ProductVariant)
-#admin.site.register(WholesaleProductVariant)
-##admin.site.register(ProductImage)
-admin.site.register(VariantImage)#
-##admin.site.register(WholesaleVariantImage)
-##admin.site.register(CollectionProduct)
-#admin.site.register(Collection)
 
-
-
-class WholesaleVariantImageAdmin(nested_admin.NestedInlineModelAdmin):
-    model = WholesaleVariantImage
-
-
-class WholesaleProductVariantAdmin(nested_admin.NestedModelAdmin):
-    model = WholesaleProductVariant
-    inlines = [WholesaleVariantImageAdmin]
-
-admin.site.register(WholesaleProductVariant, WholesaleProductVariantAdmin)
-
-
-
-
-
-
-class CollectionProductAdmin(nested_admin.NestedStackedInline):
-    model = CollectionProduct
-
-class CollectionAdmin(nested_admin.NestedModelAdmin):
-    model = Collection
-    inlines = [CollectionProductAdmin]
-admin.site.register(Collection, CollectionAdmin)
-
-
-class ProductImageAdmin(nested_admin.NestedStackedInline):
-    model = ProductImage
-
-class ProductAdmin(nested_admin.NestedStackedInline):
+class ProductAdmin(NestedInlineModelAdmin):
     model = Product
-    inlines = [ProductImageAdmin]
 
-class ProductTypeAdmin(nested_admin.NestedModelAdmin):
-    model = ProductType
+class ProductTypeAdmin(NestedModelAdmin):
     inlines = [ProductAdmin]
-admin.site.register(ProductType,ProductTypeAdmin)
+
+admin.site.register(ProductType, ProductTypeAdmin)
+
+"""
+class ProductTypeAdmin(nested_admin.NestedInlineModelAdmin):
+    model = ProductType
+
+class CategoryAdmin(nested_admin.NestedInlineModelAdmin):
+    model = Category
+
+class VariationAdmin(nested_admin.NestedInlineModelAdmin):
+    model = Variation
+
+class ProductVariantAdmin(nested_admin.NestedInlineModelAdmin):
+    model = ProductVariant
+    inlines = [VariationAdmin]
+
+class ProductAdmin(nested_admin.NestedInlineModelAdmin):
+    model = Product
+    inlines = [ProductTypeAdmin, CategoryAdmin, ProductVariantAdmin]
+
+class StoreAdmin(nested_admin.NestedInlineModelAdmin):
+    model = Store
+
+class WholesaleProductVariant(nested_admin.NestedInlineModelAdmin):
+    model = WholesaleProductVariant
+    inlines = [StoreAdmin, ProductAdmin, VariationAdmin]
+
+class ProductImageAdmin(nested_admin.NestedInlineModelAdmin):
+    model = ProductImage
+    inlines = [ProductAdmin]
+
+
+
+class VariantImageAdmin(nested_admin.NestedModelAdmin):
+    #model = VariantImage
+    inlines = [ProductVariantAdmin, ProductImageAdmin]
+
+admin.site.register(VariantImage, VariantImageAdmin)
+
+class WholesaleVariantImageAdmin(nested_admin.NestedModelAdmin):
+    #model = WholesaleVariantImage
+    inlines = [WholesaleProductVariant, ProductImage]
+
+admin.site.register(WholesaleVariantImage, WholesaleVariantImageAdmin)
+
+class CollectionAdmin(nested_admin.NestedInlineModelAdmin):
+    model = Collection
+    inlines = [ProductAdmin]
+
+class CollectionProductAdmin(nested_admin.NestedModelAdmin):
+    #model = CollectionProduct
+    inlines = [CollectionAdmin, ProductAdmin]
+
+admin.site.register(CollectionProduct, CollectionProductAdmin)
+"""
