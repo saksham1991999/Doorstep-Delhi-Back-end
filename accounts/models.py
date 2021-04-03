@@ -10,12 +10,22 @@ from versatileimagefield.fields import VersatileImageField
 
 
 class User(AbstractUser):
-    profile_pic = VersatileImageField(upload_to="user-profile-pics",blank=True, null=True)
+    profile_pic = VersatileImageField(
+        upload_to="user-profile-pics", blank=True, null=True
+    )
     default_shipping_address = models.ForeignKey(
-        "accounts.Address", related_name="+", null=True, blank=True, on_delete=models.SET_NULL
+        "accounts.Address",
+        related_name="+",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
     default_billing_address = models.ForeignKey(
-        "accounts.Address", related_name="+", null=True, blank=True, on_delete=models.SET_NULL
+        "accounts.Address",
+        related_name="+",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
 
 
@@ -29,7 +39,7 @@ class Address(models.Model):
     postal_code = models.CharField(max_length=20, blank=True)
     country = CountryField()
     country_area = models.CharField(max_length=128, blank=True)
-    phone = models.CharField(max_length = 15, blank=True)
+    phone = models.CharField(max_length=15, blank=True)
 
     class Meta:
         ordering = ("pk",)

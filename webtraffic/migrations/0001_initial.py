@@ -15,43 +15,124 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Website',
+            name="Website",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(blank=True, max_length=256, null=True)),
-                ('url', models.URLField()),
-                ('timer', models.PositiveIntegerField()),
-                ('category', models.CharField(choices=[('S', 'Safe'), ('A', 'Adult'), ('P', 'PTP'), ('WS', 'with Sounds')], max_length=5)),
-                ('daily_hits', models.PositiveSmallIntegerField()),
-                ('total_hits', models.PositiveIntegerField()),
-                ('status', models.CharField(max_length=5)),
-                ('traffic_source', models.CharField(choices=[('D', 'Direct'), ('R', 'Referer'), ('U', 'User-Agent')], max_length=5)),
-                ('high_quality', models.BooleanField(default=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('page_scroll', models.BooleanField(default=False)),
-                ('clicks', models.BooleanField(default=False)),
-                ('reload_page', models.BooleanField(default=False)),
-                ('cost_per_visit', models.PositiveIntegerField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(blank=True, max_length=256, null=True)),
+                ("url", models.URLField()),
+                ("timer", models.PositiveIntegerField()),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("S", "Safe"),
+                            ("A", "Adult"),
+                            ("P", "PTP"),
+                            ("WS", "with Sounds"),
+                        ],
+                        max_length=5,
+                    ),
+                ),
+                ("daily_hits", models.PositiveSmallIntegerField()),
+                ("total_hits", models.PositiveIntegerField()),
+                ("status", models.CharField(max_length=5)),
+                (
+                    "traffic_source",
+                    models.CharField(
+                        choices=[
+                            ("D", "Direct"),
+                            ("R", "Referer"),
+                            ("U", "User-Agent"),
+                        ],
+                        max_length=5,
+                    ),
+                ),
+                ("high_quality", models.BooleanField(default=False)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("page_scroll", models.BooleanField(default=False)),
+                ("clicks", models.BooleanField(default=False)),
+                ("reload_page", models.BooleanField(default=False)),
+                ("cost_per_visit", models.PositiveIntegerField()),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='WebsiteHit',
+            name="WebsiteHit",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(max_length=1)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-                ('website', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='webtraffic.website')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("type", models.CharField(max_length=1)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "website",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="webtraffic.website",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='UserPreference',
+            name="UserPreference",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('category', models.CharField(choices=[('S', 'Safe'), ('A', 'Adult'), ('P', 'PTP'), ('WS', 'with Sounds')], max_length=5)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("S", "Safe"),
+                            ("A", "Adult"),
+                            ("P", "PTP"),
+                            ("WS", "with Sounds"),
+                        ],
+                        max_length=5,
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

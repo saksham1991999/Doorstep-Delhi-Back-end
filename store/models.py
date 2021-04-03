@@ -6,7 +6,9 @@ class Store(models.Model):
     name = models.CharField(max_length=128)
     email = models.EmailField()
     users = models.ManyToManyField("accounts.User")
-    address = models.ForeignKey("accounts.Address", on_delete=models.SET_NULL, null=True, blank=True)
+    address = models.ForeignKey(
+        "accounts.Address", on_delete=models.SET_NULL, null=True, blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     shipping_zones = models.ManyToManyField("store.ShippingZone")
 
@@ -34,8 +36,6 @@ class ShippingMethod(models.Model):
     shipping_zone = models.ForeignKey(
         ShippingZone, related_name="shipping_methods", on_delete=models.CASCADE
     )
-    excluded_products = models.ManyToManyField(
-        "product.Product", blank=True
-    )
+    excluded_products = models.ManyToManyField("product.Product", blank=True)
     maximum_delivery_days = models.PositiveIntegerField(null=True, blank=True)
     minimum_delivery_days = models.PositiveIntegerField(null=True, blank=True)

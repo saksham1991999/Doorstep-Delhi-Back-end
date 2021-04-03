@@ -67,9 +67,9 @@ class Product(models.Model):
 
 class ProductVariant(models.Model):
     name = models.CharField(max_length=255, blank=True)
-    product = models.ForeignKey(
-        "product.Product", related_name="variants", on_delete=models.CASCADE
-    )
+    #product = models.ForeignKey(
+    #    "product.Product", related_name="variants", on_delete=models.CASCADE
+    #)
     variant = models.ForeignKey(
         "product.Variation", related_name="products", on_delete=models.PROTECT
     )
@@ -82,7 +82,9 @@ class ProductVariant(models.Model):
 
 class WholesaleProductVariant(models.Model):
     name = models.CharField(max_length=255, blank=True)
-    store = models.ForeignKey("store.Store", related_name="wholesale_products", on_delete=models.CASCADE)
+    store = models.ForeignKey(
+        "store.Store", related_name="wholesale_products", on_delete=models.CASCADE
+    )
     product = models.ForeignKey(
         "product.Product", related_name="wholesale_variants", on_delete=models.CASCADE
     )
@@ -119,7 +121,9 @@ class VariantImage(models.Model):
 
 class WholesaleVariantImage(models.Model):
     variant = models.ForeignKey(
-        "product.WholesaleProductVariant", related_name="wholesale_variant_images", on_delete=models.CASCADE
+        "product.WholesaleProductVariant",
+        related_name="wholesale_variant_images",
+        on_delete=models.CASCADE,
     )
     image = models.ForeignKey(
         ProductImage, related_name="wholesale_variant_images", on_delete=models.CASCADE
@@ -155,5 +159,3 @@ class Collection(models.Model):
     )
     background_image_alt = models.CharField(max_length=128, blank=True)
     description = models.TextField(blank=True, null=True)
-
-

@@ -7,7 +7,6 @@ from product.serializers import *
 
 
 class WishlistItemSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = WishlistItem
         fields = (
@@ -18,9 +17,7 @@ class WishlistItemSerializer(serializers.ModelSerializer):
 
 
 class WishlistSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     created_at = serializers.DateTimeField(read_only=True)
     items = serializers.SerializerMethodField(read_only=True)
 

@@ -1,6 +1,17 @@
 from django.contrib import admin
+import nested_admin
+from .models import User, Address
 
-from .models import User
+admin.site.site_header = "Doorstep Delhi"
 
-admin.site.site_header = 'Doorstep Delhi'
-admin.site.register(User)
+
+class AddressInline(nested_admin.NestedStackedInline):
+    model = Address
+
+
+class UserAdmin(nested_admin.NestedModelAdmin):
+    model = User
+    inlines = [AddressInline]
+
+
+admin.site.register(User, UserAdmin)
