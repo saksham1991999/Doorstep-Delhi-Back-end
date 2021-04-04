@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     "versatileimagefield",
+    "nested_admin",
 
     'webtraffic',
     'accounts',

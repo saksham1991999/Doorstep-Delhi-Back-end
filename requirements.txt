@@ -40,3 +40,4 @@ django-redis
 django-measurement
 gunicorn
 django-heroku
+django-nested-admin
