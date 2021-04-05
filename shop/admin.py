@@ -21,8 +21,9 @@ class OrderAdmin(nested_admin.NestedModelAdmin):
     list_display = [
                     'user',
                     'tracking_client_id',
-                    'total_net_amount'
+                    'total_net_amount',
                     'status',
+
                     ]
     list_editable = [
                     'status',
@@ -54,7 +55,6 @@ class VoucherAdmin(nested_admin.NestedModelAdmin):
                     ]
     list_editable = [
                     'usage_limit',
-                    'used',
                     ]
     list_display_links = [
                     'type',
