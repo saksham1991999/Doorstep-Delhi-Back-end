@@ -25,6 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'profile_pic',
             'email',
+            'addresses',
         )
 
     def get_addresses(self, obj):
