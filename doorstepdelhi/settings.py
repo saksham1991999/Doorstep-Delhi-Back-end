@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     "versatileimagefield",
+    "nested_admin",
+    'drf_yasg',
 
     'webtraffic',
     'accounts',

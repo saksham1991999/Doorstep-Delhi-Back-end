@@ -2,10 +2,8 @@ from decimal import Decimal
 from operator import attrgetter
 
 from django.conf import settings
-from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import JSONField
 
 from .choices import payment_charge_choices, transaction_kind_choices, transaction_error_choices
 
@@ -81,9 +79,7 @@ class Transaction(models.Model):
     kind = models.CharField(max_length=25, choices=transaction_kind_choices)
     is_success = models.BooleanField(default=False)
     action_required = models.BooleanField(default=False)
-    action_required_data = JSONField(
-        blank=True, default=dict, encoder=DjangoJSONEncoder
-    )
+    action_required_data = models.TextField()
     amount = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
         decimal_places=settings.DEFAULT_DECIMAL_PLACES,
@@ -95,6 +91,6 @@ class Transaction(models.Model):
         null=True,
     )
     customer_id = models.CharField(max_length=256, null=True)
-    gateway_response = JSONField(encoder=DjangoJSONEncoder)
+    gateway_response = models.TextField()
     already_processed = models.BooleanField(default=False)
     searchable_key = models.CharField(max_length=512, null=True, blank=True)

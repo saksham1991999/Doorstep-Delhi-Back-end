@@ -6,6 +6,12 @@ from versatileimagefield.fields import VersatileImageField
 class Category(models.Model):
     name = models.CharField(max_length=250)
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
 
 class ProductType(models.Model):
     name = models.CharField(max_length=250)
@@ -23,10 +29,16 @@ class ProductType(models.Model):
 class Variation(models.Model):
     name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
 
 class Customization(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
@@ -79,6 +91,9 @@ class ProductVariant(models.Model):
     price = models.FloatField()
     discounted_price = models.FloatField()
 
+    def __str__(self):
+        return str(self.product) + "-" + self.name
+
 
 class WholesaleProductVariant(models.Model):
     name = models.CharField(max_length=255, blank=True)
@@ -96,6 +111,9 @@ class WholesaleProductVariant(models.Model):
     price = models.FloatField()
     discounted_price = models.FloatField()
 
+    def __str__(self):
+        return str(self.product) + "-" + self.name
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
@@ -103,6 +121,9 @@ class ProductImage(models.Model):
     )
     image = VersatileImageField(upload_to="products", ppoi_field="ppoi", blank=False)
     alt = models.CharField(max_length=128, blank=True)
+
+    def __str__(self):
+        return str(self.product) + "-" + self.alt
 
 
 class VariantImage(models.Model):
@@ -127,6 +148,18 @@ class WholesaleVariantImage(models.Model):
 
     class Meta:
         unique_together = ("variant", "image")
+
+
+class ProductReview(models.Model):
+    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
+    product = models.ForeignKey("product.Product", on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField()
+    review = models.TextField()
+
+
+class ProductReviewFile(models.Model):
+    review = models.ForeignKey("product.ProductReview", on_delete=models.CASCADE)
+    file = models.FileField()
 
 
 class CollectionProduct(models.Model):
