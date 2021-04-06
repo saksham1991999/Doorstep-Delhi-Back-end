@@ -46,6 +46,8 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
     path('webtraffic/', include('webtraffic.urls')),
+    path('store/',include('store.urls')),
+    path('shop/', include('shop.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,
