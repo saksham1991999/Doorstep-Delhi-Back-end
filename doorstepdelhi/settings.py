@@ -33,8 +33,6 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
-=======
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,7 +51,6 @@ INSTALLED_APPS = [
     "versatileimagefield",
     "nested_admin",
     'drf_yasg',
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
     "django.contrib.admin",
     "django.contrib.auth",
@@ -269,8 +266,5 @@ CACHES = {
         "KEY_PREFIX": "doorstepdelhi",
     }
 }
-<<<<<<< HEAD
-=======
 
 django_heroku.settings(locals())
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
