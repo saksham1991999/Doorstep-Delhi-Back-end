@@ -59,6 +59,14 @@ sympy==1.7.1
 toml==0.10.2
 typed-ast==1.4.2
 typing-extensions==3.7.4.3
-urllib3==1.26.4
-vine==5.0.0
-wcwidth==0.2.5
+urllib3==1.26.3
+zipp==3.4.0
+psycopg2-binary>=2.8
+celery
+redis
+django-redis
+django-measurement
+gunicorn
+django-heroku
+django-nested-admin
+drf-yasg
