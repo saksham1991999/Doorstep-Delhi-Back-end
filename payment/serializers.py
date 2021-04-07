@@ -1,9 +1,5 @@
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
-<<<<<<< HEAD
-from payment.models import Transaction, Payment
-from shop.serializers import OrderSerializer
-=======
 
 from payment.models import Transaction, Payment
 from shop.models import Order
@@ -33,17 +29,12 @@ class OrderSerializer(serializers.ModelSerializer):
             "display_gross_prices",
             "customer_note",
         ]
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
 
 class PaymentSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField(read_only=True)
     modified = serializers.DateTimeField(read_only=True)
-<<<<<<< HEAD
-    order = OrderSerializer()
-=======
     transactions = serializers.SerializerMethodField(read_only=True)
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
     class Meta:
         model = Payment
@@ -80,12 +71,6 @@ class PaymentSerializer(serializers.ModelSerializer):
             "return_url",
         ]
 
-<<<<<<< HEAD
-
-class TransactionSerializer(serializers.ModelSerializer):
-    created = serializers.DateTimeField(read_only=True)
-    payment = PaymentSerializer(many=False)
-=======
     def get_transactions(self, obj):
         transactions = Transaction.objects.filter(payment=obj)
         serializer = TransactionSerializer(transactions, many=True)
@@ -94,7 +79,6 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField(read_only=True)
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
     class Meta:
         model = Transaction
@@ -110,16 +94,4 @@ class TransactionSerializer(serializers.ModelSerializer):
             "gateway_response",
             "already_processed",
             "searchable_key",
-<<<<<<< HEAD
         ]
-
-
-    def create(self, validated_data):
-        payments = validated_data.pop('payment')
-        transaction = Transaction.objects.create(**validated_data)
-        for payment in payments:
-            Payment.objects.create(**payment)
-        return transaction
-=======
-        ]
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8

@@ -1,6 +1,10 @@
 from django.contrib import admin
+<<<<<<< HEAD
 import nested_admin
 
+=======
+from nested_admin import NestedInlineModelAdmin, NestedModelAdmin, NestedStackedInline
+>>>>>>> f5872234ea0e9e7efa1a4f00bbdf84894930f3ce
 from product.models import (
     Category,
     ProductType,
@@ -51,6 +55,8 @@ class ProductImageInline(nested_admin.NestedTabularInline):
 class VariantImageInline(nested_admin.NestedTabularInline):
     model = VariantImage
     extra = 0
+
+# VARIANT IMAGE MODEL
 
 
 class WholesaleVariantImageInline(nested_admin.NestedTabularInline):

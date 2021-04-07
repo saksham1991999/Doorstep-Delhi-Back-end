@@ -12,7 +12,8 @@ from django.db.models import Q
 import datetime
 from accounts.permissions import IsWebsiteOwnerorAdmin
 
-from product.serializers import * #""" NEED TO CHANGE ASAP """
+from product.serializers import *  # """ NEED TO CHANGE ASAP """
+
 # Create your views here.
 
 
@@ -22,8 +23,8 @@ class ProductAPIViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         products = Product.objects.all()
-        #serializer = ProductSerializer(products, many=True)
-        return products#Response(serializer.data, status=status.HTTP_200_OK)
+        # serializer = ProductSerializer(products, many=True)
+        return products  # Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["get"])
     def list_display(self, request):
