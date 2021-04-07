@@ -1,19 +1,10 @@
 from django.shortcuts import render
-from .serializers import AddressSerializer
+from .serializers import AddressSerializer, UserSerializer
 from .models import Address, User
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from accounts.permissions import IsWebsiteOwnerorAdmin
-
-# Create your views here.
-
-""" Viewset to Display all users """
-
-
-""" Viewset to display current user """
-
-""" Viewset to display current user address """
 
 
 class PersonalAddressViewset(viewsets.ModelViewSet):
@@ -35,4 +26,12 @@ class PersonalAddressViewset(viewsets.ModelViewSet):
             return Response(
                 "Error. You need to log in !", status=status.HTTP_400_BAD_REQUEST
             )
+
+class UserViewset(viewsets.ModelViewSet):
+    permissions_classes = [IsWebsiteOwnerorAdmin]
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        users = User.objects.all()
+        return users
 

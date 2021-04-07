@@ -1,31 +1,4 @@
 from rest_framework import serializers
-<<<<<<< HEAD
-from shop.models import Order
-from rest_framework import serializers
-
-
-class OrderSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
-    class Meta:
-        model = Order
-        fields = [
-            "created",
-            "status",
-            "user",
-            "tracking_client_id",
-            "billing_address",  # NEED SERIALIZER
-            "shipping_address",  # NEED SERIALIZER
-            "shipping_method",  # NEED SERIALIZER
-            "shipping_price",
-            "total_net_amount",
-            "undiscounted_total_net_amount",
-            "voucher",  # NEED TO ADD A SERIALIZER
-            "gift_cards",  # NEED A SERIALIZER
-            "display_gross_prices",
-            "customer_note",
-        ]
-=======
 from rest_framework.fields import CurrentUserDefault
 from datetime import datetime
 
@@ -148,4 +121,3 @@ class SaleSerializers(serializers.ModelSerializer):
             'start_date',
             'end_date',            
         ]
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8

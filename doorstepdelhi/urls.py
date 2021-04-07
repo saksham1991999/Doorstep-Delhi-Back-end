@@ -36,17 +36,6 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-<<<<<<< HEAD
-    path("admin/", admin.site.urls),
-    path("api-auth/", include("rest_framework.urls")),
-    path("rest-auth/", include("rest_auth.urls")),
-    path("rest-auth/registration/", include("rest_auth.registration.urls")),
-    path("webtraffic/", include("webtraffic.urls")),
-    path("accounts/", include("accounts.urls")),
-    path("payment/", include("payment.urls")),
-    path("_nested_admin/", include("nested_admin.urls")),
-    path("product/", include("product.urls")),
-=======
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('rest-auth/', include('rest_auth.urls')),
@@ -59,7 +48,7 @@ urlpatterns = [
     path('webtraffic/', include('webtraffic.urls')),
     path('store/',include('store.urls')),
     path('shop/', include('shop.urls')),
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
+    path('products/', include('product.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

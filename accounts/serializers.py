@@ -21,21 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-<<<<<<< HEAD
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "profile_pic",
-            "email",
-        )
-
-
-class AddressSerializer(serializers.ModelSerializer):
-    """ Serializes Addresses """
-
-    user = UserSerializer(many=False)
-=======
             'username',
             'first_name',
             'last_name',
@@ -54,7 +39,6 @@ class AddressSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
     class Meta:
         model = Address
@@ -71,14 +55,3 @@ class AddressSerializer(serializers.ModelSerializer):
             "phone",
         ]
 
-<<<<<<< HEAD
-    def create(self, validated_data):
-
-        user = validated_data.pop('user')
-        addresses = Address.objects.create(**validated_data)
-        for address in addresses:
-            Address.objects.create(user=user, **address)
-        return addresses
-=======
-
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8

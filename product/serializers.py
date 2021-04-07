@@ -15,7 +15,6 @@ from product.models import (
     Collection,
 )
 
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
