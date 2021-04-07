@@ -1,23 +1,5 @@
 from django.contrib import admin
 import nested_admin
-<<<<<<< HEAD
-from nested_admin import NestedInlineModelAdmin, NestedModelAdmin
-from payment.models import Transaction, Payment
-
-
-# Register your models here.
-
-class TransactionAdmin(NestedInlineModelAdmin):
-    model = Transaction
-
-
-class PaymentInline(NestedModelAdmin):
-    model = Payment
-    inlines = [TransactionAdmin]
-
-
-admin.site.register(Payment, PaymentInline)
-=======
 
 from payment.models import Transaction, Payment
 
@@ -70,4 +52,3 @@ class PaymentAdmin(nested_admin.NestedModelAdmin):
 
 
 admin.site.register(Payment, PaymentAdmin)
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
