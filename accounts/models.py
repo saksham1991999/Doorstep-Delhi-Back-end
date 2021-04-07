@@ -28,6 +28,11 @@ class User(AbstractUser):
         on_delete=models.SET_NULL,
     )
 
+    def city(self):
+        if self.default_billing_address:
+            return str(self.default_billing_address.city)
+        return ""
+
 
 class Address(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)

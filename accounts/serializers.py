@@ -16,23 +16,29 @@ class UserSerializer(serializers.ModelSerializer):
             ("small_square_crop", "crop__50x50"),
         ]
     )
+    addresses = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
         fields = (
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "profile_pic",
-            "email",
+            'username',
+            'first_name',
+            'last_name',
+            'profile_pic',
+            'email',
+            'addresses',
         )
+
+    def get_addresses(self, obj):
+        adresses = Address.objects.filter(user=obj)
+        serializer = AddressSerializer(adresses, many=True)
+        return serializer.data
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    """ Serializes Addresses """
-
-    user = UserSerializer(many=False)
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
 
     class Meta:
         model = Address
@@ -49,10 +55,3 @@ class AddressSerializer(serializers.ModelSerializer):
             "phone",
         ]
 
-    def create(self, validated_data):
-
-        user = validated_data.pop('user')
-        addresses = Address.objects.create(**validated_data)
-        for address in addresses:
-            Address.objects.create(user=user, **address)
-        return addresses
