@@ -1,10 +1,6 @@
 from django.contrib import admin
-<<<<<<< HEAD
 import nested_admin
 
-=======
-from nested_admin import NestedInlineModelAdmin, NestedModelAdmin, NestedStackedInline
->>>>>>> f5872234ea0e9e7efa1a4f00bbdf84894930f3ce
 from product.models import (
     Category,
     ProductType,
