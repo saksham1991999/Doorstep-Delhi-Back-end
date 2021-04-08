@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from decouple import config
 import os
 from pathlib import Path
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,8 +33,6 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
-=======
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,24 +51,7 @@ INSTALLED_APPS = [
     "versatileimagefield",
     "nested_admin",
     'drf_yasg',
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "corsheaders",
-    "rest_framework",
-    "rest_framework.authtoken",
-    "rest_auth",
-    "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "rest_auth.registration",
-    "versatileimagefield",
-    "nested_admin",
     "accounts",
     "webtraffic",
     "store",
@@ -106,7 +88,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
-
         },
     },
 ]
@@ -268,3 +249,5 @@ CACHES = {
         "KEY_PREFIX": "doorstepdelhi",
     }
 }
+
+django_heroku.settings(locals())

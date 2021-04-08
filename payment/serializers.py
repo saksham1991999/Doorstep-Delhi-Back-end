@@ -1,28 +1,15 @@
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
-<<<<<<< HEAD
-from payment.models import Transaction, Payment
-from shop.models import Order
-
-
-from rest_framework import serializers
-from shop.models import Order
-from rest_framework import serializers
-=======
 
 from payment.models import Transaction, Payment
 from shop.models import Order
 from accounts.serializers import AddressSerializer
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
 
 class OrderSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-<<<<<<< HEAD
-=======
     billing_address = AddressSerializer(many=False)
     shipping_address = AddressSerializer(many=False)
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
     class Meta:
         model = Order
@@ -31,13 +18,8 @@ class OrderSerializer(serializers.ModelSerializer):
             "status",
             "user",
             "tracking_client_id",
-<<<<<<< HEAD
-            "billing_address",  # NEED SERIALIZER
-            "shipping_address",  # NEED SERIALIZER
-=======
             "billing_address",
             "shipping_address",
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
             "shipping_method",  # NEED SERIALIZER
             "shipping_price",
             "total_net_amount",
@@ -49,18 +31,10 @@ class OrderSerializer(serializers.ModelSerializer):
         ]
 
 
-<<<<<<< HEAD
-
-class PaymentSerializer(serializers.ModelSerializer):
-    created = serializers.DateTimeField(read_only=True)
-    modified = serializers.DateTimeField(read_only=True)
-    order = OrderSerializer()
-=======
 class PaymentSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField(read_only=True)
     modified = serializers.DateTimeField(read_only=True)
     transactions = serializers.SerializerMethodField(read_only=True)
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
     class Meta:
         model = Payment
@@ -97,12 +71,6 @@ class PaymentSerializer(serializers.ModelSerializer):
             "return_url",
         ]
 
-<<<<<<< HEAD
-
-class TransactionSerializer(serializers.ModelSerializer):
-    created = serializers.DateTimeField(read_only=True)
-    payment = PaymentSerializer(many=False)
-=======
     def get_transactions(self, obj):
         transactions = Transaction.objects.filter(payment=obj)
         serializer = TransactionSerializer(transactions, many=True)
@@ -111,7 +79,6 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField(read_only=True)
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
 
     class Meta:
         model = Transaction
@@ -127,16 +94,4 @@ class TransactionSerializer(serializers.ModelSerializer):
             "gateway_response",
             "already_processed",
             "searchable_key",
-<<<<<<< HEAD
         ]
-
-
-    def create(self, validated_data):
-        payments = validated_data.pop('payment')
-        transaction = Transaction.objects.create(**validated_data)
-        for payment in payments:
-            Payment.objects.create(**payment)
-        return transaction
-=======
-        ]
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8

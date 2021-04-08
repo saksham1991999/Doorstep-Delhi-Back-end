@@ -15,7 +15,6 @@ from product.models import (
     Collection,
 )
 
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -54,7 +53,7 @@ class ProductSerializer(serializers.ModelSerializer):
     product_type = ProductTypeSerializer()
     category = CategorySerializer()
     variations = VariationSerializer()
-    #customization = CustomizationSerializer()
+    # customization = CustomizationSerializer()
 
     class Meta:
         model = Product
@@ -69,15 +68,21 @@ class ProductSerializer(serializers.ModelSerializer):
             "default_variant",
             "visible_in_listings",
             "variations",
-            #"customization",
+            # "customization",
         ]
+
     def create(self, validated_data):
-        product_type = validated_data.pop('product_type')
-        category = validated_data.pop('category')
-        variations = validated_data.pop('variations')
+        product_type = validated_data.pop("product_type")
+        category = validated_data.pop("category")
+        variations = validated_data.pop("variations")
         products = Product.objects.create(**validated_data)
         for product in products:
-            Product.objects.create(product_type=product_type, category=category, variations=variations,**product)
+            Product.objects.create(
+                product_type=product_type,
+                category=category,
+                variations=variations,
+                **product
+            )
         return products
 
 
@@ -147,7 +152,7 @@ class WholesalePrroductVariantSerializer(serializers.ModelSerializer):
 
 
 class WholesaleVariantImageSerializer(serializers.ModelSerializer):
-    #variant = WholesaleProductVariantSerializer()
+    # variant = WholesaleProductVariantSerializer()
     image = ProductImageSerializer()
 
     class Meta:
@@ -183,6 +188,7 @@ class CollectionProductSerializer(serializers.ModelSerializer):
             "product",
         ]
 
+
 class ProductsListDisplay(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -191,5 +197,5 @@ class ProductsListDisplay(serializers.ModelSerializer):
             "description",
             "product_qty",
             "default_variant__price",
-            "default_variant__discounted_price"
+            "default_variant__discounted_price",
         ]

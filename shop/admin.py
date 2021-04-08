@@ -1,11 +1,4 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from .models import Order
-
-# Register your models here.
-
-admin.site.register(Order)
-=======
 import nested_admin
 
 from .models import Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sale
@@ -85,4 +78,3 @@ admin.site.register(GiftCard)
 admin.site.register(OrderEvent)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Sale)
->>>>>>> 4f3ae586f40b52b5a2cb4f462a8f75ff579f07d8
