@@ -10,7 +10,7 @@ from rest_framework.permissions import (
 )
 from django.db.models import Q
 import datetime
-from accounts.permissions import IsWebsiteOwnerorAdmin
+from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
 
 from product.serializers import *  # """ NEED TO CHANGE ASAP """
 
@@ -37,7 +37,7 @@ class ProductAPIViewSet(viewsets.ModelViewSet):
 
 class CategoryViewset(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
-    permission_classes = [IsWebsiteOwnerorAdmin]
+    permission_classes = [IsAdminOrReadOnly()]
 
     def get_queryset(self):
         categories = Category.objects.all()
@@ -46,7 +46,7 @@ class CategoryViewset(viewsets.ModelViewSet):
 
 class ProductTypeViewset(viewsets.ModelViewSet):
     serializer_class = ProductTypeSerializer
-    permission_classes = [IsWebsiteOwnerorAdmin]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         productTypes = ProductType.objects.all()
@@ -54,7 +54,7 @@ class ProductTypeViewset(viewsets.ModelViewSet):
 
 class VariationViewset(viewsets.ModelViewSet):
     serializer_class = VariationSerializer
-    permission_classes = [IsWebsiteOwnerorAdmin]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         variations = Variation.objects.all()
@@ -62,7 +62,7 @@ class VariationViewset(viewsets.ModelViewSet):
 
 class CustomizationViewset(viewsets.ModelViewSet):
     serializer_class = CustomizationSerializer
-    permission_classes = [IsWebsiteOwnerorAdmin]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         customizations = Customization.objects.all()
@@ -70,8 +70,48 @@ class CustomizationViewset(viewsets.ModelViewSet):
 
 class ProductViewset(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
-    permission_classes = [IsWebsiteOwnerorAdmin]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         products = Product.objects.all()
         return products
+
+class ProductImageViewset(viewsets.ModelViewSet):
+    serializer_class = ProductImageSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        productImages = ProductImage.objects.all()
+        return productImages
+
+class VariantImageViewset(viewsets.ModelViewSet):
+    serializer_class = VariantImageSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        variantImages = VariantImage.objects.all()
+        return variantImages
+
+class WholesaleVariantImageViewset(viewsets.ModelViewSet):
+    serializer_class = WholesaleVariantImageSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        wholesaleVariantImages = WholesaleVariantImage.objects.all()
+        return wholesaleVariantImages
+
+class CollectionProductViewset(viewsets.ModelViewSet):
+    serializer_class = CollectionProductSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        collectionProducts = CollectionProduct.objects.all()
+        return collectionProducts
+
+class CollectionViewset(viewsets.ModelViewSet):
+    serializer_class = CollectionSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        collections = Collection.objects.all()
+        return collections
