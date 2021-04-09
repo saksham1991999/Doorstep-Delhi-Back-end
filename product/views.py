@@ -115,3 +115,11 @@ class CollectionViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         collections = Collection.objects.all()
         return collections
+
+class ProductVariantViewset(viewsets.ModelViewSet):
+    serializer_class = ProductVariantSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        productVariants = ProductVariant.objects.all()
+        return productVariants

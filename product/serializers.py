@@ -129,7 +129,7 @@ class VariantImageSerializer(serializers.ModelSerializer):
         ]
 
 
-class WholesalePrroductVariantSerializer(serializers.ModelSerializer):
+class WholesaleProductVariantSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     ###store = StoreSerializer()
     variant = VariationSerializer()
@@ -199,3 +199,4 @@ class ProductsListDisplay(serializers.ModelSerializer):
             "default_variant__price",
             "default_variant__discounted_price",
         ]
+
