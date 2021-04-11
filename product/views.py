@@ -13,6 +13,7 @@ import datetime
 from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
 
 from product.serializers import *  # """ NEED TO CHANGE ASAP """
+from wishlist.models import Wishlist
 
 # Create your views here.
 
@@ -123,6 +124,24 @@ class ProductVariantViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         productVariants = ProductVariant.objects.all()
         return productVariants
+    
+    @action(detail=True, methods=["get","post"])
+    def add_to_wishlist(self, request, pk):
+        try:
+            current_user = request.user
+            current_product_variant = ProductVariant.objects.get(id = pk)
+
+            new_wishlist_item = Wishlist.objects.create(user = current_user)
+            new_wishlist_item.add_variant(self, current_product_variant)
+            new_wishlist_item.save()
+
+            serializer = ProductVariantSerializer(new_wishlist_item, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except:
+            return Response("ERROR !!!", status=status.HTTP_400_BAD_REQUEST)
+
 
 class WholesaleProductVariantViewset(viewsets.ModelViewSet):
     serializer_class = WholesaleProductVariantSerializer
@@ -131,3 +150,4 @@ class WholesaleProductVariantViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         wholesaleProductVariants = WholesaleProductVariant.objects.all()
         return wholesaleProductVariants
+
