@@ -123,3 +123,11 @@ class ProductVariantViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         productVariants = ProductVariant.objects.all()
         return productVariants
+
+class WholesaleProductVariantViewset(viewsets.ModelViewSet):
+    serializer_class = WholesaleProductVariantSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        wholesaleProductVariants = WholesaleProductVariant.objects.all()
+        return wholesaleProductVariants

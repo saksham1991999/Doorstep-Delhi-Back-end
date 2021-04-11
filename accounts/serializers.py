@@ -55,3 +55,12 @@ class AddressSerializer(serializers.ModelSerializer):
             "phone",
         ]
 
+class ShippingAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["default_shipping_address"]
+
+class BillingAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["default_billing_address"]

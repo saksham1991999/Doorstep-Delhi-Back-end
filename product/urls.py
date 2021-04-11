@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from product.views import ProductAPIViewSet, CategoryViewset, ProductTypeViewset, VariationViewset, ProductViewset, CustomizationViewset
 from product.views import ProductImageViewset, VariantImageViewset, WholesaleVariantImageViewset, CollectionProductViewset, CollectionViewset
-from product.views import ProductVariantViewset
+from product.views import ProductVariantViewset, WholesaleProductVariantViewset
 
 router = DefaultRouter()
 router.register("products", ProductAPIViewSet, basename="products")
@@ -18,6 +18,7 @@ router.register("wholesale_variant_image", WholesaleVariantImageViewset, basenam
 router.register("collection_product", CollectionProductViewset, basename="collection_product")
 router.register("collection", CollectionViewset, basename="collection")
 router.register("product_variants", ProductVariantViewset, basename="product_variants")
+router.register("wholesale_product_variants", WholesaleProductVariantViewset, basename="wholesale_product_variants")
 
 urlpatterns = [
     path("", include(router.urls)),

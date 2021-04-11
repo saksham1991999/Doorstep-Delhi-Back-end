@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import AddressSerializer, UserSerializer
+from .serializers import AddressSerializer, UserSerializer, ShippingAddressSerializer, BillingAddressSerializer
 from .models import Address, User
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
@@ -34,4 +34,24 @@ class UserViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         users = User.objects.all()
         return users
+    
+    @action(detail=True, methods=["get"])
+    def shipping_addresses(self, request, *args, **kwargs):
+        try:
+            users = User.objects.filter(user = request.user)
+            serializer = ShippingAddressSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except:
+            return Response("Error. You need to log in !", status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=["get"])
+    def billing_addresses(self, request, *args, **kwargs):
+        try:
+            users = User.objects.filter(user = request.user)
+            serializer = BillingAddressSerializer()(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except:
+            return Response("Error. You need to log in !", status=status.HTTP_400_BAD_REQUEST)
 
