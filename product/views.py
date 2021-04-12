@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -14,6 +14,7 @@ from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
 
 from product.serializers import *  # """ NEED TO CHANGE ASAP """
 from wishlist.models import Wishlist
+from wishlist.serializers import WishlistSerializer
 
 # Create your views here.
 
@@ -125,22 +126,35 @@ class ProductVariantViewset(viewsets.ModelViewSet):
         productVariants = ProductVariant.objects.all()
         return productVariants
     
-    @action(detail=True, methods=["get","post"])
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated]) # PERMISSION CLASSES and GET
     def add_to_wishlist(self, request, pk):
-        try:
-            current_user = request.user
-            current_product_variant = ProductVariant.objects.get(id = pk)
+        
+        current_user = request.user
+        current_product_variant = ProductVariant.objects.get_object_or_404(id = pk)
 
-            new_wishlist_item = Wishlist.objects.create(user = current_user)
-            new_wishlist_item.add_variant(self, current_product_variant)
-            new_wishlist_item.save()
+        new_wishlist_item = Wishlist.objects.get_or_create(user = current_user)
+        new_wishlist_item.add_variant(current_product_variant)
+        new_wishlist_item.save()
 
-            serializer = ProductVariantSerializer(new_wishlist_item, many=True)
+        # SERIALZER IS WRONG
+        serializer = WishlistSerializer(new_wishlist_item, many=True)
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except:
-            return Response("ERROR !!!", status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
+    def remove_from_wishlist(self, request, pk):
+        
+        current_user = request.user
+        current_product_variant = ProductVariant.objects.get_object_or_404(id = pk)
+
+        wishlist_item = Wishlist.objects.get_or_create(user = current_user)
+        wishlist_item.remove_variant(self, current_product_variant)
+        wishlist_item.save()
+
+        serializer = WishlistSerializer(wishlist_item, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class WholesaleProductVariantViewset(viewsets.ModelViewSet):
