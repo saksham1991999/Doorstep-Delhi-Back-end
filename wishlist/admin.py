@@ -13,3 +13,4 @@ class WishlistAdmin(nested_admin.NestedModelAdmin):
 
 
 admin.site.register(Wishlist, WishlistAdmin)
+admin.site.register(WishlistItem)

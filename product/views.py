@@ -13,7 +13,7 @@ import datetime
 from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
 
 from product.serializers import *  # """ NEED TO CHANGE ASAP """
-from wishlist.models import Wishlist
+from wishlist.models import Wishlist, WishlistItem
 from wishlist.serializers import WishlistSerializer
 
 # Create your views here.
@@ -130,14 +130,13 @@ class ProductVariantViewset(viewsets.ModelViewSet):
     def add_to_wishlist(self, request, pk):
         
         current_user = request.user
-        current_product_variant = ProductVariant.objects.get_object_or_404(id = pk)
+        current_product_varaint = get_object_or_404(ProductVariant, id=pk)
+        user_wishlist = Wishlist.objects.get_or_create(user = current_user)[0]
 
-        new_wishlist_item = Wishlist.objects.get_or_create(user = current_user)
-        new_wishlist_item.add_variant(current_product_variant)
-        new_wishlist_item.save()
+        user_wishlist.add_variant(current_product_varaint)
+        user_wishlist.save()
 
-        # SERIALZER IS WRONG
-        serializer = WishlistSerializer(new_wishlist_item, many=True)
+        serializer = WishlistSerializer(user_wishlist, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -146,13 +145,13 @@ class ProductVariantViewset(viewsets.ModelViewSet):
     def remove_from_wishlist(self, request, pk):
         
         current_user = request.user
-        current_product_variant = ProductVariant.objects.get_object_or_404(id = pk)
+        current_product_variant = get_object_or_404(ProductVariant, id = pk)
 
-        wishlist_item = Wishlist.objects.get_or_create(user = current_user)
-        wishlist_item.remove_variant(self, current_product_variant)
+        wishlist_item = Wishlist.objects.get_or_create(user = current_user)[0]
+        wishlist_item.remove_variant(current_product_variant)
         wishlist_item.save()
 
-        serializer = WishlistSerializer(wishlist_item, many=True)
+        serializer = WishlistSerializer(wishlist_item, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -79,9 +79,9 @@ class Product(models.Model):
 
 class ProductVariant(models.Model):
     name = models.CharField(max_length=255, blank=True)
-    # product = models.ForeignKey(
-    #    "product.Product", related_name="variants", on_delete=models.CASCADE
-    # )
+    product = models.ForeignKey(
+       "product.Product", related_name="variants", on_delete=models.CASCADE
+    )
     variant = models.ForeignKey(
         "product.Variation", related_name="products", on_delete=models.PROTECT
     )

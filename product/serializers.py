@@ -53,7 +53,7 @@ class ProductSerializer(serializers.ModelSerializer):
     product_type = ProductTypeSerializer()
     category = CategorySerializer()
     variations = VariationSerializer()
-    # customization = CustomizationSerializer()
+    # customization = CustomizationSerializer() # SHOULD BE UNCOMMENTED
 
     class Meta:
         model = Product
@@ -101,7 +101,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ProductVariantSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     variant = VariationSerializer()
-    images = ProductImageSerializer()
+    # images = ProductImageSerializer() # SHOULD BE UNCOMMENTED
 
     class Meta:
         model = ProductVariant
@@ -152,7 +152,7 @@ class WholesaleProductVariantSerializer(serializers.ModelSerializer):
 
 
 class WholesaleVariantImageSerializer(serializers.ModelSerializer):
-    # variant = WholesaleProductVariantSerializer()
+    # variant = WholesaleProductVariantSerializer() # SHOULD BE UNCOMMENTED
     image = ProductImageSerializer()
 
     class Meta:
@@ -164,7 +164,7 @@ class WholesaleVariantImageSerializer(serializers.ModelSerializer):
 
 
 class CollectionSerializer(serializers.ModelSerializer):
-    products = ProductSerializer()
+    # products = ProductSerializer()        # SHOULD BE UNCOMMENTED
 
     class Meta:
         model = Collection

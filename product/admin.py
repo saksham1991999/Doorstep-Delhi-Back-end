@@ -66,11 +66,14 @@ class WholesaleProductVariantInline(nested_admin.NestedTabularInline):
     extra = 0
 
 
-class ProductVariantInline(nested_admin.NestedTabularInline):
-    model = ProductVariant
-    inlines = [VariantImageInline]
-    extra = 0
+# class ProductVariantInline(nested_admin.NestedTabularInline):
+#     model = ProductVariant
+#     list_display = ['__all__']
+#     inlines = [VariantImageInline]
+#     extra = 0
 
+class ProductVariantAdmin(nested_admin.NestedModelAdmin):
+    list_display = ['id', 'name','product', 'variant','track_inventory', 'product_qty', 'price', 'discounted_price']
 
 class ProductInline(nested_admin.NestedTabularInline):
     model = Product
@@ -183,3 +186,4 @@ admin.site.register(Variation, VariationAdmin)
 admin.site.register(ProductType, ProductTypeAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Collection, CollectionAdmin)
+admin.site.register(ProductVariant, ProductVariantAdmin)
