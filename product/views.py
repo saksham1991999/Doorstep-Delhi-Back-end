@@ -39,7 +39,7 @@ class ProductAPIViewSet(viewsets.ModelViewSet):
 
 class CategoryViewset(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
-    permission_classes = [IsAdminOrReadOnly()]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         categories = Category.objects.all()
