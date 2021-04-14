@@ -18,6 +18,8 @@ from product.models import (
     Collection,
 )
 
+from product.forms import ProductImageForm
+
 
 class CollectionAdmin(nested_admin.NestedModelAdmin):
     list_display = [
@@ -44,6 +46,7 @@ class ProductReviewInline(nested_admin.NestedTabularInline):
 
 
 class ProductImageInline(nested_admin.NestedTabularInline):
+    form = ProductImageForm
     model = ProductImage
     extra = 0
 
