@@ -200,7 +200,7 @@ class ProductListProductVariantSerializer(serializers.ModelSerializer):
         ]
 
 class ProductListSerilaizer(serializers.ModelSerializer):
-    product_variant = ProductListProductVariantSerializer(many=False, read_only=True)
+    product_variant = ProductListProductVariantSerializer(many=False, read_only=True) # READ ONLY SHOULD BE FALSE
     class Meta:
         model = Product
         fields = [
