@@ -101,7 +101,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ProductVariantSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     variant = VariationSerializer()
-    # images = ProductImageSerializer() # SHOULD BE UNCOMMENTED
+    images = ProductImageSerializer(many=True) # SHOULD BE UNCOMMENTED
 
     class Meta:
         model = ProductVariant
@@ -152,7 +152,7 @@ class WholesaleProductVariantSerializer(serializers.ModelSerializer):
 
 
 class WholesaleVariantImageSerializer(serializers.ModelSerializer):
-    # variant = WholesaleProductVariantSerializer() # SHOULD BE UNCOMMENTED
+    variant = WholesaleProductVariantSerializer(many=True) # SHOULD BE UNCOMMENTED
     image = ProductImageSerializer()
 
     class Meta:
@@ -188,15 +188,26 @@ class CollectionProductSerializer(serializers.ModelSerializer):
             "product",
         ]
 
+class ProductListProductVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVariant
+        fields = [
+            "name",
+            "images",
+            "product_qty",
+            "price",
+            "discounted_price"
+        ]
 
-class ProductsListDisplay(serializers.ModelSerializer):
+class ProductListSerilaizer(serializers.ModelSerializer):
+    product_variant = ProductListProductVariantSerializer(many=False, read_only=True)
     class Meta:
         model = Product
         fields = [
             "name",
             "description",
             "product_qty",
-            "default_variant__price",
-            "default_variant__discounted_price",
+            "product_variant"
         ]
+        
 
