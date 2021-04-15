@@ -95,7 +95,7 @@ class ProductVariant(models.Model):
         return str(self.product) + "-" + self.name
     
     def get_images(self):
-        return "\n".join([p.images for p in self.images.all()])
+        return "\n".join([p.__str__() for p in self.images.all()])
 
 
 class WholesaleProductVariant(models.Model):

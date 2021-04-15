@@ -101,7 +101,8 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ProductVariantSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     variant = VariationSerializer()
-    images = ProductImageSerializer(many=True) # SHOULD BE UNCOMMENTED
+    # images = ProductImageSerializer(many=True) # SHOULD BE UNCOMMENTED
+    images = serializers.PrimaryKeyRelatedField(queryset=ProductImage.objects.all(), many=True)
 
     class Meta:
         model = ProductVariant
