@@ -46,7 +46,7 @@ class ProductReviewInline(nested_admin.NestedTabularInline):
 
 
 class ProductImageInline(nested_admin.NestedTabularInline):
-    form = ProductImageForm
+    # form = ProductImageForm
     model = ProductImage
     extra = 0
 
