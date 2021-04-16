@@ -21,7 +21,7 @@ from wishlist.serializers import WishlistSerializer
 
 class ProductAPIViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
-    permission_classes = []
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         products = Product.objects.all()
