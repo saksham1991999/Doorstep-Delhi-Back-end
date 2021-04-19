@@ -86,6 +86,7 @@ class ProductSerializer(serializers.ModelSerializer):
         return products
 
 
+
 class ProductImageSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
 
@@ -99,7 +100,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductVariantSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
+    product = ProductSerializer(many=True)
     variant = VariationSerializer()
     # images = ProductImageSerializer(many=True) # SHOULD BE UNCOMMENTED
     images = serializers.PrimaryKeyRelatedField(queryset=ProductImage.objects.all(), many=True)
@@ -214,4 +215,5 @@ class ProductListSerilaizer(serializers.ModelSerializer):
         ]
 
     def get_product_variants(self, obj):
-        return [p.__str__() for p in ProductVariant.objects.filter(product=obj)]
+        serializer = ProductListProductVariantSerializer(ProductVariant.objects.filter(product=obj), many=True)
+        return serializer.data
