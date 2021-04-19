@@ -33,14 +33,6 @@ class ProductAPIViewSet(viewsets.ModelViewSet):
         serializer = ProductListSerilaizer(products, many=True)
         return Response(serializer.data)
 
-    # @action(detail=False, methods=["get"])
-    # def list_display(self, request):
-    #     try:
-    #         products = Product.objects.all()
-    #         serializer = ProductsListDisplay(products, many=True)
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     except:
-    #         return Response("ERROR !!!", status=status.HTTP_400_BAD_REQUEST)
 
 class CategoryViewset(viewsets.ModelViewSet):
     serializer_class = CategorySerializer

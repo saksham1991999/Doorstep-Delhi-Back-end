@@ -201,7 +201,8 @@ class ProductListProductVariantSerializer(serializers.ModelSerializer):
         ]
 
 class ProductListSerilaizer(serializers.ModelSerializer):
-    product_variant = ProductListProductVariantSerializer(many=False, read_only=True) # READ ONLY SHOULD BE FALSE
+    product_variants = serializers.SerializerMethodField()
+    # product_variant = ProductListProductVariantSerializer(many=False, read_only=True) # READ ONLY SHOULD BE FALSE
     class Meta:
         model = Product
         fields = [
@@ -209,7 +210,8 @@ class ProductListSerilaizer(serializers.ModelSerializer):
             "name",
             "description",
             "product_qty",
-            "product_variant"
+            "product_variants"
         ]
-        
 
+    def get_product_variants(self, obj):
+        return [p.__str__() for p in ProductVariant.objects.filter(product=obj)]
