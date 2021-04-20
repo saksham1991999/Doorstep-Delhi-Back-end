@@ -190,19 +190,22 @@ class CollectionProductSerializer(serializers.ModelSerializer):
             "product",
         ]
 
-class ProductListProductVariantSerializer(serializers.ModelSerializer):
+class ProductListVariantImageSerializer(serializers.ModelSerializer):
+    # variant = ProductVariantSerializer()
+    # image = ProductImageSerializer()
+
     class Meta:
-        model = ProductVariant
+        model = VariantImage
         fields = [
-            "name",
-            "images",
-            "product_qty",
-            "price",
-            "discounted_price"
+            # "variant",
+            "image",
         ]
 
+
+
 class ProductListSerilaizer(serializers.ModelSerializer):
-    product_variants = serializers.SerializerMethodField()
+    # product_variants = serializers.SerializerMethodField()
+    variant_images = serializers.SerializerMethodField()
     # product_variant = ProductListProductVariantSerializer(many=False, read_only=True) # READ ONLY SHOULD BE FALSE
     class Meta:
         model = Product
@@ -211,9 +214,14 @@ class ProductListSerilaizer(serializers.ModelSerializer):
             "name",
             "description",
             "product_qty",
-            "product_variants"
+            # "product_variants",
+            "variant_images"
         ]
 
-    def get_product_variants(self, obj):
-        serializer = ProductListProductVariantSerializer(ProductVariant.objects.filter(product=obj), many=True)
-        return serializer.data
+    # def get_product_variants(self, obj):
+    #     serializer = ProductVariantSerializer(ProductVariant.objects.filter(product=obj), many=True)
+    #     return serializer.data
+
+    def get_variant_images(self, obj):
+        images = ProductImage.objects.values_list('image', flat=True)
+        return images
