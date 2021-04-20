@@ -18,7 +18,7 @@ class OrderEventAdmin(nested_admin.NestedStackedInline):
 
 class OrderAdmin(nested_admin.NestedModelAdmin):
     inline = [OrderLineAdmin, InvoiceAdmin, OrderEventAdmin,]
-    list_display = [
+    list_display = ['id',
                     'user',
                     'tracking_client_id',
                     'total_net_amount',
@@ -78,3 +78,4 @@ admin.site.register(GiftCard)
 admin.site.register(OrderEvent)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Sale)
+admin.site.register(OrderLine)

@@ -82,7 +82,7 @@ class Order(models.Model):
 
 class OrderLine(models.Model):
     order = models.ForeignKey(
-        Order, related_name="lines", editable=False, on_delete=models.CASCADE
+        Order, related_name="lines", editable=False, on_delete=models.CASCADE, null=True
     )
     variant = models.ForeignKey(
         "product.ProductVariant",
@@ -97,7 +97,10 @@ class OrderLine(models.Model):
     )
 
     def increment_quantity_by_one(self,order:order,variant:variant):
-        orderline, _is_created = self.items.get(id=id, order=order).update(quantity=quantity+1)
+        orderline, _is_created = self.items.get(id=id, order=order)
+        current_quantity = orderline.quantity
+        orderline.update(quantity=current_quantity+1)
+        orderline.save()
         return orderline
 
 

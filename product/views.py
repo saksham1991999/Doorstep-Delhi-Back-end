@@ -17,6 +17,7 @@ from wishlist.models import Wishlist, WishlistItem
 from wishlist.serializers import WishlistSerializer
 from accounts.models import Address
 from shop.serializers import OrderLineSerializers
+from shop.models import Order, OrderLine
 # Create your views here.
 
 
@@ -160,20 +161,33 @@ class ProductVariantViewset(viewsets.ModelViewSet):
         order = get_object_or_404(Order, user=current_user, billing_address=user_address.billing_address, shipping_address=user_address.shipping_address)
         current_product_variant = get_object_or_404(ProductVariant, id = pk)
         
-        if(OrderLine.objects.filter(order=order, variant=current_product_variant).exists()):
-            orderline = OrderLine.objects.get_object_or_404(order=order, variant=current_product_variant)
-            orderline.increment_quantity_by_one(order=order, variant=current_product_variant)
-            orderline.save()
+        if(Order.objects.filter(user=current_user).exists()):
+            current_order = Order.objects.get_or_create(user=current_user)
+            if(OrderLine.objects.filer(order=current_order, variant=current_product_variant).exists()):
+                orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant)
+                orderline_quantity = orderline.quantity
+                orderline.update(quantity= orderline_quantity+1)
+                orderline.save()
 
-            serializer = OrderLineSerializer(orderline, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+                serializer = OrderLineSerializer(orderline)
+                return Response(serializer.data, status=status.HTTP_200_OK)
 
+            else:
+                orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant, quantity=1)
+                orderline.save()
+            
+                serializer = OrderLineSerializer(orderline)
+                return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            orderline = get_object_or_404(OrderLine, order=order, variant=current_product_variant)
-            orderline.save()
+            current_order = Order.objects.get_or_create(user=current_user)
+            current_product_variant = get_object_or_404(ProductVariant, id = pk)
 
-            serializer = OrderLineSerializer(orderline, many=True)
+            orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant, quantity=1)
+            orderline.save()
+            
+            serializer = OrderLineSerializer(orderline)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class WholesaleProductVariantViewset(viewsets.ModelViewSet):
