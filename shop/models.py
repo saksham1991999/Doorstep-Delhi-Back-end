@@ -96,6 +96,10 @@ class OrderLine(models.Model):
         validators=[MinValueValidator(0)], default=0
     )
 
+    def increment_quantity_by_one(self,order:order,variant:variant):
+        orderline, _is_created = self.items.get(id=id, order=order).update(quantity=quantity+1)
+        return orderline
+
 
 class OrderEvent(models.Model):
     """Model used to store events that happened during the order lifecycle.

@@ -35,6 +35,7 @@ class OrderLineSerializers(serializers.ModelSerializer):
     class Meta:
         model = OrderLine
         fields = [
+            'id',
             'order',
             'variant',
             'quantity',

@@ -15,12 +15,13 @@ from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
 from product.serializers import *  # """ NEED TO CHANGE ASAP """
 from wishlist.models import Wishlist, WishlistItem
 from wishlist.serializers import WishlistSerializer
-
+from accounts.models import Address
+from shop.serializers import OrderLineSerializers
 # Create your views here.
 
 
 class ProductAPIViewSet(viewsets.ModelViewSet):
-    serializer_class = ProductSerializer
+    serializer_class = ProductSerializer2
     permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
@@ -151,6 +152,28 @@ class ProductVariantViewset(viewsets.ModelViewSet):
         serializer = WishlistSerializer(wishlist_item, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
+    def add_to_cart(self,request,pk):
+        current_user = request.user
+        user_address = get_object_or_404(Address, user=current_user)
+        order = get_object_or_404(Order, user=current_user, billing_address=user_address.billing_address, shipping_address=user_address.shipping_address)
+        current_product_variant = get_object_or_404(ProductVariant, id = pk)
+        
+        if(OrderLine.objects.filter(order=order, variant=current_product_variant).exists()):
+            orderline = OrderLine.objects.get_object_or_404(order=order, variant=current_product_variant)
+            orderline.increment_quantity_by_one(order=order, variant=current_product_variant)
+            orderline.save()
+
+            serializer = OrderLineSerializer(orderline, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        else:
+            orderline = get_object_or_404(OrderLine, order=order, variant=current_product_variant)
+            orderline.save()
+
+            serializer = OrderLineSerializer(orderline, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class WholesaleProductVariantViewset(viewsets.ModelViewSet):
