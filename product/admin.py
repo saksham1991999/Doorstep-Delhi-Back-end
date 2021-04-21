@@ -18,6 +18,8 @@ from product.models import (
     Collection,
 )
 
+from product.forms import ProductImageForm
+
 
 class CollectionAdmin(nested_admin.NestedModelAdmin):
     list_display = [
@@ -44,6 +46,7 @@ class ProductReviewInline(nested_admin.NestedTabularInline):
 
 
 class ProductImageInline(nested_admin.NestedTabularInline):
+    # form = ProductImageForm
     model = ProductImage
     extra = 0
 
@@ -66,19 +69,19 @@ class WholesaleProductVariantInline(nested_admin.NestedTabularInline):
     extra = 0
 
 
-# class ProductVariantInline(nested_admin.NestedTabularInline):
-#     model = ProductVariant
-#     list_display = ['__all__']
-#     inlines = [VariantImageInline]
-#     extra = 0
+class ProductVariantInline(nested_admin.NestedTabularInline):
+    model = ProductVariant
+    list_display = ['__all__']
+    inlines = [VariantImageInline]
+    extra = 0
 
 class ProductVariantAdmin(nested_admin.NestedModelAdmin):
-    list_display = ['id', 'name','product', 'variant','track_inventory', 'product_qty', 'price', 'discounted_price']
+    list_display = ['id', 'name','product', 'variant','track_inventory', 'product_qty', 'price', 'discounted_price',"get_images"]
 
 class ProductInline(nested_admin.NestedTabularInline):
     model = Product
     inlines = [
-        #ProductVariantInline,
+        ProductVariantInline,
         WholesaleProductVariantInline,
         ProductImageInline,
         ProductReviewInline,
@@ -88,7 +91,7 @@ class ProductInline(nested_admin.NestedTabularInline):
 
 class ProductAdmin(nested_admin.NestedModelAdmin):
     inlines = [
-        # ProductVariantInline,
+        ProductVariantInline,
         WholesaleProductVariantInline,
         ProductImageInline,
         ProductReviewInline,

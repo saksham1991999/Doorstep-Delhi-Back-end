@@ -70,7 +70,7 @@ post_save.connect(save_order, sender=Order)
 
 class OrderLine(models.Model):
     order = models.ForeignKey(
-        Order, related_name="lines", editable=False, on_delete=models.CASCADE
+        Order, related_name="lines", editable=False, on_delete=models.CASCADE, null=True
     )
     variant = models.ForeignKey(
         "product.ProductVariant",
@@ -83,6 +83,13 @@ class OrderLine(models.Model):
     quantity_fulfilled = models.IntegerField(
         validators=[MinValueValidator(0)], default=0
     )
+
+    def increment_quantity_by_one(self,order:order,variant:variant):
+        orderline, _is_created = self.items.get(id=id, order=order)
+        current_quantity = orderline.quantity
+        orderline.update(quantity=current_quantity+1)
+        orderline.save()
+        return orderline
 
 
 class OrderEvent(models.Model):

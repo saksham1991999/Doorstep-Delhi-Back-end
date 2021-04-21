@@ -15,27 +15,26 @@ from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
 from product.serializers import *  # """ NEED TO CHANGE ASAP """
 from wishlist.models import Wishlist, WishlistItem
 from wishlist.serializers import WishlistSerializer
-
+from accounts.models import Address
+from shop.serializers import OrderLineSerializers
+from shop.models import Order, OrderLine
 # Create your views here.
 
 
 class ProductAPIViewSet(viewsets.ModelViewSet):
-    serializer_class = ProductSerializer
-    permission_classes = []
+    serializer_class = ProductSerializer2
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         products = Product.objects.all()
         # serializer = ProductSerializer(products, many=True)
         return products  # Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def list(self, request, *args, **kwargs):
+        products = Product.objects.all()
+        serializer = ProductListSerilaizer(products, many=True)
+        return Response(serializer.data)
 
-    @action(detail=False, methods=["get"])
-    def list_display(self, request):
-        try:
-            products = Product.objects.all()
-            serializer = ProductsListDisplay(products, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response("ERROR !!!", status=status.HTTP_400_BAD_REQUEST)
 
 class CategoryViewset(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
@@ -154,6 +153,41 @@ class ProductVariantViewset(viewsets.ModelViewSet):
         serializer = WishlistSerializer(wishlist_item, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
+    def add_to_cart(self,request,pk):
+        current_user = request.user
+        user_address = get_object_or_404(Address, user=current_user)
+        order = get_object_or_404(Order, user=current_user, billing_address=user_address.billing_address, shipping_address=user_address.shipping_address)
+        current_product_variant = get_object_or_404(ProductVariant, id = pk)
+        
+        if(Order.objects.filter(user=current_user).exists()):
+            current_order = Order.objects.get_or_create(user=current_user)
+            if(OrderLine.objects.filer(order=current_order, variant=current_product_variant).exists()):
+                orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant)
+                orderline_quantity = orderline.quantity
+                orderline.update(quantity= orderline_quantity+1)
+                orderline.save()
+
+                serializer = OrderLineSerializer(orderline)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            else:
+                orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant, quantity=1)
+                orderline.save()
+            
+                serializer = OrderLineSerializer(orderline)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            current_order = Order.objects.get_or_create(user=current_user)
+            current_product_variant = get_object_or_404(ProductVariant, id = pk)
+
+            orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant, quantity=1)
+            orderline.save()
+            
+            serializer = OrderLineSerializer(orderline)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class WholesaleProductVariantViewset(viewsets.ModelViewSet):

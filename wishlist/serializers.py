@@ -10,6 +10,8 @@ class WishlistItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishlistItem
         fields = (
+            "id",
+            "wishlist",
             "product",
             "variants",
             "created_at",

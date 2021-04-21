@@ -93,6 +93,9 @@ class ProductVariant(models.Model):
 
     def __str__(self):
         return str(self.product) + "-" + self.name
+    
+    def get_images(self):
+        return "\n".join([p.__str__() for p in self.images.all()])
 
 
 class WholesaleProductVariant(models.Model):
@@ -121,7 +124,8 @@ class ProductImage(models.Model):
     product = models.ForeignKey(
         Product, related_name="images", on_delete=models.CASCADE
     )
-    image = VersatileImageField(upload_to="products", ppoi_field="ppoi", blank=False)
+    image = models.ImageField(upload_to="products", blank=False)
+    # image = VersatileImageField(upload_to="products", ppoi_field="ppoi", blank=False)
     alt = models.CharField(max_length=128, blank=True)
 
     def __str__(self):
@@ -187,8 +191,9 @@ class Collection(models.Model):
         through=CollectionProduct,
         through_fields=("collection", "product"),
     )
-    background_image = VersatileImageField(
-        upload_to="collection-backgrounds", blank=True, null=True
-    )
+    background_image = models.ImageField(upload_to="collection-backgrounds", blank=True, null=True)
+    # background_image = VersatileImageField(
+    #     upload_to="collection-backgrounds", blank=True, null=True
+    # )
     background_image_alt = models.CharField(max_length=128, blank=True)
     description = models.TextField(blank=True, null=True)
