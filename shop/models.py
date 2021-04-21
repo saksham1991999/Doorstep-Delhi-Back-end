@@ -5,20 +5,15 @@ from django.conf import settings
 from django.db import models
 from django.utils.timezone import now
 from django.core.validators import MinValueValidator
+from django.db.models.signals import post_save
 
-from shop.choices import (
-    order_status_choices,
-    order_event_type_choices,
-    voucher_type_choices,
-    discout_value_type_choices,
-)
+from shop.choices import order_status_choices, order_event_type_choices, voucher_type_choices, discout_value_type_choices
 
 
 class Order(models.Model):
     created = models.DateTimeField(default=now, editable=False)
     status = models.CharField(
-        max_length=32, default="unfulfilled", choices=order_status_choices
-    )
+        max_length=32, default="unfulfilled", choices=order_status_choices)
     user = models.ForeignKey(
         "accounts.User",
         blank=True,
@@ -28,18 +23,10 @@ class Order(models.Model):
     )
     tracking_client_id = models.CharField(max_length=36, blank=True, editable=False)
     billing_address = models.ForeignKey(
-        "accounts.Address",
-        related_name="+",
-        editable=False,
-        null=True,
-        on_delete=models.SET_NULL,
+        "accounts.Address", related_name="+", editable=False, null=True, on_delete=models.SET_NULL
     )
     shipping_address = models.ForeignKey(
-        "accounts.Address",
-        related_name="+",
-        editable=False,
-        null=True,
-        on_delete=models.SET_NULL,
+        "accounts.Address", related_name="+", editable=False, null=True, on_delete=models.SET_NULL
     )
     shipping_method = models.ForeignKey(
         "store.ShippingMethod",
@@ -66,18 +53,19 @@ class Order(models.Model):
     )
 
     voucher = models.ForeignKey(
-        "shop.Voucher",
-        blank=True,
-        null=True,
-        related_name="+",
-        on_delete=models.SET_NULL,
+        "shop.Voucher", blank=True, null=True, related_name="+", on_delete=models.SET_NULL
     )
-    gift_cards = models.ManyToManyField(
-        "shop.GiftCard", blank=True, related_name="orders"
-    )
+    gift_cards = models.ManyToManyField("shop.GiftCard", blank=True, related_name="orders")
 
     display_gross_prices = models.BooleanField(default=True)
     customer_note = models.TextField(blank=True, default="")
+
+
+def save_order(sender, instance, **kwargs):
+    clientID = instance.created.strftime("DRSDL%Y%m%d%H") + str(instance.id)
+    instance.tracking_client_id = clientID
+
+post_save.connect(save_order, sender=Order)
 
 
 class OrderLine(models.Model):
@@ -164,6 +152,7 @@ class Voucher(models.Model):
         max_length=20, choices=voucher_type_choices, default="entire_order"
     )
     name = models.CharField(max_length=255, null=True, blank=True)
+    value = models.PositiveSmallIntegerField(null=True)
     code = models.CharField(max_length=12, unique=True, db_index=True)
     usage_limit = models.PositiveIntegerField(null=True, blank=True)
     used = models.PositiveIntegerField(default=0, editable=False)

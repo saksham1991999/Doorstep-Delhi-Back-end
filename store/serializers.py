@@ -3,6 +3,8 @@ from rest_framework.fields import CurrentUserDefault
 from datetime import datetime
 
 from .models import Store, ShippingZone, ShippingMethod
+from accounts.models import Address
+from accounts.serializers import AddressSerializer
 
 
 class ShippingMethodSerializers(serializers.ModelSerializer):
@@ -46,5 +48,7 @@ class StoreSerializers(serializers.ModelSerializer):
             'shipping_zones'
         ]
     def get_address(self, obj):
-        return self.context['request'].user.address
-
+        user = self.context['request'].user
+        address = Address.objects.get(user=user)
+        data = AddressSerializer(address).data
+        return data

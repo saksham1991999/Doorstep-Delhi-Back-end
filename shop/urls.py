@@ -12,7 +12,7 @@ router.register('event', OrderEventViewset, basename='order-event')
 router.register('giftcard', GiftCardViewset, basename='giftcard')
 router.register('voucher', VoucherViewset, basename='voucher')
 router.register('sales', SaleViewset, basename='sale')
-# router.register('order', OrderViewSet, basename='order')
+router.register('order', OrderViewSet, basename='order')
 
 urlpatterns = [
     path('', include(router.urls)),

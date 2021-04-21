@@ -98,4 +98,5 @@ class Transaction(models.Model):
     customer_id = models.CharField(max_length=256, null=True)
     gateway_response = models.TextField()
     already_processed = models.BooleanField(default=False)
+    checksum = models.CharField(max_length=100, null=True, blank=True)
     searchable_key = models.CharField(max_length=512, null=True, blank=True)

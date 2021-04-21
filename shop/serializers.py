@@ -1,8 +1,12 @@
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 from datetime import datetime
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
 
 from .models import Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sale
+from accounts.models import Address
+from accounts.serializers import AddressSerializer
 
 class OrderSerializers(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault)
@@ -28,7 +32,8 @@ class OrderSerializers(serializers.ModelSerializer):
         ]
         read_only_fields = ('id','tracking_client_id',)        
 
-
+class OrderListSerializers(serializers.ModelSerializer):
+    pass
 
 
 class OrderLineSerializers(serializers.ModelSerializer):
@@ -86,6 +91,9 @@ class GiftCardSerializers(serializers.ModelSerializer):
             'current_balance_amount', 
         ]
 
+class GiftCardListSerializers(serializers.ModelSerializer):
+    pass
+
 
 
 class VoucherSerializers(serializers.ModelSerializer):
@@ -108,6 +116,8 @@ class VoucherSerializers(serializers.ModelSerializer):
             'categories',
         ]
 
+class VoucherListSerializers(serializers.ModelSerializer):
+    pass
 
 class SaleSerializers(serializers.ModelSerializer):
     class Meta:
@@ -121,3 +131,58 @@ class SaleSerializers(serializers.ModelSerializer):
             'start_date',
             'end_date',            
         ]
+
+
+class CouponInputSerializers(serializers.Serializer):
+    current_date = serializers.HiddenField(default=timezone.now)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault)
+    code = serializers.CharField(max_length = 20)
+    category = serializers.SerializerMethodField(read_only = True)
+
+    def get_category(self):
+        if self.code[:3]=="GFC":
+            return "giftcard"
+        else:
+            return "voucher"
+
+    def validate(self,data):
+        if data['category']=="giftcard":
+            code = get_object_or_404(GiftCard,code=data['code'])
+            if not code:
+                raise serializers.ValidationError("Invalid GiftCard")
+            elif data['user'] != code.user :
+                raise serializers.ValidationError("Giftcard doesn't link with current account")
+            elif not (data['current_date'] >= code.start_date) :
+                raise serializers.ValidationError("Using Giftcard early")
+            elif not (data['current_date'] <= code.end_date) :
+                raise serializers.ValidationError("Giftcard expired")
+            else:
+                return data
+
+        else:
+            code = get_object_or_404(Voucher,code=data['code'])
+            if not code:
+                raise serializers.ValidationError("Invalid Voucher")
+            elif not (data['current_date'] >= code.start_date) :
+                raise serializers.ValidationError("Using Voucher early")
+            elif not (data['current_date'] <= code.end_date) :
+                raise serializers.ValidationError("Voucher expired")
+            elif not (code.used <= code.usage_limit):
+                raise serializers.ValidationError("Voucher using limit surpassed")
+            else:
+                return data
+
+
+class AddressInputSerializer(serializers.Serializer):
+    default_address = serializers.SerializerMethodField(read_only = True)
+    address = serializers.CharField(max_length=None, min_length=None, allow_blank=True, trim_whitespace=True)
+
+    def get_default_address(self, obj):
+        user = self.context['request'].user
+        address = Address.objects.get(user=user)
+        data = AddressSerializer(address).data
+        return data 
+
+
+
+    
