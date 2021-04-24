@@ -8,9 +8,11 @@ from .models import Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sa
 from accounts.models import Address
 from accounts.serializers import AddressSerializer
 
-class OrderSerializers(serializers.ModelSerializer):
+
+class OrderSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault)
     created = serializers.DateTimeField(read_only=True)
+
     class Meta:
         model = Order
         fields = [
@@ -30,13 +32,34 @@ class OrderSerializers(serializers.ModelSerializer):
             'display_gross_price',
             'customer_note',
         ]
-        read_only_fields = ('id','tracking_client_id',)        
+        read_only_fields = ('id','tracking_client_id',)
+
+    def invoices(self, obj):
+        return
+
+    def events(self, obj):
+        return
+
+    def products(self, obj):
+        return
+
 
 class OrderListSerializers(serializers.ModelSerializer):
-    pass
+    
+    class Meta:
+        model = Order
+        fields = [
+            'id',
+            'created',
+            'status',
+            'tracking_client_id',
+            'shipping_method',
+            'total_net_amount',
+        ]
+        read_only_fields = ('id', 'tracking_client_id',)
 
 
-class OrderLineSerializers(serializers.ModelSerializer):
+class OrderLineSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderLine
         fields = [
@@ -48,8 +71,7 @@ class OrderLineSerializers(serializers.ModelSerializer):
         ]
 
 
-
-class OrderEventSerializers(serializers.ModelSerializer):
+class OrderEventSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault)
     date = serializers.DateTimeField(read_only=True)
     
@@ -78,6 +100,7 @@ class InvoiceSerializers(serializers.ModelSerializer):
 class GiftCardSerializers(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault)
     created = serializers.DateTimeField(read_only=True)
+
     class Meta:
         model = GiftCard
         fields = [
@@ -92,12 +115,9 @@ class GiftCardSerializers(serializers.ModelSerializer):
             'current_balance_amount', 
         ]
 
-class GiftCardListSerializers(serializers.ModelSerializer):
-    pass
-
-
 
 class VoucherSerializers(serializers.ModelSerializer):
+
     class Meta:
         model = Voucher
         fields = [
@@ -117,10 +137,9 @@ class VoucherSerializers(serializers.ModelSerializer):
             'categories',
         ]
 
-class VoucherListSerializers(serializers.ModelSerializer):
-    pass
 
 class SaleSerializers(serializers.ModelSerializer):
+
     class Meta:
         model = Sale
         fields = [
@@ -172,18 +191,3 @@ class CouponInputSerializers(serializers.Serializer):
                 raise serializers.ValidationError("Voucher using limit surpassed")
             else:
                 return data
-
-
-class AddressInputSerializer(serializers.Serializer):
-    default_address = serializers.SerializerMethodField(read_only = True)
-    address = serializers.CharField(max_length=None, min_length=None, allow_blank=True, trim_whitespace=True)
-
-    def get_default_address(self, obj):
-        user = self.context['request'].user
-        address = Address.objects.get(user=user)
-        data = AddressSerializer(address).data
-        return data 
-
-
-
-    

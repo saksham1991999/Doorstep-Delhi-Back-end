@@ -6,21 +6,24 @@ from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated, I
 from django.db.models import Q
 from datetime import date, datetime
 
-from .serializers import ( OrderSerializers, OrderLineSerializers, OrderEventSerializers,
-                         InvoiceSerializers, GiftCardSerializers, VoucherSerializers,
-                         SaleSerializers, CouponInputSerializers)
-
+from .serializers import (OrderSerializer, OrderLineSerializer, OrderEventSerializer,
+                          InvoiceSerializers, GiftCardSerializers, VoucherSerializers,
+                          SaleSerializers, CouponInputSerializers)
 from .models import (Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sale)
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, IsOwnerOrAdmin, IsOwnerReadOnlyOrAdmin
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    serializer_class = OrderSerializers
-    permission_classes = [IsAdminOrReadOnly]
-    def get_queryset(self):
-        return Order.objects.get(user=self.request.user)
+    serializer_class = OrderSerializer
+    permission_classes = [IsOwnerReadOnlyOrAdmin]
 
-    @action(detail=True, methods=['post'])
+    def get_queryset(self):
+        orders = Order.objects.all()
+        if not self.request.user.is_superuser:
+            orders = orders.filter(user = self.request.user)
+        return orders
+
+    @action(detail=True, methods=['get'])
     def invoice(self, request, pk=None):
         order = self.get_object()
         order.total_net_price = order.shipping_price + order.undiscounted_total_net_amount
@@ -75,12 +78,20 @@ class OrderViewSet(viewsets.ModelViewSet):
     def payment_status(self, request, pk=None):
         pass
 
+    @action(detail=False, methods=['get'], permission_classes=[IsOwnerReadOnlyOrAdmin])
+    def cart(self, request):
+        cart = Order.objects.filter(user=self.request.user, status='draft')
+        if cart.exists():
+            cart = cart[0]
+        else:
+            cart = Order.objects.create(user=self.request.user, status="draft")
+        serializer = OrderSerializer(cart, many=False)
+        return serializer.data
 
 
-
-class OrderEventViewset(viewsets.ModelViewSet):
-    serializer_class = OrderEventSerializers
-    permission_classes = [IsAdminOrReadOnly]
+class OrderEventViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderEventSerializer
+    permission_classes = [IsOwnerReadOnlyOrAdmin]
     queryset = OrderEvent.objects.all()
 
 

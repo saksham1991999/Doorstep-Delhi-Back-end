@@ -10,18 +10,19 @@ from rest_framework.permissions import (
 )
 from django.db.models import Q
 import datetime
-from wishlist.permissions import IsAdminOrReadOnly
 
-from wishlist.models import Wishlist, WishlistItem
-from wishlist.serializers import WishlistSerializer, WishlistItemSerializer
-
-# Create your views here.
+from wishlist.permissions import IsOwnerOrAdmin
+from wishlist.models import Wishlist
+from wishlist.serializers import WishlistSerializer
 
 
 class WishlistItemAPIViewSet(viewsets.ModelViewSet):
-    serializer_class = WishlistItemSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    serializer_class = WishlistSerializer
+    permission_classes = [IsOwnerOrAdmin]
 
     def get_queryset(self):
-        wishlist_items = WishlistItem.objects.all()
-        return wishlist_items
+        wishlists = Wishlist.objects.all()
+        if not self.request.user.is_superuser:
+            wishlist = get_object_or_404(Wishlist, user=self.request.user)
+            return wishlist
+        return wishlists
