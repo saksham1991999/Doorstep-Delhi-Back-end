@@ -182,7 +182,11 @@ class AddressInputSerializer(serializers.Serializer):
         user = self.context['request'].user
         address = Address.objects.get(user=user)
         data = AddressSerializer(address).data
-        return data 
+        return data
+
+class PaymentSerializer(serializers.Serializer):
+    date = serializers.HiddenField(default=timezone.now)
+    
 
 
 

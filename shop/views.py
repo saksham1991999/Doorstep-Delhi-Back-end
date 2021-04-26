@@ -11,7 +11,11 @@ from .serializers import ( OrderSerializers, OrderLineSerializers, OrderEventSer
                          SaleSerializers, CouponInputSerializers)
 
 from .models import (Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sale)
+from accounts.models import Address
+from payment.models import Payment, Transaction
 from .permissions import IsAdminOrReadOnly
+from . import checksum
+from django.conf import settings
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -65,7 +69,73 @@ class OrderViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods = ['post'])
     def payment(self, request, pk=None):
-        pass    
+        order = self.get_object()
+        user = get_object_or_404(Address, user=self.request.user)
+        amount = order.total_net_amount
+        name = user.full_name
+        email = user.user.email
+        
+        # object of payment.transaction and payment.Payment is to be created
+
+        # we have to send the param_dict to the frontend
+        # these credentials will be passed to paytm order processor to verify the business account
+        param_dict = {
+            'MID': settings.PAYTM_MERCHANT_ID,
+            'ORDER_ID': str(order.id),
+            'TXN_AMOUNT': str(amount),
+            'CUST_ID': email,
+            'INDUSTRY_TYPE_ID': settings.PAYTM_INDUSTRY_TYPE_ID,
+            'WEBSITE': settings.PAYTM_WEBSITE,
+            'CHANNEL_ID': settings.PAYTM_CHANNEL_ID,
+            # 'CALLBACK_URL': '',
+            # this is the url of handlepayment function, paytm will send a POST request to the fuction associated with this CALLBACK_URL
+        }
+        
+            
+        # create new checksum (unique hashed string) using our merchant key with every paytm payment
+        param_dict['CHECKSUMHASH'] = Checksum.generate_checksum(param_dict, settings.PAYTM_MERCHANT_ID)
+        # send the dictionary with all the credentials to the frontend
+        return Response({'param_dict': param_dict})
+
+
+    @action(detail=True, methods = ['post'])
+    def handle_payment(self, request, pk=None):
+            checksum = ""
+
+            # the request.POST is coming from paytm
+            form = request.POST
+
+            response_dict = {}
+            order = None  # initialize the order varible with None
+
+            for i in form.keys():
+                response_dict[i] = form[i]
+                if i == 'CHECKSUMHASH':
+                    # 'CHECKSUMHASH' is coming from paytm and we will assign it to checksum variable to verify our paymant
+                    checksum = form[i]
+
+                if i == 'ORDERID':
+                    # we will get an order with id==ORDERID to turn isPaid=True when payment is successful
+                    order = Order.objects.get(id=form[i])
+
+            # we will verify the payment using our merchant key and the checksum that we are getting from Paytm request.POST
+            verify = Checksum.verify_checksum(response_dict, settings.PAYTM_MERCHANT_ID, checksum)
+
+            if verify:
+                if response_dict['RESPCODE'] == '01':
+                    # if the response code is 01 that means our transaction is successfull
+                    print('order successful')
+                    # after successfull payment we will make isPaid=True and will save the order
+                    order.isPaid = True
+                    order.save()
+                    # we will render a template to display the payment status
+                    return render(request, 'paytm/paymentstatus.html', {'response': response_dict})
+                else:
+                    print('order was not successful because' + response_dict['RESPMSG'])
+                    return render(request, 'paytm/paymentstatus.html', {'response': response_dict})   
+    
+
+         
 
     @action(detail=True, methods = ['post'])
     def return_request(self, request, pk=None):
