@@ -9,10 +9,12 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+
 from decouple import config
+import django_heroku
 import os
 from pathlib import Path
-import django_heroku
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,7 +81,6 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
-        #'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'venv/lib/site-packages/django/contrib/admin/templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

@@ -7,7 +7,7 @@ from accounts.models import Address
 from accounts.serializers import AddressSerializer
 
 
-class ShippingMethodSerializers(serializers.ModelSerializer):
+class ShippingMethodSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShippingMethod
         fields = [
@@ -19,8 +19,9 @@ class ShippingMethodSerializers(serializers.ModelSerializer):
             'minimum_delivery_days',
         ]
 
-class ShippingZoneSerializers(serializers.ModelSerializer):
-    Shipping_Method = ShippingMethodSerializers(many=True)
+
+class ShippingZoneSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = ShippingZone
         fields = [
@@ -28,13 +29,11 @@ class ShippingZoneSerializers(serializers.ModelSerializer):
             'countries',
             'default',
             'description',
-            'Shipping_Method',
         ]
 
 
-
-class StoreSerializers(serializers.ModelSerializer):
-    address = serializers.SerializerMethodField()
+class StoreSerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
     created_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
@@ -47,8 +46,3 @@ class StoreSerializers(serializers.ModelSerializer):
             'created_at',
             'shipping_zones'
         ]
-    def get_address(self, obj):
-        user = self.context['request'].user
-        address = Address.objects.get(user=user)
-        data = AddressSerializer(address).data
-        return data

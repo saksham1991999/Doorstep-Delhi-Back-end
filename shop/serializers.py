@@ -8,35 +8,58 @@ from .models import Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sa
 from accounts.models import Address
 from accounts.serializers import AddressSerializer
 
-class OrderSerializers(serializers.ModelSerializer):
+
+class OrderSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault)
     created = serializers.DateTimeField(read_only=True)
+
     class Meta:
         model = Order
         fields = [
             'id',
             'created',
-            'status', 
-            'user', 
-            'tracking_client_id', 
-            'billing_address', 
-            'shipping_address', 
-            'shipping_method', 
-            'shipping_price', 
-            'total_net_amount', 
+            'status',
+            'user',
+            'tracking_client_id',
+            'billing_address',
+            'shipping_address',
+            'shipping_method',
+            'shipping_price',
+            'total_net_amount',
             'undiscounted_amount',
             'voucher',
             'gift_cards',
             'display_gross_price',
             'customer_note',
         ]
-        read_only_fields = ('id','tracking_client_id',)        
+        read_only_fields = ('id','tracking_client_id',)
+
+    def invoices(self, obj):
+        return
+
+    def events(self, obj):
+        return
+
+    def products(self, obj):
+        return
+
 
 class OrderListSerializers(serializers.ModelSerializer):
-    pass
+
+    class Meta:
+        model = Order
+        fields = [
+            'id',
+            'created',
+            'status',
+            'tracking_client_id',
+            'shipping_method',
+            'total_net_amount',
+        ]
+        read_only_fields = ('id', 'tracking_client_id',)
 
 
-class OrderLineSerializers(serializers.ModelSerializer):
+class OrderLineSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderLine
         fields = [
@@ -48,11 +71,10 @@ class OrderLineSerializers(serializers.ModelSerializer):
         ]
 
 
-
-class OrderEventSerializers(serializers.ModelSerializer):
+class OrderEventSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault)
     date = serializers.DateTimeField(read_only=True)
-    
+
     class Meta:
         model = OrderEvent
         fields = [
@@ -67,37 +89,35 @@ class InvoiceSerializers(serializers.ModelSerializer):
     class Meta:
         model = Invoice
         fields = [
-            'order', 
-            'number', 
-            'created', 
-            'external_url', 
-            'invoice_file', 
+            'order',
+            'number',
+            'created',
+            'external_url',
+            'invoice_file',
         ]
 
 
 class GiftCardSerializers(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault)
     created = serializers.DateTimeField(read_only=True)
+
     class Meta:
         model = GiftCard
         fields = [
-            'code', 
-            'user', 
-            'created', 
-            'start_date', 
-            'end_date', 
-            'last_used_on', 
-            'is_active', 
-            'initial_balance_amount', 
-            'current_balance_amount', 
+            'code',
+            'user',
+            'created',
+            'start_date',
+            'end_date',
+            'last_used_on',
+            'is_active',
+            'initial_balance_amount',
+            'current_balance_amount',
         ]
-
-class GiftCardListSerializers(serializers.ModelSerializer):
-    pass
-
 
 
 class VoucherSerializers(serializers.ModelSerializer):
+
     class Meta:
         model = Voucher
         fields = [
@@ -117,10 +137,9 @@ class VoucherSerializers(serializers.ModelSerializer):
             'categories',
         ]
 
-class VoucherListSerializers(serializers.ModelSerializer):
-    pass
 
 class SaleSerializers(serializers.ModelSerializer):
+
     class Meta:
         model = Sale
         fields = [
@@ -130,7 +149,7 @@ class SaleSerializers(serializers.ModelSerializer):
             'categories',
             'collections',
             'start_date',
-            'end_date',            
+            'end_date',
         ]
 
 
@@ -186,8 +205,3 @@ class AddressInputSerializer(serializers.Serializer):
 
 class PaymentSerializer(serializers.Serializer):
     date = serializers.HiddenField(default=timezone.now)
-    
-
-
-
-    

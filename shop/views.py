@@ -6,25 +6,30 @@ from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated, I
 from django.db.models import Q
 from datetime import date, datetime
 
-from .serializers import ( OrderSerializers, OrderLineSerializers, OrderEventSerializers,
-                         InvoiceSerializers, GiftCardSerializers, VoucherSerializers,
-                         SaleSerializers, CouponInputSerializers)
-
+from .serializers import (OrderSerializer, OrderLineSerializer, OrderEventSerializer,
+                          InvoiceSerializers, GiftCardSerializers, VoucherSerializers,
+                          SaleSerializers, CouponInputSerializers)
 from .models import (Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sale)
+<<<<<<< HEAD
 from accounts.models import Address
 from payment.models import Payment, Transaction
 from .permissions import IsAdminOrReadOnly
 from . import checksum
 from django.conf import settings
+from .permissions import IsAdminOrReadOnly, IsOwnerOrAdmin, IsOwnerReadOnlyOrAdmin
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    serializer_class = OrderSerializers
-    permission_classes = [IsAdminOrReadOnly]
-    def get_queryset(self):
-        return Order.objects.get(user=self.request.user)
+    serializer_class = OrderSerializer
+    permission_classes = [IsOwnerReadOnlyOrAdmin]
 
-    @action(detail=True, methods=['post'])
+    def get_queryset(self):
+        orders = Order.objects.all()
+        if not self.request.user.is_superuser:
+            orders = orders.filter(user = self.request.user)
+        return orders
+
+    @action(detail=True, methods=['get'])
     def invoice(self, request, pk=None):
         order = self.get_object()
         order.total_net_price = order.shipping_price + order.undiscounted_total_net_amount
@@ -66,7 +71,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                     order.total_net_amount = order.total_net_amount - (order.total_net_amount*(voucher.value/100))
                 return order
 
-    
+
     @action(detail=True, methods = ['post'])
     def payment(self, request, pk=None):
         order = self.get_object()
@@ -74,7 +79,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         amount = order.total_net_amount
         name = user.full_name
         email = user.user.email
-        
+
         # object of payment.transaction and payment.Payment is to be created
 
         # we have to send the param_dict to the frontend
@@ -90,8 +95,8 @@ class OrderViewSet(viewsets.ModelViewSet):
             # 'CALLBACK_URL': '',
             # this is the url of handlepayment function, paytm will send a POST request to the fuction associated with this CALLBACK_URL
         }
-        
-            
+
+
         # create new checksum (unique hashed string) using our merchant key with every paytm payment
         param_dict['CHECKSUMHASH'] = Checksum.generate_checksum(param_dict, settings.PAYTM_MERCHANT_ID)
         # send the dictionary with all the credentials to the frontend
@@ -132,25 +137,33 @@ class OrderViewSet(viewsets.ModelViewSet):
                     return render(request, 'paytm/paymentstatus.html', {'response': response_dict})
                 else:
                     print('order was not successful because' + response_dict['RESPMSG'])
-                    return render(request, 'paytm/paymentstatus.html', {'response': response_dict})   
-    
+                    return render(request, 'paytm/paymentstatus.html', {'response': response_dict})
 
-         
+
+
 
     @action(detail=True, methods = ['post'])
     def return_request(self, request, pk=None):
         pass
-    
+
     @action(detail=True, methods=['post'])
     def payment_status(self, request, pk=None):
         pass
 
+    @action(detail=False, methods=['get'], permission_classes=[IsOwnerReadOnlyOrAdmin])
+    def cart(self, request):
+        cart = Order.objects.filter(user=self.request.user, status='draft')
+        if cart.exists():
+            cart = cart[0]
+        else:
+            cart = Order.objects.create(user=self.request.user, status="draft")
+        serializer = OrderSerializer(cart, many=False)
+        return serializer.data
 
 
-
-class OrderEventViewset(viewsets.ModelViewSet):
-    serializer_class = OrderEventSerializers
-    permission_classes = [IsAdminOrReadOnly]
+class OrderEventViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderEventSerializer
+    permission_classes = [IsOwnerReadOnlyOrAdmin]
     queryset = OrderEvent.objects.all()
 
 

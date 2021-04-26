@@ -1,24 +1,28 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from product.views import ProductAPIViewSet, CategoryViewset, ProductTypeViewset, VariationViewset, ProductViewset, CustomizationViewset
-from product.views import ProductImageViewset, VariantImageViewset, WholesaleVariantImageViewset, CollectionProductViewset, CollectionViewset
-from product.views import ProductVariantViewset, WholesaleProductVariantViewset
+from product.views import (
+    ProductViewSet,
+    CategoryViewSet,
+    ProductTypeViewSet,
+    VariationViewSet,
+    CustomizationViewSet,
+    ProductImageViewSet,
+    CollectionViewSet,
+    ProductVariantViewSet,
+    WholesaleProductVariantViewSet
+)
 
 router = DefaultRouter()
-router.register("products", ProductAPIViewSet, basename="products")
-router.register("categories", CategoryViewset, basename="categories")
-router.register("product_types", ProductTypeViewset, basename="product_type")
-router.register("variants", VariationViewset, basename="variants")
-router.register("products", ProductViewset, basename="products")
-router.register("customization", CustomizationViewset, basename = "customizations")
-router.register("product_image", ProductImageViewset, basename="product_image")
-router.register("variant_image", VariantImageViewset, basename="variant_image")
-router.register("wholesale_variant_image", WholesaleVariantImageViewset, basename="wholesale_variant_image")
-router.register("collection_product", CollectionProductViewset, basename="collection_product")
-router.register("collection", CollectionViewset, basename="collection")
-router.register("product_variants", ProductVariantViewset, basename="product_variants")
-router.register("wholesale_product_variants", WholesaleProductVariantViewset, basename="wholesale_product_variants")
+router.register("products", ProductViewSet, basename="product-detail")
+router.register("categories", CategoryViewSet, basename="category-detail")
+router.register("product_types", ProductTypeViewSet, basename="product_type-detail")
+router.register("variations", VariationViewSet, basename="variation-detail")
+router.register("customizations", CustomizationViewSet, basename = "customization-detail")
+router.register("product_image", ProductImageViewSet, basename="product_image-detail")
+router.register("collection", CollectionViewSet, basename="collection-detail")
+router.register("product_variants", ProductVariantViewSet, basename="product_variant-detail")
+router.register("wholesale_product_variants", WholesaleProductVariantViewSet, basename="wholesale_product_variant-detail")
 
 urlpatterns = [
     path("", include(router.urls)),

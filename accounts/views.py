@@ -1,57 +1,54 @@
-from django.shortcuts import render
-from .serializers import AddressSerializer, UserSerializer, ShippingAddressSerializer, BillingAddressSerializer
+from django.shortcuts import render, get_object_or_404, get_list_or_404
+from .serializers import AddressSerializer, UserSerializer
 from .models import Address, User
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from accounts.permissions import IsWebsiteOwnerorAdmin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import IsOwnerOrAdmin
 
 
-class PersonalAddressViewset(viewsets.ModelViewSet):
-    permission_classes = [IsWebsiteOwnerorAdmin]
+class AddressViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
 
     def get_queryset(self):
         addresses = Address.objects.all()
+        if not self.request.user.is_superuser:
+            addresses = addresses.filter(user=self.request.user)
         return addresses
 
-    @action(detail=False, methods=["get"])
-    def my_address(self, request, *args, **kwargs):
-        try:
-            my_addresses = Address.objects.filter(user=request.user)
-            # websites = Website.objects.exclude(user=request.user).exclude(id__in = surfed_websites)
-            serializer = AddressSerializer(my_addresses, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response(
-                "Error. You need to log in !", status=status.HTTP_400_BAD_REQUEST
-            )
 
-class UserViewset(viewsets.ModelViewSet):
-    permissions_classes = [IsWebsiteOwnerorAdmin]
+class UserViewSet(viewsets.ModelViewSet):
+    permissions_classes = [IsOwnerOrAdmin]
     serializer_class = UserSerializer
 
     def get_queryset(self):
         users = User.objects.all()
+        if not self.request.user.is_superuser:
+            users = self.request.user
         return users
-    
-    @action(detail=True, methods=["get"])
-    def shipping_addresses(self, request, *args, **kwargs):
-        try:
-            users = User.objects.filter(user = request.user)
-            serializer = ShippingAddressSerializer(users, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except:
-            return Response("Error. You need to log in !", status=status.HTTP_400_BAD_REQUEST)
-    
-    @action(detail=True, methods=["get"])
-    def billing_addresses(self, request, *args, **kwargs):
-        try:
-            users = User.objects.filter(user = request.user)
-            serializer = BillingAddressSerializer()(users, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+    @action(detail=True, methods=["get"], permissions_classes=[IsAuthenticated,])
+    def adrresses(self, request, *args, **kwargs):
+        addresses = get_list_or_404(Address, user=self.request.user)
+        serializer = AddressSerializer(addresses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except:
-            return Response("Error. You need to log in !", status=status.HTTP_400_BAD_REQUEST)
+    @action(detail=True, methods=["get"], permissions_classes=[IsAuthenticated,])
+    def default_shipping_address(self, request, *args, **kwargs):
+        address = request.user.default_shipping_address
+        if address:
+            serializer = AddressSerializer(address, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"Error": "You don't have a Default Shipping Address"}, status=status.HTTP_404_NOT_FOUND)
+    
+    @action(detail=True, methods=["get"], permissions_classes=[IsAuthenticated,])
+    def default_billing_address(self, request, *args, **kwargs):
+        address = request.user.default_billing_address
+        if address:
+            serializer = AddressSerializer(address, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"Error": "You don't have a Default Shipping Address"}, status=status.HTTP_404_NOT_FOUND)
+
 

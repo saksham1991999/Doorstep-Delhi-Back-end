@@ -1,6 +1,6 @@
 from django.test import TestCase
 from accounts.models import User, Address
-# Create your tests here.
+
 
 class UserTestCase(TestCase):
     def setUp(self):
@@ -10,6 +10,7 @@ class UserTestCase(TestCase):
         post = User.objects.get(id=4)
         expected_object_name = f'{post.id}'
         self.assertEqual(expected_object_name, '4')
+
 
 class AddressTestCase(TestCase):
     def setUp(self):
