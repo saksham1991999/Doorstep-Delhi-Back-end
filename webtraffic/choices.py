@@ -5,13 +5,17 @@ website_hit_type_choices = (
     ("D", "Desktop Application"),
 )
 
-
 traffic_source_choices = (
     ("D", "Direct"),
     ("R", "Referer"),
     ("U", "User-Agent"),
 )
 
+website_status_choices = (
+    ("A", "Active"),
+    ("I", "Inactive"),
+    ("R", "Rejected"),
+)
 
 website_category_choices = (
     ("S", "Safe"),

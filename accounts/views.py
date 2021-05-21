@@ -18,6 +18,22 @@ class AddressViewSet(viewsets.ModelViewSet):
             addresses = addresses.filter(user=self.request.user)
         return addresses
 
+    @action(detail=True, methods=["post"], permission_classes=[IsOwnerOrAdmin, ], name="Set Default Shipping Address")
+    def set_default_shipping(self, request, *args, **kwargs):
+        address = self.get_object()
+        user = address.user
+        user.default_shipping_address = address
+        user.save()
+        return Response({"status": "Default Shipping Address Updated Successfully"}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"], permission_classes=[IsOwnerOrAdmin, ], name="Set Default Billing Address")
+    def set_default_shipping(self, request, *args, **kwargs):
+        address = self.get_object()
+        user = address.user
+        user.default_billing_address = address
+        user.save()
+        return Response({"status": "Default Billing Address Updated Successfully"}, status=status.HTTP_200_OK)
+
 
 class UserViewSet(viewsets.ModelViewSet):
     permissions_classes = [IsOwnerOrAdmin]
@@ -29,13 +45,13 @@ class UserViewSet(viewsets.ModelViewSet):
             users = self.request.user
         return users
 
-    @action(detail=True, methods=["get"], permissions_classes=[IsAuthenticated,])
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated,], name="User Address")
     def adrresses(self, request, *args, **kwargs):
         addresses = get_list_or_404(Address, user=self.request.user)
         serializer = AddressSerializer(addresses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["get"], permissions_classes=[IsAuthenticated,])
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated,], name="User Default Shipping Address")
     def default_shipping_address(self, request, *args, **kwargs):
         address = request.user.default_shipping_address
         if address:
@@ -43,7 +59,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"Error": "You don't have a Default Shipping Address"}, status=status.HTTP_404_NOT_FOUND)
     
-    @action(detail=True, methods=["get"], permissions_classes=[IsAuthenticated,])
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated,], name="User Default Billing Address")
     def default_billing_address(self, request, *args, **kwargs):
         address = request.user.default_billing_address
         if address:

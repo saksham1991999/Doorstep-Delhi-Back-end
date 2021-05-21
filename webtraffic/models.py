@@ -6,6 +6,7 @@ from webtraffic.choices import (
     website_category_choices,
     traffic_source_choices,
     website_hit_type_choices,
+    website_status_choices,
 )
 
 
@@ -24,7 +25,7 @@ class Website(models.Model):
     category = models.CharField(max_length=5, choices=website_category_choices)
     daily_hits = models.PositiveSmallIntegerField()
     total_hits = models.PositiveIntegerField()
-    status = models.CharField(max_length=5)
+    status = models.CharField(max_length=5, choices=website_status_choices)
     traffic_source = models.CharField(max_length=5, choices=traffic_source_choices)
     high_quality = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -36,12 +37,20 @@ class Website(models.Model):
 
     cost_per_visit = models.PositiveIntegerField()
 
+    def __str__(self):
+        if self.name:
+            return self.name
+        return self.url
+
 
 class WebsiteHit(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.SET_NULL, null=True)
     website = models.ForeignKey("webtraffic.Website", on_delete=models.CASCADE)
     type = models.CharField(max_length=1, choices=website_hit_type_choices)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.website)
 
 
 @receiver(pre_save, sender=Website)

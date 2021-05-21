@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     "versatileimagefield",
     "nested_admin",
     'drf_yasg',
+    "django_extensions",
+    'django_seed',
 
     "accounts",
     "webtraffic",
@@ -61,7 +63,7 @@ INSTALLED_APPS = [
     "shop",
     "wishlist",
     "payment",
-    "django_extensions",
+    'core'
 ]
 
 MIDDLEWARE = [
@@ -73,6 +75,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "core.middleware.LogMiddleware",
 ]
 
 ROOT_URLCONF = "doorstepdelhi.urls"
@@ -159,6 +162,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 SITE_ID = 1
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DEFAULT_DECIMAL_PLACES = 3
 DEFAULT_MAX_DIGITS = 12
 

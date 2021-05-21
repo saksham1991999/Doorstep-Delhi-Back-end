@@ -3,6 +3,7 @@ import nested_admin
 
 from product.models import (
     Category,
+    SubCategory,
     ProductType,
     Variation,
     Customization,
@@ -112,9 +113,18 @@ class ProductAdmin(nested_admin.NestedModelAdmin):
                     ]
 
 
-class CategoryAdmin(nested_admin.NestedModelAdmin):
+class SubCategoryInline(nested_admin.NestedTabularInline):
+    model = SubCategory
+    inlines = [
+        ProductInline
+    ]
+    extra = 0
+
+
+class SubCategoryAdmin(nested_admin.NestedModelAdmin):
     inlines = [ProductInline]
     list_display = [
+                    'id',
                     'name',
                     ]
     list_display_links = [
@@ -124,6 +134,19 @@ class CategoryAdmin(nested_admin.NestedModelAdmin):
                     'name',
                     ]
 
+
+class CategoryAdmin(nested_admin.NestedModelAdmin):
+    inlines = [SubCategoryInline, ProductInline]
+    list_display = [
+                    'id',
+                    'name',
+                    ]
+    list_display_links = [
+                    'name',
+                    ]
+    search_fields = [
+                    'name',
+                    ]
 
 
 class ProductTypeAdmin(nested_admin.NestedModelAdmin):
@@ -184,6 +207,7 @@ class CustomizationAdmin(nested_admin.NestedModelAdmin):
 
 
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(SubCategory, SubCategoryAdmin)
 admin.site.register(Customization, CustomizationAdmin)
 admin.site.register(Variation, VariationAdmin)
 admin.site.register(ProductType, ProductTypeAdmin)

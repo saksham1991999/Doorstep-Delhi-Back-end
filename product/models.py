@@ -13,6 +13,17 @@ class Category(models.Model):
         verbose_name_plural = "Categories"
 
 
+class SubCategory(models.Model):
+    category = models.ForeignKey("product.Category", on_delete=models.PROTECT)
+    name = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Sub-Categories"
+
+
 class ProductType(models.Model):
     name = models.CharField(max_length=250)
     has_variants = models.BooleanField(default=True)
@@ -49,6 +60,13 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     category = models.ForeignKey(
         Category,
+        related_name="products",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    sub_category = models.ForeignKey(
+        "product.SubCategory",
         related_name="products",
         on_delete=models.SET_NULL,
         null=True,

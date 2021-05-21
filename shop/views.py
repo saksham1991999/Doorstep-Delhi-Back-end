@@ -10,7 +10,6 @@ from .serializers import (OrderSerializer, OrderLineSerializer, OrderEventSerial
                           InvoiceSerializers, GiftCardSerializers, VoucherSerializers,
                           SaleSerializers, CouponInputSerializers)
 from .models import (Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sale)
-<<<<<<< HEAD
 from accounts.models import Address
 from payment.models import Payment, Transaction
 from .permissions import IsAdminOrReadOnly

@@ -20,6 +20,7 @@ class UserAdmin(nested_admin.NestedModelAdmin):
     ]
     ordering = ['first_name']
     list_display = [
+                    'id',
                     'username',
                     'first_name',
                     'email',
