@@ -5,7 +5,7 @@ order_status_choices = [
     ("partially fulfilled", "Partially fulfilled"),
     ("partially returned", "Partially returned"),
     ("returned", "Returned"),
-    ("fullfulled", "Fulfilled"),
+    ("fulfilled", "Fulfilled"),
     ("canceled", "Canceled"),
 ]
 
@@ -51,6 +51,9 @@ order_event_type_choices = [
     ("fulfillment_replaced", "Some items were replaced"),
     ("tracking_updated", "The fulfillment's tracking code was updated"),
     ("note_added", "A note was added to the order"),
+    ("reaching_pickup_point", "Order is reaching Pickup Point"),
+    ("reached_pickup_point", "Order has reached Pickup Point"),
+    ("picked_up_from_pickup_point", "Order has been picked up from Pickup Point"),
     ("other", "An unknown order event containing a message"),
 ]
 

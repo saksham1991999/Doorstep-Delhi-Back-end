@@ -24,3 +24,9 @@ class ShippingMethodViewSet(viewsets.ModelViewSet):
     queryset = ShippingMethod.objects.all()
 
 
+class ShippingMethodViewSet(viewsets.ModelViewSet):
+    serializer_class = ShippingMethodSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    queryset = ShippingMethod.objects.all()
+
+

@@ -65,6 +65,7 @@ def save_order(sender, instance, **kwargs):
     clientID = instance.created.strftime("DRSDL%Y%m%d%H") + str(instance.id)
     instance.tracking_client_id = clientID
 
+
 post_save.connect(save_order, sender=Order)
 
 

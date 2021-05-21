@@ -13,6 +13,20 @@ class Store(models.Model):
     shipping_zones = models.ManyToManyField("store.ShippingZone")
 
 
+class PickupPoint(models.Model):
+    name = models.CharField(max_length=128)
+    email = models.EmailField(blank=True, null=True)
+    address = models.ForeignKey(
+        "accounts.Address", on_delete=models.PROTECT
+    )
+    contact_user = models.ForeignKey("accounts.User", on_delete=models.PROTECT)
+    contact_user_contact = models.CharField(max_length=15)
+    contact_user_aadhaar = models.CharField(max_length=12)
+    opening_time = models.TimeField()
+    closing_time = models.TimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class ShippingZone(models.Model):
     name = models.CharField(max_length=100)
     countries = CountryField(multiple=True, default=[], blank=True)
