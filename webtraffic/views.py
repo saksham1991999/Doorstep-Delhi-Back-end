@@ -8,6 +8,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
 )
+from django.db import transaction
 from django.db.models import Q
 import datetime
 
@@ -18,7 +19,7 @@ from .permissions import IsWebsiteOwner
 
 class WebsiteAPIViewSet(viewsets.ModelViewSet):
     serializer_class = WebsiteSerializer
-    permission_classes = [IsAuthenticated, IsWebsiteOwner]
+    permission_classes = [IsWebsiteOwner]
 
     def get_queryset(self):
         websites = Website.objects.filter(user=self.request.user)
@@ -49,7 +50,7 @@ class WebsiteAPIViewSet(viewsets.ModelViewSet):
 
         return websites
 
-    @action(detail=False, methods=["get"])
+    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated,])
     def surf_websites(self, request, *args, **kwargs):
         surfed_websites = WebsiteHit.objects.filter(
             user=request.user,
@@ -61,7 +62,8 @@ class WebsiteAPIViewSet(viewsets.ModelViewSet):
         serializer = WebsiteSerializer(websites, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"])
+    @transaction.atomic
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated,])
     def hit(self, request, pk, *args, **kwargs):
         try:
             website = self.get_object()

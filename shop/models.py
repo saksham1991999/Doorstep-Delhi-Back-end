@@ -28,6 +28,9 @@ class Order(models.Model):
     shipping_address = models.ForeignKey(
         "accounts.Address", related_name="+", editable=False, null=True, on_delete=models.SET_NULL
     )
+    pickup_point = models.ForeignKey(
+        'store.PickupPoint', related_name="orders", null=True, on_delete=models.SET_NULL
+    )
     shipping_method = models.ForeignKey(
         "store.ShippingMethod",
         blank=True,
@@ -79,6 +82,13 @@ class OrderLine(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+    )
+    wholesale_variant = models.ForeignKey(
+        "product.WholesaleProductVariant",
+        related_name='order_lines',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
     )
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
     quantity_fulfilled = models.IntegerField(

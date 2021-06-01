@@ -46,3 +46,38 @@ class StoreSerializer(serializers.ModelSerializer):
             'created_at',
             'shipping_zones'
         ]
+
+
+class PickupPointListSerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
+    created_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = Store
+        fields = [
+            'name',
+            'email',
+            'user',
+            'address',
+            'opening_time',
+            'closing_time',
+            'created_at',
+        ]
+
+
+class PickupPointSerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
+    created_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = Store
+        fields = [
+            'name',
+            'email',
+            'user',
+            'user_aadhaar',
+            'address',
+            'opening_time',
+            'closing_time',
+            'created_at',
+        ]

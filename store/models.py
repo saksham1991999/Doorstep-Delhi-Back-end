@@ -19,9 +19,8 @@ class PickupPoint(models.Model):
     address = models.ForeignKey(
         "accounts.Address", on_delete=models.PROTECT
     )
-    contact_user = models.ForeignKey("accounts.User", on_delete=models.PROTECT)
-    contact_user_contact = models.CharField(max_length=15)
-    contact_user_aadhaar = models.CharField(max_length=12)
+    user = models.ForeignKey("accounts.User", on_delete=models.PROTECT)
+    user_aadhaar = models.CharField(max_length=12)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
     created_at = models.DateTimeField(auto_now_add=True)

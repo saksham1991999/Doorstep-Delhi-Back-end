@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     "nested_admin",
     'drf_yasg',
     "django_extensions",
-    'django_seed',
+    'channels',
 
     "accounts",
     "webtraffic",
@@ -97,7 +97,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "doorstepdelhi.wsgi.application"
-
+ASGI_APPLICATION = 'doorstepdelhi.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

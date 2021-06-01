@@ -74,3 +74,5 @@ wcwidth==0.2.5
 whitenoise==5.2.0
 zipp==3.4.0
 Faker
+channels
+channels_redis
