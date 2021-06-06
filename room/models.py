@@ -107,12 +107,15 @@ class RoomOrderLine(models.Model):
 
 
 class UserOrderLine(models.Model):
+    user = models.ForeignKey('accounts.User', null=True, on_delete=models.SET_NULL)
     product = models.ForeignKey('room.RoomOrderLine', related_name='users_quatity',on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
     quantity_fulfilled = models.IntegerField(
         validators=[MinValueValidator(0)], default=0
     )
     updated_at = models.DateTimeField(auto_now=True)
+    customization = models.TextField(null=True, blank=True)
+    file = models.FileField(null=True, blank=True)
 
 
 class OrderEvent(models.Model):
