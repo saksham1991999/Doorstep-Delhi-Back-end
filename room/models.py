@@ -27,7 +27,7 @@ class RoomUser(models.Model):
     room = models.ForeignKey("room.Room", on_delete=models.CASCADE)
     role = models.CharField(max_length=2, choices=user_role_choices)
     joined_at = models.DateTimeField(auto_now_add=True)
-    left_t = models.DateTimeField(blank=True, null=True)
+    left_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         unique_together = ('user', 'room')
@@ -53,7 +53,7 @@ class WishlistProductVote(models.Model):
 
 
 class RoomOrder(models.Model):
-    room = models.ForeignKey("room.Room", on_delete=models.SET_NULL)
+    room = models.ForeignKey("room.Room", on_delete=models.SET_NULL, null=True)
     created = models.DateTimeField(default=now, editable=False)
     status = models.CharField(
         max_length=32, default="unfulfilled", choices=order_status_choices)
@@ -65,13 +65,13 @@ class RoomOrder(models.Model):
         "accounts.Address", related_name="+", editable=False, null=True, on_delete=models.SET_NULL
     )
     pickup_point = models.ForeignKey(
-        'store.PickupPoint', related_name="orders", null=True, on_delete=models.SET_NULL
+        'store.PickupPoint', related_name="pickup_point", null=True, on_delete=models.SET_NULL
     )
     shipping_method = models.ForeignKey(
         "store.ShippingMethod",
         blank=True,
         null=True,
-        related_name="orders",
+        related_name="shipping_method",
         on_delete=models.SET_NULL,
     )
     shipping_price = models.DecimalField(
@@ -98,7 +98,7 @@ class RoomOrderLine(models.Model):
     )
     variant = models.ForeignKey(
         "product.WholesaleProductVariant",
-        related_name="order_lines",
+        related_name="order_line_wholesale_product_variant",
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
@@ -141,3 +141,13 @@ class Invoice(models.Model):
     created = models.DateTimeField(null=True)
     external_url = models.URLField(null=True, max_length=2048)
     invoice_file = models.FileField(upload_to="invoices")
+
+class Message(models.Model):
+    file_field = models.FileField(upload_to='media/Message', blank=True)
+    message_text = models.CharField(max_length=1000, blank=True)
+    user = models.ForeignKey('room.RoomUser', on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+    room = models.ForeignKey('room.Room', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.__str__() +" : "+ self.message_text

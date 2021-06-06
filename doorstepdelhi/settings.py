@@ -63,7 +63,8 @@ INSTALLED_APPS = [
     "shop",
     "wishlist",
     "payment",
-    'core'
+    'core',
+    "room",
 ]
 
 MIDDLEWARE = [
