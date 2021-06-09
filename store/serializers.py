@@ -25,6 +25,7 @@ class ShippingZoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShippingZone
         fields = [
+            'id',
             'name',
             'countries',
             'default',
