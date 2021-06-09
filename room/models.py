@@ -96,6 +96,7 @@ class RoomOrderLine(models.Model):
     order = models.ForeignKey(
         'room.RoomOrder', related_name="lines", editable=False, on_delete=models.CASCADE, null=True
     )
+    user = models.ForeignKey("accounts.User", on_delete=models.SET_NULL, null=True)
     variant = models.ForeignKey(
         "product.WholesaleProductVariant",
         related_name="order_line_wholesale_product_variant",
@@ -103,12 +104,14 @@ class RoomOrderLine(models.Model):
         blank=True,
         null=True,
     )
+    status = models.CharField(
+        max_length=32, default="unfulfilled", choices=order_status_choices)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class UserOrderLine(models.Model):
     user = models.ForeignKey('accounts.User', null=True, on_delete=models.SET_NULL)
-    product = models.ForeignKey('room.RoomOrderLine', related_name='users_quatity',on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey('room.RoomOrderLine', related_name='users_quatity', on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
     quantity_fulfilled = models.IntegerField(
         validators=[MinValueValidator(0)], default=0

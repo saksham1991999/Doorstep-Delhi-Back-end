@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 
 from .serializers import StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer
 from .models import Store, ShippingZone, ShippingMethod, PickupPoint
-from .permissions import IsAdminOrReadOnly, IsPickupPointOwner
+from .permissions import IsAdminOrReadOnly, IsPickupPointOwner, IsStoreOwner
 from shop.models import Order
 
 
@@ -12,6 +12,27 @@ class StoreViewSet(viewsets.ModelViewSet):
     serializer_class = StoreSerializer
     permission_classes = [IsAdminOrReadOnly]
     queryset = Store.objects.all()
+
+    @action(detail=True, methods=["get"], permission_classes=[IsStoreOwner, ])
+    def order_history(self, request, pk, *args, **kwargs):
+        store = self.get_object()
+        orders = RoomOrderLine.objects.filter(status__in = ("canceled", "fulfilled"), variant__store = store)
+        data = RoomOrderLineSerializer(orders, many=True)
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"], permission_classes=[IsStoreOwner, ])
+    def returns(self, request, pk, *args, **kwargs):
+        store = self.get_object()
+        orders = RoomOrderLine.objects.filter(status__in = ("returned", "partially returned"), variant__store=store)
+        data = RoomOrderLineSerializer(orders, many=True)
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"], permission_classes=[IsStoreOwner, ])
+    def new_orders(self, request, pk, *args, **kwargs):
+        store = self.get_object()
+        orders = RoomOrderLine.objects.filter(status__in=("unfulfilled", "partially fulfilled"), variant__store=store)
+        data = RoomOrderLineSerializer(orders, many=True)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class ShippingZoneViewSet(viewsets.ModelViewSet):
