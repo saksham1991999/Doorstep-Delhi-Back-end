@@ -145,6 +145,7 @@ class Invoice(models.Model):
     external_url = models.URLField(null=True, max_length=2048)
     invoice_file = models.FileField(upload_to="invoices")
 
+
 class Message(models.Model):
     file_field = models.FileField(upload_to='media/Message', blank=True)
     message_text = models.CharField(max_length=1000, blank=True)
@@ -153,4 +154,4 @@ class Message(models.Model):
     room = models.ForeignKey('room.Room', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.__str__() +" : "+ self.message_text
+        return self.user.__str__() + " : " + self.message_text

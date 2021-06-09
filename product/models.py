@@ -181,6 +181,7 @@ class ProductReview(models.Model):
     product = models.ForeignKey("product.Product", on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField()
     review = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class ProductReviewFile(models.Model):
