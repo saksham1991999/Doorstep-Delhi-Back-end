@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 from datetime import datetime
-
 from .models import Store, ShippingZone, ShippingMethod
 from accounts.models import Address
-from accounts.serializers import AddressSerializer
+from accounts.serializers import AddressSerializer,AddressSerializer
+from accounts.models import Address, User
 
 
 class ShippingMethodSerializer(serializers.ModelSerializer):
@@ -47,6 +47,18 @@ class StoreSerializer(serializers.ModelSerializer):
             'shipping_zones'
         ]
 
+class FullRegisterStoreSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = Store 
+        fields = [
+            'name',
+            'email',
+            'users',
+            'created_at',
+            'shipping_zones'
+        ]
 
 class PickupPointListSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
