@@ -13,6 +13,15 @@ class Store(models.Model):
     shipping_zones = models.ManyToManyField("store.ShippingZone")
 
 
+class BankAccount(models.Model):
+    store = models.ForeignKey("store.Store", on_delete=models.CASCADE)
+    holder_name =  models.CharField(max_length=128)
+    account_number =  models.CharField(max_length=18)
+    ifsc =  models.CharField(max_length=12)
+    account_type = models.CharField(max_length=1, choices=(("S", "Savings"), ("C", "Current")))
+    bank_name = models.CharField(max_length=128)
+
+
 class PickupPoint(models.Model):
     name = models.CharField(max_length=128)
     email = models.EmailField(blank=True, null=True)
