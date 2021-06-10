@@ -19,7 +19,8 @@ class RoomSerializer(serializers.ModelSerializer):
             "description",
             "image",
             "created_at",
-            "deleted_at"
+            "deleted_at",
+            "users",
         ]
 
 class RoomListSerializer(serializers.ModelSerializer):

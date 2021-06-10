@@ -153,6 +153,7 @@ def add_products(n):
         add_product_images(product)
         add_product_variant(product)
         add_product_reviews(product)
+        add_wholesale_variant(product)  #udit
 
 
 def add_product_images(product):
@@ -177,7 +178,7 @@ def add_product_variant(product):
             product=product,
             variant=variations[fake.random_int(max=variations.count()-1)],
             track_inventory=fake.pybool(),
-            product_qty=fake.random_int(),
+            product_qty=fake.random_int(max =1000),
             price=fake.random_number(),
             discounted_price=fake.random_number(),
         )
@@ -202,23 +203,23 @@ def add_wholesale_variant(product):
     for _ in range(fake.random_digit()):
         wholesale_variant = WholesaleProductVariant.objects.create(
             name=fake.word(),
-            store=stores[fake.random_int(max=stores.count()-1)],
+            store=stores[fake.random_int(max = stores.count()-1)],
             product=product,
-            variant=variants[fake.random_int(variants.count()-1)],
-            min_qty=fake.random_int(),
-            per_item_qty=fake.random_int(),
-            pack_size=fake.random_int(),
-            price=fake.random_int(),
-            discounted_price=fake.random_int(),
+            variant=variants[fake.random_int(max =variants.count()-1)],
+            min_qty=fake.random_int(max=1000),
+            per_item_qty=fake.random_int(max = 100),
+            pack_size=fake.random_int(max = 100 ),
+            price=fake.random_int(max = 10000),
+            discounted_price=fake.random_int(max = 10000),
         )
         add_wholesale_variant_images(wholesale_variant)
 
 
 def add_wholesale_variant_images(variant):
     images = ProductImage.objects.filter(product=variant.product)
-    WholesaleVariantImage.objects.bulk_create(
+    WholesaleVariantImage.objects.bulk_create(      #udit
         [
-            VariantImage(
+            WholesaleVariantImage(
                 variant=variant,
                 image=images[fake.random_int(max=images.count() - 1)]
             )

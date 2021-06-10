@@ -1,3 +1,4 @@
+from shop.serializers import OrderLineSerializer
 from django.shortcuts import render
 from rest_framework import viewsets, generics, views, status
 from rest_framework.decorators import action
@@ -8,6 +9,8 @@ from .models import Store, ShippingZone, ShippingMethod, PickupPoint, BankAccoun
 from .permissions import IsAdminOrReadOnly, IsPickupPointOwner, IsStoreOwner
 
 from shop.models import Order
+from room.models import RoomOrderLine
+from room.serializers import RoomOrderLineSerializer
 from accounts.models import Address, User
 from accounts.serializers import FullUserSerializer, AddressSerializer, FullAddressSerializer
 
@@ -20,7 +23,7 @@ class StoreViewSet(viewsets.ModelViewSet):
     def order_history(self, request, pk, *args, **kwargs):
         store = self.get_object()
         orders = RoomOrderLine.objects.filter(status__in = ("canceled", "fulfilled"), variant__store = store)
-        data = RoomOrderLineSerializer(orders, many=True)
+        data = OrderLineSerializer(orders, many=True)
         return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"], permission_classes=[IsStoreOwner, ])

@@ -12,6 +12,9 @@ class Store(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     shipping_zones = models.ManyToManyField("store.ShippingZone")
 
+    def __str__(self):  #udit
+        return self.name
+
 
 class BankAccount(models.Model):
     store = models.ForeignKey("store.Store", on_delete=models.CASCADE)

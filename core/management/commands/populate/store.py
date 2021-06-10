@@ -7,7 +7,7 @@ fake = Faker()
 Faker.seed(999)
 
 
-def populate():
+def populate(n):
     add_stores(30)
     add_shipping_zones(10)
     add_shipping_method(10)

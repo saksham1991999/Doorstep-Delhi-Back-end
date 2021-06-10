@@ -14,13 +14,17 @@ class Room(models.Model):
     image = models.ImageField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
+    users = models.ManyToManyField("accounts.User", through="room.RoomUser")
+    def __str__(self):
+        return self.name
 
 
 user_role_choices = (
     ("A", "Admin"),
     ("U", "User"),
 )
-
+    
+    
 
 class RoomUser(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
@@ -28,9 +32,12 @@ class RoomUser(models.Model):
     role = models.CharField(max_length=2, choices=user_role_choices)
     joined_at = models.DateTimeField(auto_now_add=True)
     left_at = models.DateTimeField(blank=True, null=True)
+    
 
     class Meta:
         unique_together = ('user', 'room')
+    def __str__(self):
+        return self.room.name
 
 
 class RoomWishlistProduct(models.Model):
@@ -40,6 +47,9 @@ class RoomWishlistProduct(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     votes = models.PositiveSmallIntegerField(default=0)
 
+    def __str__(self):
+        return self.wholesale_variant.name
+
     class Meta:
         unique_together = ("room", "wholesale_variant")
 
@@ -48,8 +58,14 @@ class WishlistProductVote(models.Model):
     product = models.ForeignKey('room.RoomWishlistProduct', on_delete=models.CASCADE)
     user = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.product.wholesale_variant.name
+
     class Meta:
         unique_together = ("product", "user")
+    
+    
+
 
 
 class RoomOrder(models.Model):

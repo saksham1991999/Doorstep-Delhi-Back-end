@@ -10,6 +10,7 @@ from core.management.commands.populate import (
     products,
     store,
     webtraffic,
+    room,
 )
 
 
@@ -26,9 +27,11 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **kwargs):
         total = kwargs['total']
-
+        
         accounts.populate_users(total)
+        store.populate(total)
         webtraffic.populate(total)
         products.populate(total)
 
-        store.populate()
+       
+        room.populate(total)
