@@ -78,3 +78,4 @@ channels
 channels_redis
 jet-django
 pycryptodome
+django-3-jet

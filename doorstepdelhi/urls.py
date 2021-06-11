@@ -36,8 +36,10 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('jet/', include('jet.urls', 'jet')),
+    path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('admin/', admin.site.urls),
-    path('jet_api/', include('jet_django.urls')),
+    # path('jet_api/', include('jet_django.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('rest-auth/', include('rest_auth.urls')),
     path('rest-auth/registration/', include('rest_auth.registration.urls')),

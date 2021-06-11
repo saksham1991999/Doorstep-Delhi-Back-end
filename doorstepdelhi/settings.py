@@ -35,6 +35,8 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
+    'jet.dashboard',
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,7 +57,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     "django_extensions",
     'channels',
-    'jet_django',
+    # 'jet_django',
 
     "accounts",
     "webtraffic",
