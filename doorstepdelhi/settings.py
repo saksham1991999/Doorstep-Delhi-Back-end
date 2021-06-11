@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     "django_extensions",
     'channels',
+    'jet_django',
 
     "accounts",
     "webtraffic",
@@ -266,6 +267,8 @@ CACHES = {
 
 django_heroku.settings(locals())
 
+JET_PROJECT = 'doorstepdelhi'
+JET_TOKEN = '19476cee-7551-4406-a356-d02f6ca3520a'
 
 PAYTM_MERCHANT_ID = config("PAYTM_MERCHANT_ID")
 PAYTM_SECRET_KEY = config("PAYTM_SECRET_KEY")

@@ -76,3 +76,5 @@ zipp==3.4.0
 Faker
 channels
 channels_redis
+python-magic-bin
+jet-django
