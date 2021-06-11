@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 from product.models import (
     Category,
+    SubCategory,
     ProductType,
     Variation,
     Customization,
@@ -14,7 +15,7 @@ from product.models import (
     CollectionProduct,
     Collection,
     ProductReview,
-ProductReviewFile
+    ProductReviewFile
 )
 from store.serializers import StoreSerializer
 
@@ -45,8 +46,19 @@ class ProductListSerilaizer(serializers.ModelSerializer):
         return images
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class SubCategorySerializer(serializers.ModelSerializer):
     products = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = SubCategory
+        fields = [
+            "id",
+            "name",
+        ]
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    sub_categories = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Category
@@ -55,9 +67,9 @@ class CategorySerializer(serializers.ModelSerializer):
             "name",
         ]
 
-    def get_products(self, obj):
-        products = Product.objects.filter(category=obj)
-        serializer = ProductListSerilaizer(products, many=True)
+    def get_sub_categories(self, obj):
+        sub_categories = SubCategory.objects.filter(category=obj)
+        serializer = SubCategorySerializer(sub_categories, many=True)
         return serializer.data
 
 

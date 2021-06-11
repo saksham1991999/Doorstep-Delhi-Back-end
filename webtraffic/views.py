@@ -50,6 +50,45 @@ class WebsiteAPIViewSet(viewsets.ModelViewSet):
 
         return websites
 
+    @action(detail=False, methods=["get"], permission_classes=[IsWebsiteOwner, ])
+    def pause(self, request, pk, *args, **kwargs):
+        website = self.get_object()
+        website.status = "I"
+        website.save()
+        return Response({"Success":"Website Paused"})
+
+    @action(detail=False, methods=["get"], permission_classes=[IsWebsiteOwner, ])
+    def pause_websites(self, request, *args, **kwargs):
+        websites = request.data['websites']
+        websites = list(map(int, websites.strip().strip(",").split(",")))
+        websites = Website.objects.filter(id__in=websites, user=request.user)
+        websites.update(status="I")
+        return Response({"Success": "Website Paused"})
+
+    @action(detail=False, methods=["get"], permission_classes=[IsWebsiteOwner, ])
+    def unpause_websites(self, request, *args, **kwargs):
+        websites = request.data['websites']
+        websites = list(map(int, websites.strip().strip(",").split(",")))
+        websites = Website.objects.filter(id__in=websites, user=request.user)
+        websites.update(status="A")
+        return Response({"Success": "Website Paused"})
+
+    @action(detail=False, methods=["get"], permission_classes=[IsWebsiteOwner, ])
+    def delete_websites(self, request, *args, **kwargs):
+        websites = request.data['websites']
+        websites = list(map(int, websites.strip().strip(",").split(",")))
+        websites = Website.objects.filter(id__in=websites, user=request.user)
+        websites.update(status="I")
+        return Response({"Success": "Website UnPaused"})
+
+    @action(detail=False, methods=["get"], permission_classes=[IsWebsiteOwner, ])
+    def remove_websites(self, request, *args, **kwargs):
+        websites = request.data['websites']
+        websites = list(map(int, websites.strip().strip(",").split(",")))
+        websites = Website.objects.filter(id__in=websites, user=request.user)
+        websites.delete()
+        return Response({"Success": "Website Deleted"})
+
     @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated,])
     def surf_websites(self, request, *args, **kwargs):
         surfed_websites = WebsiteHit.objects.filter(

@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -9,8 +11,27 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 )
 from django.db.models import Q
-import datetime
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie, vary_on_headers
 
+from product.models import (
+    Category,
+    SubCategory,
+    ProductType,
+    Variation,
+    Customization,
+    Product,
+    ProductVariant,
+    WholesaleProductVariant,
+    ProductImage,
+    VariantImage,
+    WholesaleVariantImage,
+    ProductReview,
+    ProductReviewFile,
+    CollectionProduct,
+    Collection,
+)
 from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
 from product.serializers import *  # """ NEED TO CHANGE ASAP """
 from wishlist.models import Wishlist, WishlistItem
@@ -25,11 +46,31 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Category.objects.all()
 
+    @method_decorator(cache_page(60 * 60 * 24))
+    def list(self, request):
+        queryset = self.queryset
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    @method_decorator(cache_page(60 * 60 * 24))
+    @action(detail=True, methods=['get'], name='Sub-Categories')
+    def set_password(self, request, pk=None):
+        category = self.get_object()
+        sub_categories = SubCategory.objects.filter(category=category)
+        serializer = SubCategorySerializer(sub_categories, many=True)
+        return Response(serializer.data)
+
 
 class ProductTypeViewSet(viewsets.ModelViewSet):
     serializer_class = ProductTypeSerializer
     permission_classes = [IsAdminOrReadOnly]
     queryset = ProductType.objects.all()
+
+    @method_decorator(cache_page(60 * 60 * 24))
+    def list(self, request):
+        queryset = self.queryset
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
 
 class VariationViewSet(viewsets.ModelViewSet):
@@ -37,11 +78,23 @@ class VariationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Variation.objects.all()
 
+    @method_decorator(cache_page(60 * 60 * 24))
+    def list(self, request):
+        queryset = self.queryset
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
 
 class CustomizationViewSet(viewsets.ModelViewSet):
     serializer_class = CustomizationSerializer
     permission_classes = [IsAdminOrReadOnly]
     queryset = Customization.objects.all()
+
+    @method_decorator(cache_page(60 * 60 * 24))
+    def list(self, request):
+        queryset = self.queryset
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
 
 class CollectionViewSet(viewsets.ModelViewSet):
@@ -49,6 +102,13 @@ class CollectionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Collection.objects.all()
 
+    @method_decorator(cache_page(60 * 60 * 24))
+    def list(self, request):
+        queryset = self.queryset
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    @method_decorator(cache_page(60 * 60 * 24))
     @action(detail=True, methods=['get'])
     def products(self, request, pk = None):
         collection = self.get_object()
@@ -62,7 +122,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
-        products = Product.objects.filter(visible_in_listings=True)
+        if cache.get(products):
+            products = cache.get(products)
+        else:
+            products = Product.objects.filter(visible_in_listings=True)
+            # ca
         return products
     
     def list(self, request, *args, **kwargs):
