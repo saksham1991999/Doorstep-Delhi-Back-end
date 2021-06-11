@@ -77,3 +77,4 @@ Faker
 channels
 channels_redis
 jet-django
+pycryptodome
