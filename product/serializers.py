@@ -47,7 +47,6 @@ class ProductListSerilaizer(serializers.ModelSerializer):
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
-    products = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = SubCategory
@@ -65,6 +64,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "sub_categories",
         ]
 
     def get_sub_categories(self, obj):
@@ -74,7 +74,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductTypeSerializer(serializers.ModelSerializer):
-    products = serializers.SerializerMethodField(read_only=True)
+    # products = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = ProductType

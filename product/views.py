@@ -14,6 +14,9 @@ from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie, vary_on_headers
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.core.cache import cache
+from django.conf import settings
 
 from product.models import (
     Category,
@@ -39,6 +42,8 @@ from wishlist.serializers import WishlistSerializer
 from accounts.models import Address
 from shop.serializers import OrderLineSerializer
 from shop.models import Order, OrderLine
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -122,8 +127,8 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
-        if cache.get(products):
-            products = cache.get(products)
+        if cache.get("all_products"):
+            products = cache.get("all_products")
         else:
             products = Product.objects.filter(visible_in_listings=True)
             # ca
