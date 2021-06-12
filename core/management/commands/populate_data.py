@@ -13,7 +13,6 @@ from core.management.commands.populate import (
     room,
 )
 
-
 fake = Faker()
 Faker.seed(999)
 
@@ -27,11 +26,9 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **kwargs):
         total = kwargs['total']
-        
+
         accounts.populate_users(total)
         store.populate(total)
         webtraffic.populate(total)
         products.populate(total)
-
-       
         room.populate(total)
