@@ -1,6 +1,6 @@
 from faker import Faker
 
-from store.models import ShippingZone, Store, ShippingMethod
+from store.models import PickupPoint, ShippingZone, Store, ShippingMethod
 from accounts.models import Address
 
 fake = Faker()
@@ -48,3 +48,15 @@ def add_shipping_method(n):
             for _ in range(n)
         ]
     )
+
+# def populate_pickup_point():
+#     addresses = Address.objects.all()
+#     PickupPoint.objects.bulk_create(
+#         [
+#             PickupPoint(
+#                 name=fake.word(),
+#                 email = fake.e
+#             )
+#             for _ in range(n)
+#         ]
+#     )

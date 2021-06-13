@@ -11,6 +11,7 @@ from core.management.commands.populate import (
     store,
     webtraffic,
     room,
+    shop,
 )
 
 fake = Faker()
@@ -32,3 +33,4 @@ class Command(BaseCommand):
         webtraffic.populate(total)
         products.populate(total)
         room.populate(total)
+        shop.populate(total)

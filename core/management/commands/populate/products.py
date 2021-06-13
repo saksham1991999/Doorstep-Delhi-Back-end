@@ -255,6 +255,7 @@ def add_review_file(n):
 
 
 def add_collections():
+    products = Product.objects.all()
     Collection.objects.bulk_create(
         [
             Collection(
@@ -263,6 +264,7 @@ def add_collections():
                 background_image_alt=fake.word(),
                 description=fake.text(),
             )
+            for i in range(products.count())
         ]
     )
 
