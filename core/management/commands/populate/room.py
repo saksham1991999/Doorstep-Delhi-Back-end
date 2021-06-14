@@ -178,7 +178,7 @@ def populate_invoice(roomorder):
 
 
 def populate_message(room):
-    users = RoomUser.objects.filter(room=room)
+    users = room.users.all()
     Message.objects.bulk_create(
         [
             Message(

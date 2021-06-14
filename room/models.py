@@ -4,7 +4,8 @@ from django.utils.timezone import now
 from django.core.validators import MinValueValidator
 from django.db.models.signals import post_save
 
-from shop.choices import order_status_choices, order_event_type_choices, voucher_type_choices, discout_value_type_choices
+from shop.choices import order_status_choices, order_event_type_choices, voucher_type_choices, \
+    discout_value_type_choices
 
 
 class Room(models.Model):
@@ -15,6 +16,7 @@ class Room(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
     users = models.ManyToManyField("accounts.User", through="room.RoomUser")
+
     def __str__(self):
         return self.name
 
@@ -23,8 +25,7 @@ user_role_choices = (
     ("A", "Admin"),
     ("U", "User"),
 )
-    
-    
+
 
 class RoomUser(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
@@ -32,10 +33,10 @@ class RoomUser(models.Model):
     role = models.CharField(max_length=2, choices=user_role_choices)
     joined_at = models.DateTimeField(auto_now_add=True)
     left_at = models.DateTimeField(blank=True, null=True)
-    
 
     class Meta:
         unique_together = ('user', 'room')
+
     def __str__(self):
         return self.room.name
 
@@ -63,9 +64,6 @@ class WishlistProductVote(models.Model):
 
     class Meta:
         unique_together = ("product", "user")
-    
-    
-
 
 
 class RoomOrder(models.Model):
@@ -166,11 +164,11 @@ class Invoice(models.Model):
 
 
 class Message(models.Model):
+    room = models.ForeignKey('room.Room', on_delete=models.CASCADE)
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
     file_field = models.FileField(upload_to='media/Message', blank=True)
     message_text = models.CharField(max_length=1000, blank=True)
-    user = models.ForeignKey('room.RoomUser', on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
-    room = models.ForeignKey('room.Room', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.__str__() + " : " + self.message_text

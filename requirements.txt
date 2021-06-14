@@ -74,8 +74,8 @@ wcwidth==0.2.5
 whitenoise==5.2.0
 zipp==3.4.0
 Faker
-channels
-channels_redis
+channels==3.0.3
+channels_redis==2.4.2
 jet-django
 pycryptodome
 django-3-jet
