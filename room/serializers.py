@@ -4,7 +4,7 @@ from typing import AsyncContextManager
 from rest_framework import serializers
 from room.models import Message, Room, RoomUser,RoomWishlistProduct,WishlistProductVote,RoomOrder, RoomOrderLine, UserOrderLine, OrderEvent,Invoice, Message
 from product.serializers import WholesaleProductVariantSerializer
-from accounts.serializers import AddressSerializer
+from accounts.serializers import AddressSerializer, UserSerializer
 from store.serializers import PickupPointSerializer, ShippingMethodSerializer
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -34,9 +34,10 @@ class RoomListSerializer(serializers.ModelSerializer):
         ]
 
 class RoomUserSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
+    # user = serializers.HiddenField(
+    #     default=serializers.CurrentUserDefault()
+    # )
+    user = UserSerializer()
     joined_at = serializers.ReadOnlyField()
 
     class Meta:
@@ -51,7 +52,7 @@ class RoomUserSerializer(serializers.ModelSerializer):
 
 class RoomWishlistProductSerializer(serializers.ModelSerializer):
     room = RoomSerializer()
-    wholsesale_variant = WholesaleProductVariantSerializer()
+    wholesale_variant = WholesaleProductVariantSerializer()
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )

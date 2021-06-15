@@ -6,6 +6,11 @@
     <title>Chat Room</title>
 </head>
 <body>
+    <div align="center">
+        <h3>ROOM ID: {{ room.id }}</h3>
+        <h3>ROOM NAME: {{ room.name }}</h3>
+        <h3>USERNAME: {{ request.user.username }}</h3>
+    </div>
     <textarea id="chat-log" cols="100" rows="20"></textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
@@ -41,13 +46,12 @@
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'sender':'admin',
-                'room_id': 10,
+                'sender': '{{ request.user.username }}',
+                'room_id': {{ room.id }},
                 'message_type': 'text',
                 'message': message
             }));
             messageInputDom.value = '';
-            console.log("YOU HAVE CLICKED SUBMIT")
         };
     </script>
 </body>
