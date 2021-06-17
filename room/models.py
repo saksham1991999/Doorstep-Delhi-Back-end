@@ -47,7 +47,6 @@ class RoomWishlistProduct(models.Model):
     user = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
     added_at = models.DateTimeField(auto_now_add=True)
     votes = models.PositiveSmallIntegerField(default=0)
-    voted_by = models.ManyToManyField("accounts.User", through="room.WishlistProductVote", related_name="voted_products")
 
     def __str__(self):
         return self.wholesale_variant.name
@@ -122,9 +121,6 @@ class RoomOrderLine(models.Model):
     status = models.CharField(
         max_length=32, default="unfulfilled", choices=order_status_choices)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('order', "variant")
 
 
 class UserOrderLine(models.Model):
