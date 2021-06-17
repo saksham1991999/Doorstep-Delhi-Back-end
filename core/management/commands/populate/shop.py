@@ -91,7 +91,7 @@ def populate_order_event(order):
                 date = make_aware(datetime.now()),
                 type = fake.random_element(elements=event_type_choices),
                 order = order,
-                user = users[random.randint(0,users.count())]
+                user = users[random.randint(0,users.count()-1)]
             )
             
         ]

@@ -216,3 +216,12 @@ class Collection(models.Model):
     # )
     background_image_alt = models.CharField(max_length=128, blank=True)
     description = models.TextField(blank=True, null=True)
+
+
+
+class Brand(models.Model):
+    name = models.CharField(max_length=250, unique=True)
+    image = models.ImageField(upload_to="products", blank=False)
+    alt = models.CharField(max_length=128, blank=True)
+    description = models.TextField()
+    

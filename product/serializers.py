@@ -15,14 +15,15 @@ from product.models import (
     CollectionProduct,
     Collection,
     ProductReview,
-    ProductReviewFile
+    ProductReviewFile,
+    Brand
 )
 from store.serializers import StoreSerializer
 
 
 class ProductListSerilaizer(serializers.ModelSerializer):
     # product_variants = serializers.SerializerMethodField()
-    variant_images = serializers.SerializerMethodField()
+    # variant_images = serializers.SerializerMethodField()
 
     # product_variant = ProductListProductVariantSerializer(many=False, read_only=True) # READ ONLY SHOULD BE FALSE
 
@@ -34,7 +35,7 @@ class ProductListSerilaizer(serializers.ModelSerializer):
             "description",
             "product_qty",
             # "product_variants",
-            "variant_images"
+            # "variant_images",
         ]
 
     # def get_product_variants(self, obj):
@@ -148,7 +149,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-
+    # product = ProductListSerilaizer(many = True)
     class Meta:
         model = ProductImage
         fields = [
@@ -280,7 +281,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
 
 class CollectionSerializer(serializers.ModelSerializer):
-    products = ProductListSerilaizer()
+    products = ProductListSerilaizer(many = True)
 
     class Meta:
         model = Collection
@@ -292,3 +293,18 @@ class CollectionSerializer(serializers.ModelSerializer):
             "background_image_alt",
             "description",
         ]
+
+class BrandSerializer(serializers.ModelSerializer):
+    
+
+    class Meta:
+        model = Brand
+        fields = ["id", "name" , "image" , "alt" , "description"]
+
+
+
+class HomeCategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = ["id", "name"]

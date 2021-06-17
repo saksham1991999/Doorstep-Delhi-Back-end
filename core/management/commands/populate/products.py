@@ -1,5 +1,6 @@
+from itertools import count
 import os, django
-
+import random
 from faker import Faker
 
 from accounts.models import User
@@ -19,6 +20,7 @@ from product.models import (
     ProductReviewFile,
     CollectionProduct,
     Collection,
+    Brand,
 )
 from store.models import Store
 
@@ -37,6 +39,7 @@ def populate(n):
     add_review_file(n)
     add_collections()
     add_collection_products(n)
+    add_brands()
 
 
 def add_categories(N):
@@ -146,7 +149,7 @@ def add_products(n):
             category=categories[fake.random_int(max=categories.count()-1)],
             sub_category=sub_categories[fake.random_int(max=sub_categories.count()-1)],
             charge_taxes=fake.pybool(),
-            product_qty=fake.random_digit(),
+            product_qty=fake.random_digit(min =10, max = 100),
 
             visible_in_listings=fake.pybool(),
         )
@@ -279,5 +282,21 @@ def add_collection_products(n):
                 product=products[fake.unique.random_int(max=products.count()-1)]
             )
             for _ in range(n)
+        ]
+    )
+
+def add_brands():
+    
+    
+    Brand.objects.bulk_create(
+        [
+            Brand(
+                name = fake.word(),
+                image = fake.image_url(),
+                alt = fake.word(),
+                description = fake.text(),
+            )
+            for i in range(20)
+            
         ]
     )

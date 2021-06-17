@@ -34,6 +34,7 @@ from product.models import (
     ProductReviewFile,
     CollectionProduct,
     Collection,
+    Brand,
 )
 from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
 from product.serializers import *  # """ NEED TO CHANGE ASAP """
@@ -215,4 +216,18 @@ class WholesaleProductVariantViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         wholesale_product_variants = WholesaleProductVariant.objects.all()
         return wholesale_product_variants
+
+
+class BrandViewSet(viewsets.ModelViewSet):
+    serializer_class = BrandSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    queryset = Brand.objects.all()
+
+
+
+
+class HomeCategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = HomeCategorySerializer
+    permission_classes = [IsAdminOrReadOnly]
+    queryset = Category.objects.all()
 
