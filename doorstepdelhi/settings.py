@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     "versatileimagefield",
     "nested_admin",
     'drf_yasg',
-    "django_extensions",
     'channels',
     'django_celery_results',
     # 'jet_django',

@@ -31,7 +31,7 @@ def populate(n):
 def populate_room(n):
     for i in range(n):
         room = Room.objects.create(
-            name=fake.text(max_nb_chars=20),
+            name=fake.word(),
             title=fake.text(max_nb_chars=200),
             description=fake.paragraph(nb_sentences=5),
             image=fake.image_url(),
