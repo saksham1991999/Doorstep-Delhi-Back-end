@@ -1,3 +1,4 @@
+from product.models import Product
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -180,3 +181,56 @@ class SaleViewset(viewsets.ModelViewSet):
     serializer_class = SaleSerializers
     permission_class = [IsAdminOrReadOnly]
     queryset = Sale.objects.all()
+
+
+class OrderLineViewSet(viewsets.ModelViewSet):  #NOT COMPLETE YET
+    serializer_class = OrderLineSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+            
+        orderlines = OrderLine.objects.all()
+        orderevents =OrderEvent.objects.all()
+        orders = Order.objects.all()
+        if not self.request.user.is_superuser:
+            orderlines = orderlines.filter(user = self.request.user)
+            orderevents = orderevents.filter(user = self.request.user)
+
+        if self.request.query_params.get("status", None):
+
+            status = self.request.query_params.get("status", None)
+
+            if status == "unpaid":
+                orderlines = orderlines.filter(
+                    Q(order__status__iexact = "draft")
+                )
+            elif status == "shipped":
+                orderlines = orderlines.filter(
+                    order__status__in = ['partially_fulfilled','unfulfilled']
+                )
+
+            elif status == "in_dispute":
+                orderevents = orderevents.filter(
+                    type__in = map(lambda x:x.upper(), ['fulfillment_canceled','payment_failed','payment_voided','other'])
+                    )
+                orderlines = OrderLine.objects.filter(
+                    Q(order__in = orderevents.values_list('order', flat=True)) | Q(order__status__iexact = "unconfirmed")
+                )
+            
+            elif status == "to_be_shipped":
+                orderevents = orderevents.filter(
+                Q(type__iexact = "confirmed")
+            )
+                orderlines = OrderLine.objects.filter(order__in = orderevents.values_list('order', flat=True))
+
+            
+        return orderlines   
+
+                
+
+         
+
+
+
+            
+            

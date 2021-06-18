@@ -149,7 +149,7 @@ def add_products(n):
             category=categories[fake.random_int(max=categories.count()-1)],
             sub_category=sub_categories[fake.random_int(max=sub_categories.count()-1)],
             charge_taxes=fake.pybool(),
-            product_qty=fake.random_digit(min =10, max = 100),
+            product_qty=fake.random_digit(),
 
             visible_in_listings=fake.pybool(),
         )

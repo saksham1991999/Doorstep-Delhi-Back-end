@@ -231,3 +231,4 @@ class HomeCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Category.objects.all()
 
+    

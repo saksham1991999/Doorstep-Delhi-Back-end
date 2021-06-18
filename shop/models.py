@@ -94,6 +94,7 @@ class OrderLine(models.Model):
     quantity_fulfilled = models.IntegerField(
         validators=[MinValueValidator(0)], default=0
     )
+    
 
     def increment_quantity_by_one(self,order:order,variant:variant):
         orderline, _is_created = self.items.get(id=id, order=order)
@@ -127,6 +128,9 @@ class OrderEvent(models.Model):
         on_delete=models.SET_NULL,
         related_name="+",
     )
+
+    def __str__(self) -> str:
+        return self.type
 
 
 class Invoice(models.Model):

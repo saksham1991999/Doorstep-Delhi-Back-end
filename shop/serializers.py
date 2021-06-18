@@ -26,10 +26,10 @@ class OrderSerializer(serializers.ModelSerializer):
             'shipping_method',
             'shipping_price',
             'total_net_amount',
-            'undiscounted_amount',
+            'undiscounted_total_net_amount',
             'voucher',
             'gift_cards',
-            'display_gross_price',
+            'display_gross_prices',
             'customer_note',
         ]
         read_only_fields = ('id','tracking_client_id',)
