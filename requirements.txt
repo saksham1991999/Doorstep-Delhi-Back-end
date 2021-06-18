@@ -80,3 +80,4 @@ jet-django
 pycryptodome
 django-3-jet
 daphne
+django-celery-results
