@@ -88,7 +88,7 @@ def populate_wishlist_product_vote(wishlist_item):
                 product=wishlist_item,
                 user=users[j]
             )
-            for j in random.sample(range(users.count()), wishlist_item.votes)
+            for j in random.sample(range(users.count()), min(users.count(), wishlist_item.votes))
         ]
     )
 
