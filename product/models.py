@@ -101,9 +101,7 @@ class Product(models.Model):
 
     @staticmethod
     def cheapest_product_variant(self):
-        cheapest_variant = ProductVariant.objects.filter(product__id=self.id).order_by('discounted_price')[0]
-        # cheapest_variant = ProductVariant.objects.filter(product__id=self.id).aggregate(Min('discounted_price'))
-
+        cheapest_variant = ProductVariant.objects.filter(product__id=self.id).aggregate(Min('discounted_price'))
         return cheapest_variant
 
 
