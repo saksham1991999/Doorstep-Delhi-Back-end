@@ -149,8 +149,8 @@ def add_products(n):
             category=categories[fake.random_int(max=categories.count()-1)],
             sub_category=sub_categories[fake.random_int(max=sub_categories.count()-1)],
             charge_taxes=fake.pybool(),
-            product_qty=fake.random_digit(),
-
+            product_qty=fake.random_int(min = 10 , max =1000),
+            views = fake.random_int(max =10000),
             visible_in_listings=fake.pybool(),
         )
         add_product_images(product)
@@ -182,8 +182,8 @@ def add_product_variant(product):
             variant=variations[fake.random_int(max=variations.count()-1)],
             track_inventory=fake.pybool(),
             product_qty=fake.random_int(max =1000),
-            price=fake.random_number(),
-            discounted_price=fake.random_number(),
+            price=fake.random_int(min = 10 , max = 10000),
+            discounted_price=fake.random_int(min = 10 , max = 10000),
         )
         add_variant_images(variant)
 
@@ -291,12 +291,12 @@ def add_brands():
     Brand.objects.bulk_create(
         [
             Brand(
-                name = fake.word(),
+                name = fake.unique.word(),
                 image = fake.image_url(),
                 alt = fake.word(),
                 description = fake.text(),
             )
-            for i in range(20)
+            for _ in range(20)
             
         ]
     )

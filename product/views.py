@@ -1,5 +1,5 @@
 import datetime
-
+from django.db.models import Avg,Min,Max
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -52,11 +52,30 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Category.objects.all()
 
+    
     # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
-        queryset = self.queryset
-        serializer = self.serializer_class(queryset, many=True)
+        categories = self.queryset
+        if not self.request.user.is_superuser:
+            categories = categories.filter(user = self.request.user)
+        
+        if self.request.query_params.get("search", None):
+            search = self.request.query_params.get("search",None)
+            categories = categories.filter(
+                Q(name__icontains = search)
+            )
+
+        if self.request.query_params.get("sort", None):
+            sort = self.request.query_params.get("sort", None)
+            if sort == "nameasc":
+                categories = categories.order_by("name")
+            elif sort == "namedsc":
+                categories = categories.order_by("-name")
+
+        serializer = self.serializer_class(categories, many=True)
         return Response(serializer.data)
+
+
 
     # @method_decorator(cache_page(60 * 60 * 24))
     @action(detail=True, methods=['get'], name='Sub-Categories')
@@ -131,8 +150,29 @@ class ProductViewSet(viewsets.ModelViewSet):
         # if cache.get("all_products"):
         #     products = cache.get("all_products")
         # else:
-        products = Product.objects.filter(visible_in_listings=True)
-            # ca
+        products = Product.objects.filter()#visible_in_listings=True)
+            
+        if not self.request.user.is_superuser:
+            products = products.filter(user = self.request.user)
+        
+        if self.request.query_params.get("search", None):
+            search = self.request.query_params.get("search",None)
+            products = products.filter(
+                Q(name__icontains = search)
+            )
+
+        if self.request.query_params.get("sort", None):
+            sort = self.request.query_params.get("sort", None)
+            if sort == "nameasc":
+                products = products.order_by("name")
+            elif sort == "namedsc":
+                products = products.order_by("-name")
+            elif sort == "priceasc":
+                products = products.annotate(min_w_v=Min('wholesale_variants__price')).order_by('min_w_v')
+            elif sort == "pricedsc":
+                products = products.annotate(min_w_v=Min('wholesale_variants__price')).order_by('-min_w_v')
+
+            # NOT COMPLETE
         return products
     
     def list(self, request, *args, **kwargs):

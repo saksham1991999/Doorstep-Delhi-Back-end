@@ -191,7 +191,6 @@ class OrderLineViewSet(viewsets.ModelViewSet):  #NOT COMPLETE YET
             
         orderlines = OrderLine.objects.all()
         orderevents =OrderEvent.objects.all()
-        orders = Order.objects.all()
         if not self.request.user.is_superuser:
             orderlines = orderlines.filter(user = self.request.user)
             orderevents = orderevents.filter(user = self.request.user)

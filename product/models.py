@@ -85,6 +85,7 @@ class Product(models.Model):
     visible_in_listings = models.BooleanField(default=False)
     variations = models.ManyToManyField("product.Variation")
     customizations = models.ManyToManyField("product.Customization")
+    views  = models.IntegerField(default = 0)
 
     def __iter__(self):
         if not hasattr(self, "__variants"):
