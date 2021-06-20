@@ -52,13 +52,13 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Category.objects.all()
 
-    @method_decorator(cache_page(60 * 60 * 24))
+    # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
         queryset = self.queryset
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 
-    @method_decorator(cache_page(60 * 60 * 24))
+    # @method_decorator(cache_page(60 * 60 * 24))
     @action(detail=True, methods=['get'], name='Sub-Categories')
     def set_password(self, request, pk=None):
         category = self.get_object()
@@ -72,7 +72,7 @@ class ProductTypeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = ProductType.objects.all()
 
-    @method_decorator(cache_page(60 * 60 * 24))
+    # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
         queryset = self.queryset
         serializer = self.serializer_class(queryset, many=True)
@@ -84,7 +84,7 @@ class VariationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Variation.objects.all()
 
-    @method_decorator(cache_page(60 * 60 * 24))
+    # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
         queryset = self.queryset
         serializer = self.serializer_class(queryset, many=True)
@@ -96,7 +96,7 @@ class CustomizationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Customization.objects.all()
 
-    @method_decorator(cache_page(60 * 60 * 24))
+    # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
         queryset = self.queryset
         serializer = self.serializer_class(queryset, many=True)
@@ -108,13 +108,13 @@ class CollectionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Collection.objects.all()
 
-    @method_decorator(cache_page(60 * 60 * 24))
+    # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
         queryset = self.queryset
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 
-    @method_decorator(cache_page(60 * 60 * 24))
+    # @method_decorator(cache_page(60 * 60 * 24))
     @action(detail=True, methods=['get'])
     def products(self, request, pk = None):
         collection = self.get_object()
@@ -128,10 +128,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
-        if cache.get("all_products"):
-            products = cache.get("all_products")
-        else:
-            products = Product.objects.filter(visible_in_listings=True)
+        # if cache.get("all_products"):
+        #     products = cache.get("all_products")
+        # else:
+        products = Product.objects.filter(visible_in_listings=True)
             # ca
         return products
     

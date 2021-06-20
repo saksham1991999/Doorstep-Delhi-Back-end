@@ -149,7 +149,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    # product = ProductListSerilaizer(many = True)
+    product = ProductListSerilaizer(many = True)
     class Meta:
         model = ProductImage
         fields = [
@@ -162,7 +162,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductVariantSerializer(serializers.ModelSerializer):
     variant = VariationSerializer()
-    images = ProductImageSerializer()
+    images = ProductImageSerializer(many =True)
 
     class Meta:
         model = ProductVariant
@@ -182,7 +182,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 class WholesaleProductVariantSerializer(serializers.ModelSerializer):
     store = StoreSerializer()
     variant = VariationSerializer()
-    images = ProductImageSerializer()
+    images = ProductImageSerializer(many = True)
 
     class Meta:
         model = WholesaleProductVariant
