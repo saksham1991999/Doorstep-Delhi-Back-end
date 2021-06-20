@@ -1,7 +1,7 @@
 from django.db import models
 from django_measurement.models import MeasurementField
 from versatileimagefield.fields import VersatileImageField
-
+from django.db.models import Avg, Min
 
 class Category(models.Model):
     name = models.CharField(max_length=250)
@@ -94,6 +94,19 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def average_rating(self):
+        avg_rating = ProductReview.objects.filter(product__id=self.id).aggregate(Avg('rating'))
+        return avg_rating
+# 
+# MAKE THIS A STATIC METHOD
+# 
+    def cheapest_product_variant(self):
+        cheapest_variant = ProductVariant.objects.filter(product__id=self.id).order_by('discounted_price')[0]
+        # cheapest_variant = ProductVariant.objects.filter(product__id=self.id).aggregate(Min('discounted_price'))
+
+        return cheapest_variant
+
 
 
 class ProductVariant(models.Model):
