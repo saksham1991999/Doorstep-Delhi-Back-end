@@ -26,18 +26,19 @@ class ProductListSerilaizer(serializers.ModelSerializer):
     # variant_images = serializers.SerializerMethodField()
 
     # product_variant = ProductListProductVariantSerializer(many=False, read_only=True) # READ ONLY SHOULD BE FALSE
-
     class Meta:
         model = Product
         fields = [
             "id",
             "name",
-            "description",
             "product_qty",
+            "average_rating",
             # "product_variants",
             # "variant_images",
         ]
 
+    
+        
     # def get_product_variants(self, obj):
     #     serializer = ProductVariantSerializer(ProductVariant.objects.filter(product=obj), many=True)
     #     return serializer.data

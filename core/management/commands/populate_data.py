@@ -29,8 +29,14 @@ class Command(BaseCommand):
         total = kwargs['total']
 
         accounts.populate_users(total)
+        print("accounts populated")
         store.populate(total)
+        print("store populated")
         webtraffic.populate(total)
+        print("webtraffic populated")
         products.populate(total)
+        print("products populated")
         room.populate(total)
+        print("room populated")
         shop.populate(total)
+        print("shop populated")

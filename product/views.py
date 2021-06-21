@@ -171,8 +171,10 @@ class ProductViewSet(viewsets.ModelViewSet):
                 products = products.annotate(min_w_v=Min('wholesale_variants__price')).order_by('min_w_v')
             elif sort == "pricedsc":
                 products = products.annotate(min_w_v=Min('wholesale_variants__price')).order_by('-min_w_v')
-
-            # NOT COMPLETE
+            elif sort == "popularity":
+                products = products.order_by("-views")
+            elif sort == "rating":         #check
+                products = products.annotate(avg_rating=Avg('productreview__rating')).order_by('-avg_rating')
         return products
     
     def list(self, request, *args, **kwargs):
@@ -223,7 +225,7 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
         
         if(Order.objects.filter(user=current_user).exists()):
             current_order = Order.objects.get_or_create(user=current_user)
-            if(OrderLine.objects.filer(order=current_order, variant=current_product_variant).exists()):
+            if(OrderLine.objects.filter(order=current_order, variant=current_product_variant).exists()):
                 orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant)
                 orderline_quantity = orderline.quantity
                 orderline.update(quantity= orderline_quantity+1)
@@ -247,6 +249,8 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
             
             serializer = OrderLineSerializer(orderline)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
+   
 
 
 class WholesaleProductVariantViewSet(viewsets.ModelViewSet):

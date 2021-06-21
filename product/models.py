@@ -96,8 +96,9 @@ class Product(models.Model):
         return self.name
 
     def average_rating(self):
-        avg_rating = ProductReview.objects.filter(product__id=self.id).aggregate(Avg('rating'))
-        return avg_rating
+        avg_rating = ProductReview.objects.filter(product__id=self.id).aggregate(ratings=Avg('rating'))
+        rating = avg_rating.get("ratings")
+        return rating
 
     @staticmethod
     def cheapest_product_variant(self):

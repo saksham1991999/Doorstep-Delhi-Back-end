@@ -20,9 +20,12 @@ from .permissions import IsWebsiteOwner
 class WebsiteAPIViewSet(viewsets.ModelViewSet):
     serializer_class = WebsiteSerializer
     permission_classes = [IsWebsiteOwner]
+    # queryset = Website.objects.all()
 
     def get_queryset(self):
-        websites = Website.objects.filter(user=self.request.user)
+        websites = Website.objects.all()
+        if not self.request.user.is_superuser:
+            websites = Website.objects.filter(user=self.request.user)
 
         if self.request.query_params.get("search", None):
             search = self.request.query_params.get("search", None)
