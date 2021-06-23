@@ -62,6 +62,17 @@ def populate_order(N):
         populate_invoice(order)
         populate_order_line(order)
         populate_order_event(order)
+        populate_gift_cards(order)
+        
+def populate_gift_cards(order):
+    giftcards = GiftCard.objects.all()
+    gift_card = []
+    for i in random.sample(range(giftcards.count()),random.randint(2,5)):
+        gift_card.append(giftcards[i])
+    order.gift_cards.set(gift_card)
+    order.save()
+    
+    
 
 
 def populate_order_line(order):

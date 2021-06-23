@@ -117,7 +117,7 @@ def populate_room_order_line(room, room_order):
     users = room.users.all()
     variants = WholesaleProductVariant.objects.all()
 
-    for j in random.sample(range(variants.count()), fake.random_int(min=min(variants.count(), 1), max=min(variants.count(), 100))):
+    for j in random.sample(range(variants.count()), fake.random_int(min=min(variants.count(), 1), max=min(variants.count(), 10))):
         room_order_line = RoomOrderLine.objects.create(
             order=room_order,
             user=users[random.randint(0, users.count() - 1)],

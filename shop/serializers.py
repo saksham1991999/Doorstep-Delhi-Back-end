@@ -8,10 +8,29 @@ from .models import Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sa
 from accounts.models import Address
 from accounts.serializers import AddressSerializer
 
-
-class OrderSerializer(serializers.ModelSerializer):
+class GiftCardSerializers(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault)
     created = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = GiftCard
+        fields = [
+            'code',
+            'user',
+            'created',
+            'start_date',
+            'end_date',
+            'last_used_on',
+            'is_active',
+            'initial_balance_amount',
+            'current_balance_amount',
+        ]
+        
+
+class OrderSerializer(serializers.ModelSerializer):
+    # user = serializers.HiddenField(default=serializers.CurrentUserDefault)
+    created = serializers.DateTimeField(read_only=True)
+    # gift_cards = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -28,12 +47,12 @@ class OrderSerializer(serializers.ModelSerializer):
             'total_net_amount',
             'undiscounted_total_net_amount',
             'voucher',
-            'gift_cards',
+            # 'gift_cards',
             'display_gross_prices',
             'customer_note',
         ]
         read_only_fields = ('id','tracking_client_id',)
-
+        
     def invoices(self, obj):
         return
 
