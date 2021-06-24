@@ -11,6 +11,11 @@ class Store(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     shipping_zones = models.ManyToManyField("store.ShippingZone")
+    logo = models.ImageField(upload_to = "stores", null =True, blank =True)
+    website = models.URLField(null= True)
+    facebook_link = models.URLField(null= True)
+    instagram_link = models.URLField(null= True)
+    
 
     def __str__(self):  #udit
         return self.name

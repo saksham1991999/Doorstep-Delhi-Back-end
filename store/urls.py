@@ -11,8 +11,10 @@ router = DefaultRouter()
 router.register('stores', StoreViewSet, basename='store-detail')
 router.register('zones', ShippingZoneViewSet, basename='zone-detail')
 router.register('methods', ShippingMethodViewSet, basename='method-detail')
+# router.register('profile', ProfileViewSet, basename = 'profile-detail' )
+
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('full-register', FullRegister.as_view())
+    path('full_register/', FullRegister.as_view())
 ]

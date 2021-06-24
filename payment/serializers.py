@@ -34,7 +34,7 @@ class OrderSerializer(serializers.ModelSerializer):
 class PaymentSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField(read_only=True)
     modified = serializers.DateTimeField(read_only=True)
-    transactions = serializers.SerializerMethodField(read_only=True)
+    # transactions = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Payment
