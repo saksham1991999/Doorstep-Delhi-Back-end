@@ -16,3 +16,11 @@ class IsWebsiteOwnerorAdmin(permissions.BasePermission):
         # if request.method in SAFE_METHODS:
         #    return True
         return obj.user == request.user
+
+# class IsShopOwnerorAdminorReadOnly(permissions.BasePermission):
+#     def has_permission(self, request, view, obj):
+#         if request.users in obj.store.users:
+#             return True
+#         elif request.user.is_superuser:
+#             return True
+#         return False

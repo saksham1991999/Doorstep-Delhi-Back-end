@@ -1,9 +1,10 @@
+from product.serializers import WholesaleProductVariantSerializer
 from shop.serializers import OrderLineSerializer
 from django.shortcuts import render
-from rest_framework import serializers, viewsets, generics, views, status
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework import viewsets, generics, views, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from .serializers import BankAccountSerializer, BusinessSerializer, StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer
+from .serializers import StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer
 
 from .models import Store, ShippingZone, ShippingMethod, PickupPoint, BankAccount
 from .permissions import IsAdminOrReadOnly, IsPickupPointOwner, IsStoreOwner
@@ -14,6 +15,7 @@ from room.serializers import RoomOrderLineSerializer
 from accounts.models import Address, User
 from accounts.serializers import FullUserSerializer, AddressSerializer, FullAddressSerializer
 
+from product.models import WholesaleProductVariant
 class StoreViewSet(viewsets.ModelViewSet):
     serializer_class = StoreSerializer
     permission_classes = [IsAdminOrReadOnly]
@@ -23,15 +25,15 @@ class StoreViewSet(viewsets.ModelViewSet):
     def order_history(self, request, pk, *args, **kwargs):
         store = self.get_object()
         orders = RoomOrderLine.objects.filter(status__in = ("canceled", "fulfilled"), variant__store = store)
-        data = RoomOrderLineSerializer(orders, many=True)
-        return Response(data.data, status=status.HTTP_200_OK)
+        data = OrderLineSerializer(orders, many=True)
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"], permission_classes=[IsStoreOwner, ])
     def returns(self, request, pk, *args, **kwargs):
         store = self.get_object()
         orders = RoomOrderLine.objects.filter(status__in = ("returned", "partially returned"), variant__store=store)
         data = RoomOrderLineSerializer(orders, many=True)
-        return Response(data.data, status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"], permission_classes=[IsStoreOwner, ])
     def new_orders(self, request, pk, *args, **kwargs):
@@ -40,27 +42,13 @@ class StoreViewSet(viewsets.ModelViewSet):
         data = RoomOrderLineSerializer(orders, many=True)
         return Response(data, status=status.HTTP_200_OK)
     
-    @action(detail =True , methods=['get','post'], permission_classes=[IsStoreOwner, ])
-    def bank_details(self, request, pk, *args, **kwargs):
+    @action(detail=True, methods=["get", "post", "put"], permission_classes=[IsStoreOwner])
+    def wholesale_products(self, request, pk):
         store = self.get_object()
-        bank_details = BankAccount.objects.filter(store = store)
-        serializer = BankAccountSerializer(bank_details, many= True)
-        return Response(serializer.data, status = status.HTTP_200_OK)
-    
-    @action(detail =True , methods=['get'], permission_classes=[IsStoreOwner, ])
-    def address(self, request, pk, *args, **kwargs):
-        address = self.get_object().address
-        serializer = AddressSerializer(address)
-        return Response(serializer.data, status = status.HTTP_200_OK)
-    
-    @action(detail =True , methods=['get'], permission_classes=[IsStoreOwner, ])
-    def business(self, request, pk, *args, **kwargs):
-        store = self.get_object()
-        serializer = BusinessSerializer(store)
-        return Response(serializer.data ,status= status.HTTP_200_OK)
-    
-    # def shipping(self, request, pk, *args, **kwargs):
-    #     store = self.get_object()
+        products = WholesaleProductVariant.objects.filter(store=store)
+        serializer = WholesaleProductVariantSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ShippingZoneViewSet(viewsets.ModelViewSet):
     serializer_class = ShippingZoneSerializer
@@ -123,7 +111,7 @@ class FullRegister(views.APIView):
                 store.shipping_zones.add(shipping_zone)
                 print("SHIPPING ZONE DATA EXISTS")
             else:
-                print("SHIPPING ZONE DATA DOESN'T EXIST")
+                print("SHIIPING ZONE DATA DOESN'T EXIST")
             store.save()
 
             bank_account_data = request.data.pop('bank_account')

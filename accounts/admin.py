@@ -47,3 +47,4 @@ class UserAdmin(nested_admin.NestedModelAdmin):
 
 admin.site.register(User, UserAdmin)
 
+

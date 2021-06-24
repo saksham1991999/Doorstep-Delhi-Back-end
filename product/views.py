@@ -220,7 +220,7 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
     def add_to_cart(self,request,pk):
         current_user = request.user
 
-        user_address = get_object_or_404(Address, user=current_user)
+        # user_address = get_object_or_404(Address, user=current_user)
         print("DEFAULT ADDRESS: "+ str(request.user.default_billing_address))
         order, is_created = Order.objects.get_or_create(user=current_user, billing_address=request.user.default_billing_address, shipping_address=request.user.default_shipping_address)
         print("CURRENT ORDER: "+ str(order))
@@ -259,12 +259,12 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
 
 class WholesaleProductVariantViewSet(viewsets.ModelViewSet):
     serializer_class = WholesaleProductVariantSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]#[IsShopOwnerOrAdminOrReadOnly]
 
     def get_queryset(self):
         wholesale_product_variants = WholesaleProductVariant.objects.all()
         return wholesale_product_variants
-
+    
 
 class BrandViewSet(viewsets.ModelViewSet):
     serializer_class = BrandSerializer
