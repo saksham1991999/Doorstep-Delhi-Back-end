@@ -11,6 +11,7 @@ class ShippingMethodSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShippingMethod
         fields = [
+            'id',
             'name',
             'type',
             'shipping_zone',
@@ -26,6 +27,7 @@ class ShippingZoneSerializer(serializers.ModelSerializer):
         model = ShippingZone
         fields = [
             'id',
+            'id',
             'name',
             'countries',
             'default',
@@ -40,6 +42,7 @@ class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store 
         fields = [
+            'id',
             'name',
             'email',
             'users',
@@ -54,6 +57,7 @@ class FullRegisterStoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store 
         fields = [
+            'id',
             'name',
             'email',
             'users',
@@ -68,6 +72,7 @@ class PickupPointListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = [
+            'id',
             'name',
             'email',
             'user',
@@ -85,6 +90,7 @@ class PickupPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = [
+            'id',
             'name',
             'email',
             'user',

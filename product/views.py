@@ -219,14 +219,18 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
     def add_to_cart(self,request,pk):
         current_user = request.user
+
         user_address = get_object_or_404(Address, user=current_user)
-        order = get_object_or_404(Order, user=current_user, billing_address=user_address.billing_address, shipping_address=user_address.shipping_address)
+        print("DEFAULT ADDRESS: "+ str(request.user.default_billing_address))
+        order, is_created = Order.objects.get_or_create(user=current_user, billing_address=request.user.default_billing_address, shipping_address=request.user.default_shipping_address)
+        print("CURRENT ORDER: "+ str(order))
         current_product_variant = get_object_or_404(ProductVariant, id = pk)
+
         
         if(Order.objects.filter(user=current_user).exists()):
-            current_order = Order.objects.get_or_create(user=current_user)
+            current_order, is_created = Order.objects.get_or_create(user=current_user)
             if(OrderLine.objects.filter(order=current_order, variant=current_product_variant).exists()):
-                orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant)
+                orderline, is_created = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant)
                 orderline_quantity = orderline.quantity
                 orderline.update(quantity= orderline_quantity+1)
                 orderline.save()
@@ -235,16 +239,16 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data, status=status.HTTP_200_OK)
 
             else:
-                orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant, quantity=1)
+                orderline, is_created = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant, quantity=1)
                 orderline.save()
             
                 serializer = OrderLineSerializer(orderline)
                 return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            current_order = Order.objects.get_or_create(user=current_user)
+            current_order, is_created = Order.objects.get_or_create(user=current_user)
             current_product_variant = get_object_or_404(ProductVariant, id = pk)
 
-            orderline = OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant, quantity=1)
+            orderline , is_created= OrderLine.objects.get_or_create(order=current_order, variant=current_product_variant, quantity=1)
             orderline.save()
             
             serializer = OrderLineSerializer(orderline)

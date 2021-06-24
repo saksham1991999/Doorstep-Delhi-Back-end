@@ -31,7 +31,7 @@ class StoreViewSet(viewsets.ModelViewSet):
         store = self.get_object()
         orders = RoomOrderLine.objects.filter(status__in = ("returned", "partially returned"), variant__store=store)
         data = RoomOrderLineSerializer(orders, many=True)
-        return Response(data, status=status.HTTP_200_OK)
+        return Response(data.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"], permission_classes=[IsStoreOwner, ])
     def new_orders(self, request, pk, *args, **kwargs):
@@ -53,7 +53,7 @@ class ShippingMethodViewSet(viewsets.ModelViewSet):
     queryset = ShippingMethod.objects.all()
 
 
-class PikupPointViewSet(viewsets.ModelViewSet):
+class PickupPointViewSet(viewsets.ModelViewSet):
     serializer_class = PickupPointSerializer
     permission_classes = [IsPickupPointOwner]
     queryset = PickupPoint.objects.all()
@@ -102,7 +102,7 @@ class FullRegister(views.APIView):
                 store.shipping_zones.add(shipping_zone)
                 print("SHIPPING ZONE DATA EXISTS")
             else:
-                print("SHIIPING ZONE DATA DOESN'T EXIST")
+                print("SHIPPING ZONE DATA DOESN'T EXIST")
             store.save()
 
             bank_account_data = request.data.pop('bank_account')
