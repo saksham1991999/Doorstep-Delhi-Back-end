@@ -28,7 +28,7 @@ for i in order_event_type_choices:
 def populate(total):
     populate_voucher()
     populate_giftcard()
-    populate_order(100)
+    populate_order(50)
     populate_sale()
 
     

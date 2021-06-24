@@ -1,9 +1,9 @@
 from shop.serializers import OrderLineSerializer
 from django.shortcuts import render
-from rest_framework import viewsets, generics, views, status
-from rest_framework.decorators import action
+from rest_framework import serializers, viewsets, generics, views, status
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
-from .serializers import StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer
+from .serializers import BankAccountSerializer, BusinessSerializer, StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer
 
 from .models import Store, ShippingZone, ShippingMethod, PickupPoint, BankAccount
 from .permissions import IsAdminOrReadOnly, IsPickupPointOwner, IsStoreOwner
@@ -39,7 +39,28 @@ class StoreViewSet(viewsets.ModelViewSet):
         orders = RoomOrderLine.objects.filter(status__in=("unfulfilled", "partially fulfilled"), variant__store=store)
         data = RoomOrderLineSerializer(orders, many=True)
         return Response(data, status=status.HTTP_200_OK)
-
+    
+    @action(detail =True , methods=['get','post'], permission_classes=[IsStoreOwner, ])
+    def bank_details(self, request, pk, *args, **kwargs):
+        store = self.get_object()
+        bank_details = BankAccount.objects.filter(store = store)
+        serializer = BankAccountSerializer(bank_details, many= True)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+    
+    @action(detail =True , methods=['get'], permission_classes=[IsStoreOwner, ])
+    def address(self, request, pk, *args, **kwargs):
+        address = self.get_object().address
+        serializer = AddressSerializer(address)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+    
+    @action(detail =True , methods=['get'], permission_classes=[IsStoreOwner, ])
+    def business(self, request, pk, *args, **kwargs):
+        store = self.get_object()
+        serializer = BusinessSerializer(store)
+        return Response(serializer.data ,status= status.HTTP_200_OK)
+    
+    # def shipping(self, request, pk, *args, **kwargs):
+    #     store = self.get_object()
 
 class ShippingZoneViewSet(viewsets.ModelViewSet):
     serializer_class = ShippingZoneSerializer
@@ -112,3 +133,4 @@ class FullRegister(views.APIView):
             return Response("User, Store, Bank and Address Registered", status=status.HTTP_200_OK)
         else:
             return Response("INVALID User Data")
+
