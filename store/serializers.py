@@ -137,22 +137,3 @@ class BankAccountSerializer(serializers.ModelSerializer):
             'bank_name'
         ]
         
-# class ProfileSerializer(serializers.ModelSerializer):
-#     store_name = serializers.SerializerMethodField('get_store_name')
-#     address = AddressSerializer()
-#     bank_details = BankAccountSeriaalizer()
-#     shipping_method = ShippingMethodSerializer()
-#     shipping_zone = ShippingZoneSerializer()
-#     class Meta:
-#         model = Store
-#         fields =[
-#             'store_name',
-#             'email',
-#             'address',
-#             'bank_details',
-#             'shipping_method',
-#             'shipping_zone',
-#         ]
-    
-#     def get_store_name(self,obj):
-#         return obj.name

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, generics, views, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .serializers import StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer
+from .serializers import StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer,BankAccountSerializer,BusinessSerializer
 
 from .models import Store, ShippingZone, ShippingMethod, PickupPoint, BankAccount
 from .permissions import IsAdminOrReadOnly, IsPickupPointOwner, IsStoreOwner
@@ -44,8 +44,21 @@ class StoreViewSet(viewsets.ModelViewSet):
         data = RoomOrderLineSerializer(orders, many=True)
         return Response(data.data, status=status.HTTP_200_OK)
     
-    @action(detail=True, methods=["get", "post", "put"], permission_classes=[IsStoreOwner])
-    def wholesale_products(self, request, pk):
+    @action(detail =True , methods=['get','post'], permission_classes=[IsStoreOwner, ])
+    def bank_details(self, request, pk, *args, **kwargs):
+        store = self.get_object()
+        bank_details = BankAccount.objects.filter(store = store)
+        serializer = BankAccountSerializer(bank_details, many= True)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+    
+    @action(detail =True , methods=['get'], permission_classes=[IsStoreOwner, ])
+    def address(self, request, pk, *args, **kwargs):
+        address = self.get_object().address
+        serializer = AddressSerializer(address)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+    
+    @action(detail =True , methods=['get'], permission_classes=[IsStoreOwner, ])
+    def business(self, request, pk, *args, **kwargs):
         store = self.get_object()
         serializer = BusinessSerializer(store)
         return Response(serializer.data ,status= status.HTTP_200_OK)
@@ -57,8 +70,6 @@ class StoreViewSet(viewsets.ModelViewSet):
         serializer = WholesaleProductVariantSerializer(products, many=True)
         return Response(serializer.data ,status= status.HTTP_200_OK)
         
-    # def shipping(self, request, pk, *args, **kwargs):
-    #     store = self.get_object()
 
 class ShippingZoneViewSet(viewsets.ModelViewSet):
     serializer_class = ShippingZoneSerializer
