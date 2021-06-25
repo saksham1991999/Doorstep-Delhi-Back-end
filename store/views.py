@@ -14,6 +14,9 @@ from room.serializers import RoomOrderLineSerializer
 from accounts.models import Address, User
 from accounts.serializers import FullUserSerializer, AddressSerializer, FullAddressSerializer
 
+from product.models import WholesaleProductVariant
+from product.serializers import WholesaleProductVariantSerializer
+
 class StoreViewSet(viewsets.ModelViewSet):
     serializer_class = StoreSerializer
     permission_classes = [IsAdminOrReadOnly]
@@ -58,7 +61,14 @@ class StoreViewSet(viewsets.ModelViewSet):
         store = self.get_object()
         serializer = BusinessSerializer(store)
         return Response(serializer.data ,status= status.HTTP_200_OK)
-    
+        
+    @action(detail =True , methods=['get', 'post', 'put'], permission_classes=[IsStoreOwner, ])
+    def wholesale_products(self, request, pk, *args, **kwargs):
+        store = self.get_object()
+        products = WholesaleProductVariant.objects.filter(store=store)
+        serializer = WholesaleProductVariantSerializer(products, many=True)
+        return Response(serializer.data ,status= status.HTTP_200_OK)
+        
     # def shipping(self, request, pk, *args, **kwargs):
     #     store = self.get_object()
 
