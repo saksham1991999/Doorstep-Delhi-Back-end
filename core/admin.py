@@ -4,7 +4,7 @@ from django.utils.html import escape
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-from core.models import ClientLog
+from core.models import ClientLog, Notifications
 
 
 @admin.register(LogEntry)
@@ -59,3 +59,6 @@ class LogEntryAdmin(admin.ModelAdmin):
 @admin.register(ClientLog)
 class ClientLogAdmin(admin.ModelAdmin):
     pass
+
+
+admin.site.register(Notifications)

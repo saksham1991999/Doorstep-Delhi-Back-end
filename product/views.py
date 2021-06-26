@@ -55,10 +55,8 @@ class CategoryViewSet(viewsets.ModelViewSet):
     
     # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
-        categories = self.queryset
-        if not self.request.user.is_superuser:
-            categories = categories.filter(user = self.request.user)
-        
+        categories = self.get_queryset()
+
         if self.request.query_params.get("search", None):
             search = self.request.query_params.get("search",None)
             categories = categories.filter(
@@ -93,7 +91,7 @@ class ProductTypeViewSet(viewsets.ModelViewSet):
 
     # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
-        queryset = self.queryset
+        queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 
@@ -151,9 +149,6 @@ class ProductViewSet(viewsets.ModelViewSet):
         #     products = cache.get("all_products")
         # else:
         products = Product.objects.filter()#visible_in_listings=True)
-            
-        if not self.request.user.is_superuser:
-            products = products.filter(user = self.request.user)
         
         if self.request.query_params.get("search", None):
             search = self.request.query_params.get("search",None)

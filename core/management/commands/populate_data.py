@@ -7,12 +7,12 @@ from faker import Faker
 from product.models import Category
 from core.management.commands.populate import (
     accounts,
-    products,
     store,
     webtraffic,
     room,
     shop,
 )
+from core.management.commands.populate.products import products
 
 fake = Faker()
 Faker.seed(999)
