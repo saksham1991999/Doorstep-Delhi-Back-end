@@ -22,20 +22,34 @@ from store.serializers import StoreSerializer
 
 
 class ProductListSerilaizer(serializers.ModelSerializer):
-    # product_variants = serializers.SerializerMethodField()
-    # variant_images = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+    min_qty = serializers.SerializerMethodField()
+    # min_wholesale_price = serializers.SerializerMethodField()
 
-    # product_variant = ProductListProductVariantSerializer(many=False, read_only=True) # READ ONLY SHOULD BE FALSE
     class Meta:
         model = Product
         fields = [
             "id",
             "name",
-            "product_qty",
             "average_rating",
-            # "product_variants",
-            # "variant_images",
+            "image",
+            "min_qty",
+            "min_wholesale_price",
         ]
+
+    # def get_min_wholesale_price(self, obj):
+
+
+    def get_min_qty(self, obj):
+        return obj.lowest_min_qty
+
+    def get_image(self, obj):
+        image = ProductImage.objects.filter(product=obj)[0]
+        data = {
+            'url': image.image.url,
+            'alt': image.alt,
+        }
+        return data
 
     
         
@@ -66,6 +80,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "icon",
             "sub_categories",
         ]
 

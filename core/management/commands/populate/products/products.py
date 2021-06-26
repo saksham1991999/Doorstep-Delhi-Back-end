@@ -1,6 +1,3 @@
-from itertools import count
-import os, django
-import random
 from faker import Faker
 
 from accounts.models import User
@@ -23,14 +20,14 @@ from product.models import (
     Brand,
 )
 from store.models import Store
-
+from .categories import add_categories
 
 fake = Faker()
 Faker.seed(999)
 
 
 def populate(n):
-    add_categories(10)
+    add_categories()
     add_sub_categories(50)
     add_product_types()
     add_variations()
@@ -40,13 +37,6 @@ def populate(n):
     add_collections()
     add_collection_products(n)
     add_brands()
-
-
-def add_categories(N):
-    Category.objects.bulk_create(
-        [Category(name=fake.word()) for _ in range(N)]
-    )
-
 
 def add_sub_categories(N):
     categories = Category.objects.all()

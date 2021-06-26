@@ -2,9 +2,13 @@ from django.db import models
 from django_measurement.models import MeasurementField
 from versatileimagefield.fields import VersatileImageField
 from django.db.models import Avg, Min
+from django.utils.functional import cached_property
+
 
 class Category(models.Model):
     name = models.CharField(max_length=250)
+    icon = models.ImageField()
+    verified = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -16,6 +20,7 @@ class Category(models.Model):
 class SubCategory(models.Model):
     category = models.ForeignKey("product.Category", on_delete=models.PROTECT)
     name = models.CharField(max_length=250)
+    verified = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -85,7 +90,7 @@ class Product(models.Model):
     visible_in_listings = models.BooleanField(default=False)
     variations = models.ManyToManyField("product.Variation")
     customizations = models.ManyToManyField("product.Customization")
-    views  = models.IntegerField(default = 0)
+    views = models.IntegerField(default = 0)
 
     def __iter__(self):
         if not hasattr(self, "__variants"):
@@ -105,6 +110,15 @@ class Product(models.Model):
         cheapest_variant = ProductVariant.objects.filter(product__id=self.id).aggregate(Min('discounted_price'))
         return cheapest_variant
 
+    @cached_property
+    def lowest_min_qty(self):
+        min_qty = WholesaleProductVariant.objects.filter(product=self).aggregate(Min('min_qty'))['min_qty__min']
+        return min_qty
+
+    @cached_property
+    def min_wholesale_price(self):
+        min_price = WholesaleProductVariant.objects.filter(product=self).aggregate(Min('discounted_price'))['discounted_price__min']
+        return min_price
 
 
 class ProductVariant(models.Model):
