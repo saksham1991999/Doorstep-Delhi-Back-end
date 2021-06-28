@@ -102,7 +102,7 @@ class PickupPointViewSet(viewsets.ModelViewSet):
         #     return Response("Error", status=status.HTTP_400_BAD_REQUEST)
 
 class FullRegister(views.APIView):
-    
+        
     def post(self, request, *args, **kwargs):
         print(request.data)
         user_data = request.data.get('user')
@@ -118,19 +118,24 @@ class FullRegister(views.APIView):
             address.save()
 
             store_data = request.data.get('store')
-
             shipping_zone_data = store_data.pop('shipping_zones')
-
-
-            store = Store.objects.create(address=address, **store_data)
-            print(type(store))
+            store = Store.objects.create(address=address , 
+                                         name = store_data["name"], 
+                                         email = store_data["email"],
+                                         website = store_data["website"],
+                                         facebook_link = store_data["facebook_link"],
+                                         instagram_link = store_data["instagram_link"])
+            
+            store.save()
+            print(reg_user)
             store.users.add(reg_user)
         
             if shipping_zone_data:
                 shipping_zone, created = ShippingZone.objects.get_or_create(**shipping_zone_data)
-                # shipping_zone = shipping_zone.save()
+                shipping_zone.save()
                 store.shipping_zones.add(shipping_zone)
                 print("SHIPPING ZONE DATA EXISTS")
+                store.save()
             else:
                 print("SHIIPING ZONE DATA DOESN'T EXIST")
             store.save()
