@@ -1,4 +1,3 @@
-from product.serializers import WholesaleProductVariantSerializer
 from shop.serializers import OrderLineSerializer
 from django.shortcuts import render
 from rest_framework import viewsets, generics, views, status
@@ -16,7 +15,8 @@ from accounts.models import Address, User
 from accounts.serializers import FullUserSerializer, AddressSerializer, FullAddressSerializer
 
 from product.models import WholesaleProductVariant
-from product.serializers import WholesaleProductVariantSerializer
+from product.serializers2 import WholesaleProductVariantSerializer, WholesaleProductVariantSerializer
+
 
 class StoreViewSet(viewsets.ModelViewSet):
     serializer_class = StoreSerializer

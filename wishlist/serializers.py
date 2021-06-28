@@ -3,19 +3,26 @@ from rest_framework.fields import CurrentUserDefault
 from datetime import datetime
 
 from wishlist.models import Wishlist, WishlistItem
-from product.serializers import *
+from product.serializers.product import WholesaleProductVariantListSerializer
 
 
 class WishlistItemSerializer(serializers.ModelSerializer):
+    wholesale_variants = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = WishlistItem
         fields = (
             "id",
-            "wishlist",
             "product",
             "variants",
+            "wholesale_variants",
             "created_at",
         )
+
+    def get_wholesale_variants(self, obj):
+        wholesale_variants = obj.wholesale_variants.all()
+        serializer = WholesaleProductVariantListSerializer(wholesale_variants, many=True)
+        return serializer.data
 
 
 class WishlistSerializer(serializers.ModelSerializer):

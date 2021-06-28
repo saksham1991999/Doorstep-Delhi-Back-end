@@ -38,22 +38,32 @@ from product.models import (
     Brand,
 )
 from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
-from product.serializers import *  # """ NEED TO CHANGE ASAP """
+from product.serializers2 import *  # """ NEED TO CHANGE ASAP """
 from wishlist.models import Wishlist, WishlistItem
 from wishlist.serializers import WishlistSerializer
 from accounts.models import Address
 from shop.serializers import OrderLineSerializer, OrderSerializer
 from shop.models import Order, OrderLine
 
+
+# Serializers
+from product.serializers.category import (
+    CategoryListSerializer,
+    CategoryDetailSerializer,
+    CategoryProductsSerializer,
+)
+from product.serializers.product import (
+    ProductListSerializer,
+)
+
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    serializer_class = CategorySerializer
+    serializer_class = CategoryDetailSerializer
     permission_classes = [IsAdminOrReadOnly]
     queryset = Category.objects.all()
 
-    
     # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request):
         categories = self.get_queryset()
@@ -71,17 +81,14 @@ class CategoryViewSet(viewsets.ModelViewSet):
             elif sort == "namedsc":
                 categories = categories.order_by("-name")
 
-        serializer = self.serializer_class(categories, many=True)
+        serializer = CategoryListSerializer(categories, many=True)
         return Response(serializer.data)
 
-
-
     # @method_decorator(cache_page(60 * 60 * 24))
-    @action(detail=True, methods=['get'], name='Sub-Categories')
-    def set_password(self, request, pk=None):
-        category = self.get_object()
-        sub_categories = SubCategory.objects.filter(category=category)
-        serializer = SubCategorySerializer(sub_categories, many=True)
+    @action(detail=False, methods=['get'], name='Category Products')
+    def products(self, request, pk=None):
+        query_set = self.get_queryset()
+        serializer = CategoryProductsSerializer(query_set, many=True)
         return Response(serializer.data)
 
 
@@ -137,7 +144,7 @@ class CollectionViewSet(viewsets.ModelViewSet):
     def products(self, request, pk = None):
         collection = self.get_object()
         products = collection.products.all()
-        serializer = ProductListSerilaizer(products, many=True)
+        serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -175,7 +182,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     
     def list(self, request, *args, **kwargs):
         products = self.get_queryset()
-        serializer = ProductListSerilaizer(products, many=True)
+        serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

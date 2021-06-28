@@ -7,7 +7,7 @@ from django.utils.functional import cached_property
 
 class Category(models.Model):
     name = models.CharField(max_length=250)
-    icon = models.ImageField()
+    icon = models.CharField(max_length=15)
     verified = models.BooleanField(default=True)
 
     def __str__(self):
@@ -119,6 +119,13 @@ class Product(models.Model):
     def min_wholesale_price(self):
         min_price = WholesaleProductVariant.objects.filter(product=self).aggregate(Min('discounted_price'))['discounted_price__min']
         return min_price
+
+
+# class VariantChoice(models.Model):
+#     name = models.CharField(max_length=255, blank=True)
+#     variation = models.ForeignKey(
+#             "product.Variation", related_name="products", on_delete=models.PROTECT
+#     )
 
 
 class ProductVariant(models.Model):

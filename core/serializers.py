@@ -1,12 +1,24 @@
 from rest_framework import serializers
-from .models import ClientLog,Support,SupportCategory,SupportReply,SupportSubCategory
+from .models import ClientLog, Support, SupportCategory, SupportReply, SupportSubCategory
 
-from .models import ClientLog,Support,SupportCategory,SupportReply,SupportSubCategory
+from .models import Notification, ClientLog, Support, SupportCategory, SupportReply, SupportSubCategory
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = [
+            "id",
+            "title",
+            "image",
+            "datetime",
+        ]
+
 
 class ClientLogSerializer(serializers.ModelSerializer):
-      created_at = serializers.ReadOnlyField()
+    created_at = serializers.ReadOnlyField()
 
-      class Meta:
+    class Meta:
         model = ClientLog
         fields = [
             "path",
@@ -18,25 +30,31 @@ class ClientLogSerializer(serializers.ModelSerializer):
 
 
 class SupportCategorySerializer(serializers.ModelSerializer):
-      class meta:
-          model= SupportCategory
-          field=[
-              "title"
-          ]
+    class meta:
+        model = SupportCategory
+        field = [
+            "title"
+        ]
+
+
 class SupportSubCategorySerilizer(serializers.ModelSerializer):
-     category=SupportCategorySerializer()
-     class meta:
-         model: SupportSubCategory
-         field=[
-             "category",
-             " title"
-         ]
+    category = SupportCategorySerializer()
+
+    class meta:
+        model: SupportSubCategory
+        field = [
+            "category",
+            " title"
+        ]
+
+
 class SupportSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
-    subcategory= SupportSubCategorySerilizer()
+    subcategory = SupportSubCategorySerilizer()
     created_at = serializers.ReadOnlyField()
+
     class Meta:
         model = ClientLog
         fields = [
@@ -46,14 +64,15 @@ class SupportSerializer(serializers.ModelSerializer):
             "file",
             "created_at"
         ]
-      
+
 
 class SupportReplySerializer(serializers.ModelSerializer):
-    support=SupportSerializer()
+    support = SupportSerializer()
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
     created_at = serializers.ReadOnlyField()
+
     class Meta:
         model = ClientLog
         fields = [
@@ -64,4 +83,3 @@ class SupportReplySerializer(serializers.ModelSerializer):
             "created_at"
         ]
 
-   

@@ -57,17 +57,18 @@ class UserSerializer(serializers.ModelSerializer):
             ("small_square_crop", "crop__50x50"),
         ]
     )
-    addresses = serializers.SerializerMethodField(read_only=True)
+    # addresses = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
         fields = (
+            'id',
             'username',
             'first_name',
             'last_name',
             'profile_pic',
             'email',
-            'addresses',
+            # 'addresses',
             'password'
         )
 
@@ -75,6 +76,7 @@ class UserSerializer(serializers.ModelSerializer):
         adresses = Address.objects.filter(user=obj)
         serializer = AddressSerializer(adresses, many=True)
         return serializer.data
+
 
 class FullUserSerializer(serializers.ModelSerializer):
     """Serializes User instances"""

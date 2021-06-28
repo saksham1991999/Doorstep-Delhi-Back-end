@@ -3,7 +3,7 @@ from shop.serializers import OrderSerializer
 from typing import AsyncContextManager
 from rest_framework import serializers
 from room.models import Message, Room, RoomUser,RoomWishlistProduct,WishlistProductVote,RoomOrder, RoomOrderLine, UserOrderLine, OrderEvent,Invoice, Message
-from product.serializers import WholesaleProductVariantSerializer
+from product.serializers2 import WholesaleProductVariantSerializer
 from accounts.serializers import AddressSerializer, UserSerializer
 from store.serializers import PickupPointSerializer, ShippingMethodSerializer
 

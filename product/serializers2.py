@@ -20,74 +20,16 @@ from product.models import (
 )
 from store.serializers import StoreSerializer
 
-
-class ProductListSerilaizer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
-    min_qty = serializers.SerializerMethodField()
-    # min_wholesale_price = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Product
-        fields = [
-            "id",
-            "name",
-            "average_rating",
-            "image",
-            "min_qty",
-            "min_wholesale_price",
-        ]
-
-    # def get_min_wholesale_price(self, obj):
+from product.serializers.category import CategoryListSerializer
+from product.serializers.product import ProductListSerializer
 
 
-    def get_min_qty(self, obj):
-        return obj.lowest_min_qty
-
-    def get_image(self, obj):
-        image = ProductImage.objects.filter(product=obj)[0]
-        data = {
-            'url': image.image.url,
-            'alt': image.alt,
-        }
-        return data
 
     
-        
-    # def get_product_variants(self, obj):
-    #     serializer = ProductVariantSerializer(ProductVariant.objects.filter(product=obj), many=True)
-    #     return serializer.data
-
-    def get_variant_images(self, obj):
-        images = ProductImage.objects.values_list('image', flat=True)
-        return images
 
 
-class SubCategorySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = SubCategory
-        fields = [
-            "id",
-            "name",
-        ]
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    sub_categories = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = Category
-        fields = [
-            "id",
-            "name",
-            "icon",
-            "sub_categories",
-        ]
-
-    def get_sub_categories(self, obj):
-        sub_categories = SubCategory.objects.filter(category=obj)
-        serializer = SubCategorySerializer(sub_categories, many=True)
-        return serializer.data
 
 
 class ProductTypeSerializer(serializers.ModelSerializer):
@@ -108,7 +50,7 @@ class ProductTypeSerializer(serializers.ModelSerializer):
 
     def get_products(self, obj):
         products = Product.objects.filter(category=obj)
-        serializer = ProductListSerilaizer(products, many=True)
+        serializer = ProductListSerializer(products, many=True)
         return serializer.data
 
 
@@ -126,7 +68,7 @@ class CustomizationSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     product_type = ProductTypeSerializer()
-    category = CategorySerializer()
+    category = CategoryListSerializer()
     variations = VariationSerializer()
     customization = CustomizationSerializer()
 
@@ -165,7 +107,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    product = ProductListSerilaizer(many = True)
+    product = ProductListSerializer(many = True)
     class Meta:
         model = ProductImage
         fields = [
@@ -206,7 +148,6 @@ class WholesaleProductVariantSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "store",
-            "product",
             "variant",
             "images",
             "min_qty",
@@ -238,7 +179,7 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     product_type = ProductTypeSerializer()
-    category = CategorySerializer()
+    category = CategoryListSerializer()
     variations = VariationSerializer()
     customization = CustomizationSerializer(read_only=True,many=True)
     variants = serializers.SerializerMethodField(read_only=True)
@@ -297,7 +238,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
 
 class CollectionSerializer(serializers.ModelSerializer):
-    products = ProductListSerilaizer(many = True)
+    products = ProductListSerializer(many = True)
 
     class Meta:
         model = Collection

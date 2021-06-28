@@ -7,30 +7,32 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 
-class Notifications(models.Model):
-    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
-    groups = models.ManyToManyField(Group)
+class Notification(models.Model):
+    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=256)
     image = models.ImageField()
     is_dismissed = models.BooleanField(default=False)
+    is_promotional = models.BooleanField(default=False)
     datetime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
 
-@receiver(post_save, sender=Notifications, dispatch_uid="send_notification")
+@receiver(post_save, sender=Notification, dispatch_uid="send_notification")
 def send_notification(sender, instance, **kwargs):
-    group_name = 'notification_%s' % instance.user.username
-    print(group_name)
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        group_name, {
-            'type': "send_notification",
-            'value': {"message": instance.title}
-        }
-    )
-
+    if not instance.is_dismissed:
+        if instance.user:
+            group_name = 'notifications_%s' % instance.user.username
+        else:
+            group_name = 'notifications'
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            group_name, {
+                'type': "send_notification",
+                'notification_id': instance.id
+            }
+        )
 
 
 class ClientLog(models.Model):

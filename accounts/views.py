@@ -5,8 +5,10 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from accounts.permissions import IsOwnerOrAdmin
 
+from accounts.permissions import IsOwnerOrAdmin
+from wishlist.models import Wishlist
+from wishlist.serializers import WishlistSerializer
 
 class AddressViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwnerOrAdmin]
@@ -44,6 +46,12 @@ class UserViewSet(viewsets.ModelViewSet):
         if not self.request.user.is_superuser:
             users = self.request.user
         return users
+
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated, ], name="User Address")
+    def wishlist(self, request, *args, **kwargs):
+        wishlist, created = Wishlist.objects.get_or_create(user=self.request.user)
+        serializer = WishlistSerializer(wishlist, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated,], name="User Address")
     def adrresses(self, request, *args, **kwargs):
