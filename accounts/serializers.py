@@ -89,7 +89,7 @@ class FullUserSerializer(serializers.ModelSerializer):
     #         ("small_square_crop", "crop__50x50"),
     #     ]
     # )
-    addresses = serializers.SerializerMethodField(read_only=True)
+    # addresses = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -99,7 +99,7 @@ class FullUserSerializer(serializers.ModelSerializer):
             'last_name',
             # 'profile_pic',
             'email',
-            'addresses',
+            # 'addresses',
             'password'
         )
 
