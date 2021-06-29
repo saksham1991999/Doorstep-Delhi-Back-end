@@ -184,6 +184,12 @@ class ProductViewSet(viewsets.ModelViewSet):
         products = self.get_queryset()
         serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=["get"], permission_classes=[])
+    def flash_sales(self, request):
+        products = Product.objects.all()[:6]
+        serializer = ProductListSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProductImageViewSet(viewsets.ModelViewSet):
