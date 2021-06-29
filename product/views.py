@@ -1,5 +1,5 @@
 import datetime
-from django.db.models import Avg,Min,Max
+from django.db.models import Avg, Min, Max
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -38,7 +38,24 @@ from product.models import (
     Brand,
 )
 from product.permissions import IsWebsiteOwnerorAdmin, IsAdminOrReadOnly
-from product.serializers2 import *  # """ NEED TO CHANGE ASAP """
+from product.serializers2 import (
+    BrandDetailSerializer,
+    BrandListSerializer,
+    HomeBrandSerializer,
+    ProductTypeSerializer,
+    VariationSerializer,
+    CustomizationSerializer,
+    ProductSerializer,
+    ProductImageSerializer,
+    ProductVariantSerializer,
+    WholesaleProductVariantSerializer,
+    ProductReviewSerializer,
+    ProductDetailSerializer,
+    CollectionSerializer,
+    BrandSerializer,
+    HomeCategorySerializer,
+    ProductImageSerializer2
+)
 from wishlist.models import Wishlist, WishlistItem
 from wishlist.serializers import WishlistSerializer
 from accounts.models import Address
@@ -56,7 +73,7 @@ from product.serializers.product import (
     ProductListSerializer,
 )
 
-CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+CACHE_TTL = getattr(settings, "CACHE_TTL", DEFAULT_TIMEOUT)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -69,10 +86,8 @@ class CategoryViewSet(viewsets.ModelViewSet):
         categories = self.get_queryset()
 
         if self.request.query_params.get("search", None):
-            search = self.request.query_params.get("search",None)
-            categories = categories.filter(
-                Q(name__icontains = search)
-            )
+            search = self.request.query_params.get("search", None)
+            categories = categories.filter(Q(name__icontains=search))
 
         if self.request.query_params.get("sort", None):
             sort = self.request.query_params.get("sort", None)
@@ -85,7 +100,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     # @method_decorator(cache_page(60 * 60 * 24))
-    @action(detail=False, methods=['get'], name='Category Products')
+    @action(detail=False, methods=["get"], name="Category Products")
     def products(self, request, pk=None):
         query_set = self.get_queryset()
         serializer = CategoryProductsSerializer(query_set, many=True)
@@ -140,8 +155,8 @@ class CollectionViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     # @method_decorator(cache_page(60 * 60 * 24))
-    @action(detail=True, methods=['get'])
-    def products(self, request, pk = None):
+    @action(detail=True, methods=["get"])
+    def products(self, request, pk=None):
         collection = self.get_object()
         products = collection.products.all()
         serializer = ProductListSerializer(products, many=True)
@@ -156,13 +171,11 @@ class ProductViewSet(viewsets.ModelViewSet):
         # if cache.get("all_products"):
         #     products = cache.get("all_products")
         # else:
-        products = Product.objects.filter()#visible_in_listings=True)
-        
+        products = Product.objects.filter()  # visible_in_listings=True)
+
         if self.request.query_params.get("search", None):
-            search = self.request.query_params.get("search",None)
-            products = products.filter(
-                Q(name__icontains = search)
-            )
+            search = self.request.query_params.get("search", None)
+            products = products.filter(Q(name__icontains=search))
 
         if self.request.query_params.get("sort", None):
             sort = self.request.query_params.get("sort", None)
@@ -171,17 +184,27 @@ class ProductViewSet(viewsets.ModelViewSet):
             elif sort == "namedsc":
                 products = products.order_by("-name")
             elif sort == "priceasc":
-                products = products.annotate(min_w_v=Min('wholesale_variants__price')).order_by('min_w_v')
+                products = products.annotate(
+                    min_w_v=Min("wholesale_variants__price")
+                ).order_by("min_w_v")
             elif sort == "pricedsc":
-                products = products.annotate(min_w_v=Min('wholesale_variants__price')).order_by('-min_w_v')
+                products = products.annotate(
+                    min_w_v=Min("wholesale_variants__price")
+                ).order_by("-min_w_v")
             elif sort == "popularity":
                 products = products.order_by("-views")
             elif sort == "rating":        
                 products = products.annotate(avg_rating=Avg('productreview__rating')).order_by('-avg_rating')
         return products
-    
+
     def list(self, request, *args, **kwargs):
         products = self.get_queryset()
+        serializer = ProductListSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"], permission_classes=[])
+    def flash_sales(self, request):
+        products = Product.objects.all()[:6]
         serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -202,11 +225,11 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         productVariants = ProductVariant.objects.all()
         return productVariants
-    
+
     @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
     def add_to_wishlist(self, request, pk):
         product_variant = self.get_object()
-        wishlist, created = Wishlist.objects.get_or_create(user = request.user)
+        wishlist, created = Wishlist.objects.get_or_create(user=request.user)
         wishlist_item = wishlist.add_variant(product_variant)
         serializer = WishlistSerializer(wishlist, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -218,31 +241,35 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
         wishlist.remove_variant(product_variant)
         serializer = WishlistSerializer(wishlist, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])            #wholsale_min_qty constraint not applied
-    def add_to_cart(self,request,pk):
+
+    @action(
+        detail=True, methods=["get"], permission_classes=[IsAuthenticated]
+    )  # wholsale_min_qty constraint not applied
+    def add_to_cart(self, request, pk):
         current_user = request.user
         product_variant = self.get_object()
-        order = Order.objects.filter(user=current_user, billing_address=request.user.default_billing_address, shipping_address=request.user.default_shipping_address)
-        orderlines = OrderLine.objects.filter(variant = product_variant, order__in = order)
-        
-        if(not (orderlines.exists() and order.exists())):
-            order= Order.objects.create(
-            user=current_user, 
-            billing_address=current_user.default_billing_address, 
-            shipping_address=current_user.default_shipping_address, 
-            status ="draft", 
+        order = Order.objects.filter(
+            user=current_user,
+            billing_address=request.user.default_billing_address,
+            shipping_address=request.user.default_shipping_address,
+        )
+        orderlines = OrderLine.objects.filter(variant=product_variant, order__in=order)
+
+        if not (orderlines.exists() and order.exists()):
+            order = Order.objects.create(
+                user=current_user,
+                billing_address=current_user.default_billing_address,
+                shipping_address=current_user.default_shipping_address,
+                status="draft",
             )
-           
-            OrderLine.objects.create(variant = product_variant, 
-                                                       quantity = 1,
-                                                       quantity_fulfilled=0, 
-                                                       order = order)
-        
-    
-            serializer = OrderSerializer(order, many = False)
+
+            OrderLine.objects.create(
+                variant=product_variant, quantity=1, quantity_fulfilled=0, order=order
+            )
+
+            serializer = OrderSerializer(order, many=False)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
         else:
             # print("exist")
             order = Order.objects.get(
@@ -251,23 +278,19 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
             shipping_address=request.user.default_shipping_address, 
             # status ="draft", 
             )
-            orderline = OrderLine.objects.get(variant = product_variant,
-                                                       order = order)
-            
-            serializer = OrderSerializer(order, many = False)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-            
+            orderline = OrderLine.objects.get(variant=product_variant, order=order)
 
-   
+            serializer = OrderSerializer(order, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class WholesaleProductVariantViewSet(viewsets.ModelViewSet):
     serializer_class = WholesaleProductVariantSerializer
-    permission_classes = [IsAdminOrReadOnly]#[IsShopOwnerOrAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]  # [IsShopOwnerOrAdminOrReadOnly]
 
     def get_queryset(self):
         wholesale_product_variants = WholesaleProductVariant.objects.all()
         return wholesale_product_variants
-    
 
 
 class BrandViewSet(viewsets.ModelViewSet):
