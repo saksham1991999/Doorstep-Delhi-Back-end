@@ -5,7 +5,7 @@ from versatileimagefield.serializers import VersatileImageFieldSerializer
 from rest_framework.authtoken.models import Token
 
 from .models import User, Address
-
+from room.models import RoomUser
 
 class CustomRegisterSerializer(RegisterSerializer):
     referral_code = serializers.CharField(allow_blank = True, allow_null=True)
@@ -41,10 +41,20 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 class TokenSerializer(serializers.ModelSerializer):
 
+    room_user_role = serializers.SerializerMethodField('_room_user_role')
+
     class Meta:
         model = Token
-        fields = ('key', 'user')
+        fields = ('key', 'user', 'room_user_role')
 
+    def _room_user_role(self, obj):
+        request = self.context.get('request', None)
+        if request:
+            try:
+                room_user = RoomUser.objects.filter(user = request.user)[0]
+                return room_user.role
+            except:
+                return None
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializes User instances"""
