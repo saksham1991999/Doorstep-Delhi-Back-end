@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import User, Address
 from room.models import RoomUser
+from store.models import Store
 
 class CustomRegisterSerializer(RegisterSerializer):
     referral_code = serializers.CharField(allow_blank = True, allow_null=True)
@@ -42,10 +43,11 @@ class CustomRegisterSerializer(RegisterSerializer):
 class TokenSerializer(serializers.ModelSerializer):
 
     room_user_role = serializers.SerializerMethodField('_room_user_role')
+    user_store_id = serializers.SerializerMethodField('_user_store_id')
 
     class Meta:
         model = Token
-        fields = ('key', 'user', 'room_user_role')
+        fields = ('key', 'user', 'room_user_role', 'user_store_id')
 
     def _room_user_role(self, obj):
         request = self.context.get('request', None)
@@ -55,6 +57,16 @@ class TokenSerializer(serializers.ModelSerializer):
                 return room_user.role
             except:
                 return None
+    
+    def _user_store_id(self, obj):
+        request = self.context.get('request', None)
+        if request:
+            try:
+                store = Store.objects.filter(users__in = [request.user])[0]
+                return store.id
+            except:
+                return None
+
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializes User instances"""
