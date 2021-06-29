@@ -176,7 +176,7 @@ class ProductViewSet(viewsets.ModelViewSet):
                 products = products.annotate(min_w_v=Min('wholesale_variants__price')).order_by('-min_w_v')
             elif sort == "popularity":
                 products = products.order_by("-views")
-            elif sort == "rating":         #check
+            elif sort == "rating":        
                 products = products.annotate(avg_rating=Avg('productreview__rating')).order_by('-avg_rating')
         return products
     
@@ -244,12 +244,12 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         else:
-            print("exist")
+            # print("exist")
             order = Order.objects.get(
             user=current_user, 
             billing_address=request.user.default_billing_address, 
             shipping_address=request.user.default_shipping_address, 
-            status ="draft", 
+            # status ="draft", 
             )
             orderline = OrderLine.objects.get(variant = product_variant,
                                                        order = order)
@@ -271,10 +271,21 @@ class WholesaleProductVariantViewSet(viewsets.ModelViewSet):
 
 
 class BrandViewSet(viewsets.ModelViewSet):
-    serializer_class = BrandSerializer
+    serializer_class = BrandDetailSerializer
     permission_classes = [IsAdminOrReadOnly]
     queryset = Brand.objects.all()
 
+
+    def list(self, request, *args, **kwargs):
+        brands = self.get_queryset()
+        serializer = BrandListSerializer(brands, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class HomeBrandViewSet(viewsets.ModelViewSet):
+    serializer_class = HomeBrandSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    queryset = Brand.objects.all()
 
 
 class HomeCategoryViewSet(viewsets.ModelViewSet):
@@ -282,4 +293,8 @@ class HomeCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = Category.objects.all()
 
-    
+
+
+
+
+

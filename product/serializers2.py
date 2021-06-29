@@ -176,6 +176,50 @@ class ProductReviewSerializer(serializers.ModelSerializer):
         files = ProductReviewFile.objects.filter(review = obj).values_list("file.url", flat=True)
         return files
 
+class BrandListSerializer(serializers.ModelSerializer):
+    
+
+    class Meta:
+        model = Brand
+        fields = ["name" , "image" , "alt" , "average_rating"]
+
+
+class BrandDetailSerializer(serializers.ModelSerializer):
+    
+    products = serializers.SerializerMethodField()
+    reviews = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Brand
+        fields = ["name" , "image" , "alt" , "description", "products", "reviews"]
+
+
+    def get_products(self, obj):
+        products = Product.objects.filter(brand=obj)
+        serializer = ProductListSerializer(products, many=True)
+        return serializer.data
+
+    def get_reviews(self, obj):
+        reviews = ProductReview.objects.filter(product__brand = obj)
+        serializer = ProductReviewSerializer(reviews, many = True)
+        return serializer.data
+
+
+
+class HomeBrandSerializer(serializers.ModelSerializer):    
+    products = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Brand
+        fields = ["products"]
+
+
+    def get_products(self, obj):
+        products = Product.objects.filter(brand=obj)[0:10]
+        serializer = ProductListSerializer(products, many=True)
+        return serializer.data
+
+
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     product_type = ProductTypeSerializer()
@@ -185,6 +229,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     variants = serializers.SerializerMethodField(read_only=True)
     wholesale_variants = serializers.SerializerMethodField(read_only=True)
     reviews = serializers.SerializerMethodField(read_only=True)
+    brand = BrandListSerializer()
 
     class Meta:
         model = Product
@@ -193,6 +238,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             'product_type',
             'category',
             'variations',
+            'brand',
             'customization',
             'name',
             'description',
@@ -203,6 +249,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             'variants',
             'wholesale_variants',
             'reviews',
+
         ]
 
     def create(self, validated_data):
@@ -251,12 +298,7 @@ class CollectionSerializer(serializers.ModelSerializer):
             "description",
         ]
 
-class BrandSerializer(serializers.ModelSerializer):
-    
 
-    class Meta:
-        model = Brand
-        fields = ["id", "name" , "image" , "alt" , "description"]
 
 
 

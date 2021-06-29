@@ -1,3 +1,4 @@
+from copy import error
 from django.db import models
 from django_measurement.models import MeasurementField
 from versatileimagefield.fields import VersatileImageField
@@ -27,6 +28,23 @@ class SubCategory(models.Model):
 
     class Meta:
         verbose_name_plural = "Sub-Categories"
+
+class Brand(models.Model):
+    name = models.CharField(max_length=250, unique=True)
+    image = models.ImageField(upload_to="products", blank=False)
+    alt = models.CharField(max_length=128, blank=True)
+    description = models.TextField()
+
+    def average_rating(self):               #returns avg rating of all products of a brand
+        ratingz = ProductReview.objects.filter(product__brand__id=self.id).aggregate(ratings=Avg('rating'))
+        rating = ratingz['ratings']
+        return rating
+        
+
+    def __str__(self) -> str:
+        return self.name
+
+    
 
 
 class ProductType(models.Model):
@@ -66,6 +84,12 @@ class Product(models.Model):
     category = models.ForeignKey(
         Category,
         related_name="products",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    brand = models.ForeignKey(
+        Brand, 
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -252,9 +276,3 @@ class Collection(models.Model):
 
 
 
-class Brand(models.Model):
-    name = models.CharField(max_length=250, unique=True)
-    image = models.ImageField(upload_to="products", blank=False)
-    alt = models.CharField(max_length=128, blank=True)
-    description = models.TextField()
-    

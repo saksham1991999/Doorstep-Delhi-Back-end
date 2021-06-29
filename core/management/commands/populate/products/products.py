@@ -32,11 +32,12 @@ def populate(n):
     add_product_types()
     add_variations()
     add_customizations()
+    add_brands()
     add_products(n)
     add_review_file(n)
     add_collections()
     add_collection_products(n)
-    add_brands()
+    
 
 def add_sub_categories(N):
     categories = Category.objects.all()
@@ -130,8 +131,9 @@ def add_products(n):
     categories = Category.objects.all()
     sub_categories = SubCategory.objects.all()
     product_types = ProductType.objects.all()
+    brands = Brand.objects.all()
 
-    for i in range(n):
+    for i in range(30):
         product = Product.objects.create(
             product_type=product_types[fake.random_int(max=product_types.count()-1)],
             name=fake.word(),
@@ -142,11 +144,12 @@ def add_products(n):
             product_qty=fake.random_int(min = 10 , max =1000),
             views = fake.random_int(max =10000),
             visible_in_listings=fake.pybool(),
+            brand = brands[fake.random_int(max=brands.count()-1)]
         )
         add_product_images(product)
         add_product_variant(product)
         add_product_reviews(product)
-        add_wholesale_variant(product)  #udit
+        add_wholesale_variant(product) 
 
 
 def add_product_images(product):
@@ -257,7 +260,7 @@ def add_collections():
                 background_image_alt=fake.word(),
                 description=fake.text(),
             )
-            for i in range(products.count())
+            for i in range(10)
         ]
     )
 
