@@ -1,5 +1,6 @@
 from django.db.models import Q
 from rest_framework import serializers
+from rest_framework.fields import ReadOnlyField
 from product.models import (
     Category,
     SubCategory,
@@ -50,15 +51,13 @@ class ProductListSerializer(serializers.ModelSerializer):
         return obj.lowest_min_qty
 
     def get_image(self, obj):
-        print("OBJECT:" + str(obj))
-        print("TYPE:"+ str(type(obj)))
-        print("\n\n\n\n\n")
         image = ProductImage.objects.filter(product=obj)[0]
         data = {
             'url': image.image.url,
             'alt': image.alt,
         }
         return data
+
 
 
 class WholesaleProductVariantListSerializer(serializers.ModelSerializer):

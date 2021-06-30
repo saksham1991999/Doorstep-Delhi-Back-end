@@ -33,7 +33,7 @@ from product.serializers.product import ProductListSerializer
 
 
 class ProductTypeSerializer(serializers.ModelSerializer):
-    # products = serializers.SerializerMethodField(read_only=True)
+    products = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = ProductType
@@ -46,12 +46,13 @@ class ProductTypeSerializer(serializers.ModelSerializer):
             "is_wholesale_product",
             "qty_type",
             "tax_percentage",
+            "products"
         ]
 
-    # def get_products(self, obj):
-    #     products = Product.objects.filter(category=obj)
-    #     serializer = ProductListSerializer(products, many=True)
-    #     return serializer.data
+    def get_products(self, obj):
+        products = Product.objects.filter(product_type=obj)
+        serializer = ProductListSerializer(products, many=True)
+        return serializer.data
 
 
 class VariationSerializer(serializers.ModelSerializer):
@@ -70,7 +71,7 @@ class ProductSerializer(serializers.ModelSerializer):
     product_type = ProductTypeSerializer()
     category = CategoryListSerializer()
     variations = VariationSerializer()
-    customization = CustomizationSerializer()
+    customization = CustomizationSerializer(many = True)
 
     class Meta:
         model = Product
@@ -107,7 +108,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    product = ProductListSerializer(many = True)
+    product = ProductListSerializer()
     class Meta:
         model = ProductImage
         fields = [
@@ -117,20 +118,21 @@ class ProductImageSerializer(serializers.ModelSerializer):
             "alt",
         ]
 
-class ProductImageSerializer2(serializers.ModelSerializer):
-    product = ProductSerializer(many = True)
-    class Meta:
-        model = ProductImage
-        fields = [
-            "id",
-            "product",
-            "image",
-            "alt",
-        ]
+# class ProductImageSerializer2(serializers.ModelSerializer):
+#     product = ProductSerializer(many = True)
+#     class Meta:
+#         model = ProductImage
+#         fields = [
+#             "id",
+#             "product",
+#             "image",
+#             "alt",
+#         ]
 
 class ProductVariantSerializer(serializers.ModelSerializer):
+    product = ProductListSerializer()
     variant = VariationSerializer()
-    images = ProductImageSerializer2(many =True)
+    images = ProductImageSerializer(many =True)
 
     class Meta:
         model = ProductVariant
@@ -307,9 +309,6 @@ class CollectionSerializer(serializers.ModelSerializer):
             "background_image_alt",
             "description",
         ]
-
-
-
 
 
 class HomeCategorySerializer(serializers.ModelSerializer):

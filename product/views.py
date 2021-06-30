@@ -52,9 +52,8 @@ from product.serializers2 import (
     ProductReviewSerializer,
     ProductDetailSerializer,
     CollectionSerializer,
-    BrandSerializer,
     HomeCategorySerializer,
-    ProductImageSerializer2
+    # ProductImageSerializer2
 )
 from wishlist.models import Wishlist, WishlistItem
 from wishlist.serializers import WishlistSerializer
@@ -221,6 +220,7 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 class ProductVariantViewSet(viewsets.ModelViewSet):
     serializer_class = ProductVariantSerializer
     permission_classes = [IsAdminOrReadOnly]
+    queryset = ProductVariant.objects.all()
 
     def get_queryset(self):
         productVariants = ProductVariant.objects.all()
@@ -242,9 +242,7 @@ class ProductVariantViewSet(viewsets.ModelViewSet):
         serializer = WishlistSerializer(wishlist, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(
-        detail=True, methods=["get"], permission_classes=[IsAuthenticated]
-    )  # wholsale_min_qty constraint not applied
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])  # wholsale_min_qty constraint not applied
     def add_to_cart(self, request, pk):
         current_user = request.user
         product_variant = self.get_object()
