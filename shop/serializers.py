@@ -3,10 +3,11 @@ from rest_framework.fields import CurrentUserDefault
 from datetime import datetime
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from .models import Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sale
 from accounts.models import Address
-from accounts.serializers import AddressSerializer
+from accounts.serializers import AddressSerializer, UserSerializer
 
 class GiftCardSerializers(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault)
@@ -224,3 +225,63 @@ class AddressInputSerializer(serializers.Serializer):
 
 class PaymentSerializer(serializers.Serializer):
     date = serializers.HiddenField(default=timezone.now)
+
+
+class OrderSummarySerializer(serializers.ModelSerializer):
+    user_name = serializers.SerializerMethodField()
+    product_name = serializers.SerializerMethodField()
+    shipping_address = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
+    wholesale_min_qty = serializers.SerializerMethodField()
+    order_events = serializers.SerializerMethodField()
+
+
+    class Meta:
+        model = Order
+        fields = [
+            
+            'product_name',
+            'created',
+            'price',
+            'wholesale_min_qty',
+            'id',
+            'user_name',
+            'total_net_amount',
+            'status',
+            'shipping_address',
+            'order_events'
+            
+        ]
+
+    def get_user_name(self,obj):
+        return obj.user.first_name
+
+    def get_product_name(self, obj):
+        orderlines = OrderLine.objects.get(order = obj)
+        product_name = orderlines.variant.product.name
+        return product_name
+
+    def get_shipping_address(self,obj):
+        serializer = AddressSerializer(obj.user.default_shipping_address)
+        return serializer.data
+
+    def get_price(self, obj):
+        orderlines = OrderLine.objects.get(order = obj)
+        price = orderlines.variant.price
+        return price
+
+
+    def get_wholesale_min_qty(self, obj):
+        orderlines = OrderLine.objects.get(order = obj)
+        min_qty = orderlines. wholesale_variant.min_qty
+        return min_qty
+    
+
+    def get_order_events(self, obj):
+        orderevents = OrderEvent.objects.filter(order = obj)
+        orderevents = orderevents.filter(
+            type__in =map(lambda x:x.upper(), ['draft_created','placed','canceled','confirmed',
+            'payment_refunded','payment_failed','reaching_pickup_point','reached_pickup_point'])
+        )
+        serializer = OrderEventSerializer(orderevents, many = True)
+        return serializer.data

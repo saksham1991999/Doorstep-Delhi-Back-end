@@ -8,7 +8,7 @@ import random
 from room.models import Room, RoomUser
 from accounts.models import User, Address
 from product.models import Collection, Product, Category, ProductVariant, WholesaleProductVariant
-from shop.choices import order_status_choices, order_event_type_choices ,voucher_type_choices
+from shop.choices import order_status_choices, order_event_type_choices ,voucher_type_choices , main_order_event_type_choices
 from store.models import ShippingMethod, PickupPoint
 from shop.models import *
 fake = Faker()
@@ -19,7 +19,7 @@ for i in order_status_choices:
     status_choices.append(i[0])
 
 event_type_choices = []
-for i in order_event_type_choices:
+for i in main_order_event_type_choices:
     event_type_choices.append(i[0].upper())
 
 
@@ -96,17 +96,19 @@ def populate_order_line(order):
 def populate_order_event(order):
     
     users = User.objects.all()
-    OrderEvent.objects.bulk_create(
-        [
-            OrderEvent(
+    user = users[random.randint(0,users.count()-1)]
+
+    for _ in range(random.randint(2, 7 )):
+        
+        OrderEvent.objects.create(
+       
                 date = make_aware(datetime.now()),
                 type = fake.random_element(elements=event_type_choices),
                 order = order,
-                user = users[random.randint(0,users.count()-1)]
-            )
-            
-        ]
-    )
+                user = user,
+         
+                )
+
 
 def populate_invoice(order):
     Invoice.objects.create(

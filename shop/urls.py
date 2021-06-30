@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from shop.views import OrderEventViewSet, GiftCardViewset, OrderLineViewSet, VoucherViewset, SaleViewset, OrderViewSet
+from shop.views import OrderEventViewSet, GiftCardViewset, OrderLineViewSet, OrderSummaryViewSet, VoucherViewset, SaleViewset, OrderViewSet
 
 
 app_name = 'shop'
@@ -14,6 +14,7 @@ router.register('voucher', VoucherViewset, basename='voucher')
 router.register('sales', SaleViewset, basename='sale')
 router.register('order', OrderViewSet, basename='order')
 router.register('orderline',OrderLineViewSet, basename = "order-line")
+router.register('order_summary',OrderSummaryViewSet, basename = "order_summary")
 
 urlpatterns = [
     path('', include(router.urls)),

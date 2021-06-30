@@ -8,7 +8,7 @@ from django.db.models import Q
 from datetime import date, datetime
 
 from .serializers import (OrderSerializer, OrderLineSerializer, OrderEventSerializer,
-                          InvoiceSerializers, GiftCardSerializers, VoucherSerializers,
+                          InvoiceSerializers, GiftCardSerializers, OrderSummarySerializer, VoucherSerializers,
                           SaleSerializers, CouponInputSerializers)
 from .models import (Order, OrderLine, OrderEvent, Invoice, GiftCard, Voucher, Sale)
 from accounts.models import Address
@@ -227,7 +227,11 @@ class OrderLineViewSet(viewsets.ModelViewSet):  #NOT COMPLETE YET
 
                 
 
-         
+class OrderSummaryViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderSummarySerializer
+    permission_classes = [IsOwnerOrAdmin]
+    queryset = Order.objects.all()
+
 
 
 

@@ -67,3 +67,17 @@ discout_value_type_choices = [
     ("fixed", "fixed"),
     ("percentage", "%"),
 ]
+
+
+main_order_event_type_choices = [
+    ("draft_created", "The draft order was created"),
+    ("placed", "The order was placed"),
+    ("canceled", "The order was canceled"),
+    ("confirmed", "Order was confirmed"),
+    ("payment_captured", "The payment was captured"),
+    ("payment_failed", "The payment was failed"),
+    ("reaching_pickup_point", "Order is reaching Pickup Point"),
+    ("reached_pickup_point", "Order has reached Pickup Point"),
+    ("picked_up_from_pickup_point", "Order has been picked up from Pickup Point"),
+    ("payment_refunded", "The payment was refunded"),
+    ]
