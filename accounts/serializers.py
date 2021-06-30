@@ -6,7 +6,8 @@ from rest_framework.authtoken.models import Token
 
 from .models import User, Address
 from room.models import RoomUser
-from store.models import Store
+from store.models import Store, PickupPoint
+
 
 class CustomRegisterSerializer(RegisterSerializer):
     referral_code = serializers.CharField(allow_blank = True, allow_null=True)
@@ -41,31 +42,31 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 
 class TokenSerializer(serializers.ModelSerializer):
-
-    room_user_role = serializers.SerializerMethodField('_room_user_role')
-    user_store_id = serializers.SerializerMethodField('_user_store_id')
+    store_id = serializers.SerializerMethodField(read_only=True)
+    pickup_point_id = serializers.SerializerMethodField(read_only=True)
+    username = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Token
-        fields = ('key', 'user', 'room_user_role', 'user_store_id')
+        fields = ('key', 'user', 'store_id', 'pickup_point_id', 'username')
 
-    def _room_user_role(self, obj):
-        request = self.context.get('request', None)
-        if request:
-            try:
-                room_user = RoomUser.objects.filter(user = request.user)[0]
-                return room_user.role
-            except:
-                return None
+    def get_pickup_point_id(self, obj):
+        pickup_point = PickupPoint.objects.filter(user=obj.user)
+        if pickup_point.exists():
+            pickup_point = pickup_point[0]
+            return pickup_point.id
+        return None
+
+    def get_username(self, obj):
+        return obj.user.username
     
-    def _user_store_id(self, obj):
-        request = self.context.get('request', None)
-        if request:
-            try:
-                store = Store.objects.filter(users__in = [request.user])[0]
-                return store.id
-            except:
-                return None
+    def get_store_id(self, obj):
+        # request = self.context.get('request', None)
+        stores = Store.objects.filter(users__in = [obj.user])
+        if stores.exists():
+            store = stores[0]
+            return store.id
+        return None
 
 
 class UserSerializer(serializers.ModelSerializer):

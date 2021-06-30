@@ -51,12 +51,15 @@ class ProductListSerializer(serializers.ModelSerializer):
         return obj.lowest_min_qty
 
     def get_image(self, obj):
-        image = ProductImage.objects.filter(product=obj)[0]
-        data = {
-            'url': image.image.url,
-            'alt': image.alt,
-        }
-        return data
+        image = ProductImage.objects.filter(product=obj)
+        if image.exists():
+            image = image[0]
+            data = {
+                'url': image.image.url,
+                'alt': image.alt,
+            }
+            return data
+        return None
 
 
 

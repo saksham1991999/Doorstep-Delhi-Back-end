@@ -10,6 +10,7 @@ from accounts.permissions import IsOwnerOrAdmin
 from wishlist.models import Wishlist
 from wishlist.serializers import WishlistSerializer
 
+
 class AddressViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwnerOrAdmin]
     serializer_class = AddressSerializer
@@ -29,7 +30,7 @@ class AddressViewSet(viewsets.ModelViewSet):
         return Response({"status": "Default Shipping Address Updated Successfully"}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"], permission_classes=[IsOwnerOrAdmin, ], name="Set Default Billing Address")
-    def set_default_shipping(self, request, *args, **kwargs):
+    def set_default_billing(self, request, *args, **kwargs):
         address = self.get_object()
         user = address.user
         user.default_billing_address = address
