@@ -207,6 +207,16 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=["get", "post"], permission_classes=[])
+    def category_subcategory_filtered(self, request, *args, **kwargs):
+        category = kwargs.pop('category')
+        sub_category = kwargs.pop('sub_category')
+        wholesale_products = WholesaleProductVariant.objects.filter(
+            product__category=category,
+            product__sub_category=sub_category)
+        serializer = WholesaleProductVariantSerializer(wholesale_products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ProductImageViewSet(viewsets.ModelViewSet):
     serializer_class = ProductImageSerializer
