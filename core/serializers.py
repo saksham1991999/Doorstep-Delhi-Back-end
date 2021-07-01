@@ -5,6 +5,8 @@ from .models import Notification, ClientLog, Support, SupportCategory, SupportRe
 
 
 class NotificationSerializer(serializers.ModelSerializer):
+    is_dismissible = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Notification
         fields = [
@@ -12,7 +14,15 @@ class NotificationSerializer(serializers.ModelSerializer):
             "title",
             "image",
             "datetime",
+            "is_dismissible",
         ]
+
+    def get_is_dismissible(self, obj):
+        request = self.context.get('request', None)
+        if request:
+            if obj.user == request.user:
+                return True
+        return False
 
 
 class ClientLogSerializer(serializers.ModelSerializer):
@@ -82,4 +92,3 @@ class SupportReplySerializer(serializers.ModelSerializer):
             "file",
             "created_at"
         ]
-

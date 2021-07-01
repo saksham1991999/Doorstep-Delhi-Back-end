@@ -32,3 +32,4 @@ daphne
 celery
 django-celery-results
 python-magic-bin
+django-cloudinary-storage

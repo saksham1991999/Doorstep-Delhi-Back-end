@@ -25,8 +25,8 @@ class TokenAuthMiddleware:
         headers = dict(scope['headers'])
         if b'authorization' in headers:
             scope['user'] = await get_user(headers)
-        else:
-            scope['user'] = AnonymousUser()
+        # else:
+        #     scope['user'] = AnonymousUser()
         return await self.inner(scope, receive, send)
 
 
