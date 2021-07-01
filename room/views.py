@@ -4,7 +4,9 @@ from rest_framework import viewsets
 
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from room.serializers import RoomOrderSerializer, RoomSerializer, RoomListSerializer, RoomUserSerializer, RoomWishlistProductSerializer, UserOrderLineSerializer
+from room.serializers import RoomOrderSerializer, RoomSerializer, RoomListSerializer, RoomUserSerializer, RoomWishlistProductSerializer, RoomOrderLineSerializer
+from shop.models import OrderEvent
+from django.db.models import Q
 
 def index(request):
     return render(request, 'room/index.html', {})
@@ -50,13 +52,44 @@ class RoomWishlistProductViewset(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-# class UserOrderLineViewset(viewsets.ModelViewSet):
-#     serializer_class = UserOrderLineSerializer
-#     permission_classes = []
-#     queryset = UserOrderLine.objects.all()    
-    
-#     # def list(self, request):
-#     #     queryset = self.queryset
-#     #     serializer = UserOrderLineSerializer(queryset, many=True)
-#     #     return Response(serializer.data)
+class UserOrderLineViewSet(viewsets.ModelViewSet):         #verify
+    serializer_class = RoomOrderLineSerializer
+    permission_classes = []
 
+    def get_queryset(self):
+            
+        userorderlines = UserOrderLine.objects.all()
+        orderevents =OrderEvent.objects.all()
+        if not self.request.user.is_superuser:
+            Roomorderlines = userorderlines.filter(user = self.request.user)
+            Roomorderevents = orderevents.filter(user = self.request.user)
+
+        if self.request.query_params.get("status", None):
+
+            status = self.request.query_params.get("status", None)
+
+            if status == "unpaid":
+                userorderlines = userorderlines.filter(
+                    Q(order_status_iexact = "draft")
+                )
+            elif status == "shipped":
+                userorderlines = userorderlines.filter(
+                    order_status_in = ['partially_fulfilled','unfulfilled']
+                )
+
+            elif status == "in_dispute":
+                orderevents = orderevents.filter(
+                    type__in = map(lambda x:x.upper(), ['fulfillment_canceled','payment_failed','payment_voided','other'])
+                    )
+                orderlines = UserOrderLine.objects.filter(
+                    Q(order_in = orderevents.values_list('order', flat=True)) | Q(orderstatus_iexact = "unconfirmed")
+                )
+            
+            elif status == "to_be_shipped":
+                orderevents = orderevents.filter(
+                Q(type__iexact = "confirmed")
+            )
+                orderlines = UserOrderLine.objects.filter(order__in = orderevents.values_list('order', flat=True))
+
+            
+        return userorderlines

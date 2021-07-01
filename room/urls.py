@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register("rooms-view", views.RoomViewset, basename="rooms-detail")
 router.register("rooms-wishlist", views.RoomWishlistProductViewset, basename="rooms-wishlist")
-# router.register("user-orders", views.UserOrderLineSerializer, basename="user-orders")
+router.register("user-orders", views.UserOrderLineViewSet, basename="user-orders")
 
 
 urlpatterns = [
