@@ -68,7 +68,7 @@ class StoreViewSet(viewsets.ModelViewSet):
         store = self.get_object()
         products = WholesaleProductVariant.objects.filter(store=store)
         serializer = WholesaleProductVariantSerializer(products, many=True)
-        return Response(serializer.data ,status= status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
 
 class ShippingZoneViewSet(viewsets.ModelViewSet):
