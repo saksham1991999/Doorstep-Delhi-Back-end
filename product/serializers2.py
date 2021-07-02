@@ -220,16 +220,20 @@ class BrandDetailSerializer(serializers.ModelSerializer):
 
 class HomeBrandSerializer(serializers.ModelSerializer):    
     products = serializers.SerializerMethodField()
+    brand_name = serializers.SerializerMethodField('get_name')
 
     class Meta:
         model = Brand
-        fields = ["products"]
+        fields = ["brand_name","products"]
 
 
     def get_products(self, obj):
         products = Product.objects.filter(brand=obj)[0:10]
         serializer = ProductListSerializer(products, many=True)
         return serializer.data
+
+    def get_name(self, obj):
+        return obj.name
 
 
 

@@ -1,20 +1,21 @@
+from rest_framework.permissions import IsAuthenticated
 from shop.serializers import OrderLineSerializer
 from django.shortcuts import render
 from rest_framework import viewsets, generics, views, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .serializers import StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer,BankAccountSerializer,BusinessSerializer
+from .serializers import StoreProductListSerializer, StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer,BankAccountSerializer,BusinessSerializer
 
 from .models import Store, ShippingZone, ShippingMethod, PickupPoint, BankAccount
 from .permissions import IsAdminOrReadOnly, IsPickupPointOwner, IsStoreOwner
-
+from django.db.models import Q
 from shop.models import Order
 from room.models import RoomOrderLine
 from room.serializers import RoomOrderLineSerializer
 from accounts.models import Address, User
 from accounts.serializers import FullUserSerializer, AddressSerializer, FullAddressSerializer
 
-from product.models import WholesaleProductVariant
+from product.models import Product, WholesaleProductVariant
 from product.serializers2 import WholesaleProductVariantSerializer, WholesaleProductVariantSerializer
 
 
@@ -148,3 +149,29 @@ class FullRegister(views.APIView):
         else:
             return Response("INVALID User Data")
 
+
+# class StoreProductListViewSet(viewsets.ModelViewSet):
+#     serializer_class = StoreProductListSerializer
+#     permission_classes = [IsAuthenticated]
+#     queryset = Store.objects.all()
+
+
+#     @action(detail=True, methods=["get"], permission_classes=[ ])
+#     def filter_products_category(self, request, pk, *args, **kwargs):
+       
+#        if self.request.query_params.get("category", None):
+#            category = self.request.query_params.get("category", None)
+#            category = kwargs.pop('category')
+#            wholesale_products = WholesaleProductVariant.objects.filter(
+#             product__category=category,
+#             store = self.get_object()
+#             )
+#            serializer = WholesaleProductVariantSerializer(wholesale_products, many=True)
+#            return Response(serializer.data, status=status.HTTP_200_OK)
+           
+        
+        
+       
+
+   
+    

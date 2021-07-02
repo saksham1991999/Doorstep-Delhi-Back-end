@@ -133,7 +133,7 @@ def add_products(n):
     product_types = ProductType.objects.all()
     brands = Brand.objects.all()
 
-    for i in range(30):
+    for i in range(100):
         product = Product.objects.create(
             product_type=product_types[fake.random_int(max=product_types.count()-1)],
             name=fake.word(),

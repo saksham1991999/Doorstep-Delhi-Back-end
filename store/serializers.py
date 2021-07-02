@@ -1,3 +1,5 @@
+from product.serializers.product import ProductListSerializer
+from product.models import Category, Product, WholesaleProductVariant
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 from datetime import datetime
@@ -136,4 +138,26 @@ class BankAccountSerializer(serializers.ModelSerializer):
             'account_type',
             'bank_name'
         ]
+        
+
+
+# class StoreProductListSerializer(serializers.ModelSerializer):
+#     products = serializers.SerializerMethodField()
+    
+
+#     class Meta:
+#         model = Store
+#         fields = [
+#             'name',
+#             'products'
+            
+#         ]
+    
+#     def get_products(self, obj):
+#         wholesale_products = WholesaleProductVariant.objects.filter(store = obj)
+#         product_ids = wholesale_products.values_list('product', flat = True)
+#         products = Product.objects.filter(id__in = product_ids)
+#         print(products)
+#         serializer = ProductListSerializer(products, many=True)
+#         return serializer.data
         

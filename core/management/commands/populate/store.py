@@ -8,7 +8,7 @@ Faker.seed(999)
 
 
 def populate(n):
-    add_stores(30)
+    add_stores(10)
     add_shipping_zones(10)
     add_shipping_method(10)
     add_bank_accounts(100)
