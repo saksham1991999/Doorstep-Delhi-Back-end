@@ -34,7 +34,7 @@ def populate(n):
     add_customizations()
     add_brands()
     add_products(n)
-    add_review_file(n)
+    # add_review_file(n)
     add_collections()
     add_collection_products(n)
     
@@ -234,19 +234,20 @@ def add_product_reviews(product):
                 review=fake.text()
             )
             for _ in range(fake.random_digit())
+                
         ]
-    )
+    )   
+    add_review_file(product)
+    
 
 
-def add_review_file(n):
-    reviews = ProductReview.objects.all()
-    ProductReviewFile.objects.bulk_create(
-        [
-            ProductReviewFile(
-                review=reviews[fake.random_int(max=reviews.count()-1)]
-            )
-            for _ in range(n)
-        ]
+def add_review_file(product):
+    reviews = ProductReview.objects.filter(product = product)
+    for i in range(reviews.count()):
+        ProductReviewFile.objects.create(
+    
+        review=reviews[i],
+        file = fake.file_name(extension='jpg')
     )
 
 

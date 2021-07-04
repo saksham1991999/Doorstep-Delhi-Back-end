@@ -1,4 +1,4 @@
-from product.serializers.product import ProductListSerializer
+# from product.serializers.product import ProductListSerializer
 from product.models import Category, Product, WholesaleProductVariant
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault

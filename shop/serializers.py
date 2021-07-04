@@ -264,6 +264,7 @@ class OrderSummarySerializer(serializers.ModelSerializer):
     def get_shipping_address(self,obj):
         serializer = AddressSerializer(obj.user.default_shipping_address)
         return serializer.data
+        
 
     def get_price(self, obj):
         orderlines = OrderLine.objects.get(order = obj)

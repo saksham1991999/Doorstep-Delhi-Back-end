@@ -62,11 +62,11 @@ class SupportSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
-    subcategory = SupportSubCategorySerilizer()
+    subcategory = SupportSubCategorySerilizer(many = True)
     created_at = serializers.ReadOnlyField()
 
     class Meta:
-        model = ClientLog
+        model = Support
         fields = [
             "user",
             "subcategory",
@@ -84,11 +84,12 @@ class SupportReplySerializer(serializers.ModelSerializer):
     created_at = serializers.ReadOnlyField()
 
     class Meta:
-        model = ClientLog
+        model = SupportReply
         fields = [
             "user",
-            "subcategory",
+            "support",
             "message",
             "file",
             "created_at"
         ]
+    

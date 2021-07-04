@@ -1,4 +1,6 @@
-from product.models import Product
+from product.serializers2 import ProductReviewSerializer, ReviewInputSerializer
+from rest_framework.serializers import Serializer
+from product.models import Product, ProductReviewFile
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -17,6 +19,17 @@ from .permissions import IsAdminOrReadOnly
 from . import checksum
 from django.conf import settings
 from .permissions import IsAdminOrReadOnly, IsOwnerOrAdmin, IsOwnerReadOnlyOrAdmin
+from accounts.models import Address
+from  product.models import ProductReview
+from accounts.serializers import AddressSerializer
+
+from io import BytesIO
+from django.template.loader  import get_template
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from .models import Order
+
+
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -231,9 +244,45 @@ class OrderSummaryViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSummarySerializer
     permission_classes = [IsOwnerOrAdmin]
     queryset = Order.objects.all()
-
-
-
-
+    
+    @action(detail=True, methods=['post'], name='order_summary-product_review')  
+    def product_review(self, request, pk=None):
+        permission_classes = [IsAuthenticated]
+        serializer = ReviewInputSerializer(data = request.data)
+        if serializer.is_valid():
             
+            review = serializer.validated_data['review']
+            rating = serializer.validated_data['rating']
+            orderlines = OrderLine.objects.get(order = self.get_object())
+            product = orderlines.variant.product
+            review_obj =ProductReview.objects.create( rating = rating, review= review,user = request.user, product= product)
+            review_obj.save()
+            review_file = ProductReviewFile.objects.create(review = review_obj) 
+            review_file.save()
+            return Response("Review added",status=status.HTTP_200_OK)
             
+    
+    def render_to_pdf(template_src,context_dict={}):
+        templete=get_template(template_src )
+        html=templete.render(context_dict)
+        results=BytesIO()
+        pdf=pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")),results)
+        if not pdf.err:
+           return results.getvalue()
+        return None         
+            
+    @action(detail=True, methods=['get'], name='order_summary-download_invoice')
+    def download_invoice(self, request, pk=None):
+        if request.user.is_superuser:
+            order=get_object_or_404(Order,pk=self.get_object().id)
+            pdf=OrderSummaryViewSet.render_to_pdf('order_pdf.html',{'order':order})
+        if pdf:
+            response= HttpResponse(pdf,content_type='invoice/pdf')
+            filename= "invoice_%s.pdf"%(self.get_object().id)
+            content="attachment; filename=%s.pdf" % self.get_object().id
+            response['Content-Disposition']=content
+            download= request.GET.get("download")
+            if download:
+                content="attachment;filename='%s'"%(filename)
+            return response
+        return HttpResponse("Not Found")

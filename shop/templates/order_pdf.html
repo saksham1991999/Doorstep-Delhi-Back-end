@@ -1,0 +1,104 @@
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="text-center">
+                <i class="fa fa-search-plus pull-left icon"></i>
+                <h2>Invoice #{{order.id}} </h2>
+            </div>
+            <hr>
+              <div class="col-xs-12 col-md-3 col-lg-3 pull-right">
+                    <div class="panel panel-default height">
+                        <div class="panel-heading">Shipping Address</div>
+                        <div class="panel-body">
+                            <strong>{{order.user.default_shipping_address.full_name}}</strong><br>
+                            {{order.user.default_shipping_address.street_address_1}}<br>
+                            {{order.user.default_shipping_address.street_address_2}}<br>
+                            {{order.user.default_shipping_address.city}}<br>
+                            <strong>{{order.user.default_shipping_address.postal_code}}</strong><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="text-center"><strong>Order summary</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <td><strong>Item Name</strong></td>
+                                    <td class="text-center"><strong>Item Price</strong></td>
+                                    <td class="text-center"><strong>Item Quantity</strong></td>
+                                    <td class="text-right"><strong>Total</strong></td>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for item in orderline.variant.all %}
+                                <tr class="item">
+                                    <td>
+                                        {{item.ProductVariant.name }}
+                                    </td>
+                                    <td class="text-center">
+                                        
+                                        {{item.ProductVariant.price }}
+                                    </td>
+                                    <td class="text-center">  {{item.quantity }}</td>
+                                    <td class="text-right">  {{item.price }}</td>
+                                </tr>
+                                {% endfor %}
+                                
+                                
+                            </tbody>
+                            <tr class="footer">
+                                <td>
+
+                                </td>
+                                <td colspan="3"> Total</td>
+                                <td> {{order.total_net_amount}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.height {
+    min-height: 200px;
+}
+
+.icon {
+    font-size: 47px;
+    color: #5CB85C;
+}
+
+.iconbig {
+    font-size: 77px;
+    color: #5CB85C;
+}
+
+.table > tbody > tr > .emptyrow {
+    border-top: none;
+}
+
+.table > thead > tr > .emptyrow {
+    border-bottom: none;
+}
+
+.table > tbody > tr > .highrow {
+    border-top: 3px solid;
+}
+</style>

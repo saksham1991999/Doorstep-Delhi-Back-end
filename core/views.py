@@ -11,12 +11,12 @@ from .serializers import SupportSerializer,ClientLogSerializer,SupportCategorySe
 # Create your views here.
 
 class SupportViewSet(viewsets.ModelViewSet):
+    serializer_class = SupportSerializer
     
-    
-    def get_queryset(self,request):
-        queryset = Support.objects.filter(self.request.user)
-        serializer_class = SupportSerializer(queryset,many=True)
-        return serializer_class.data
+    def get_queryset(self):
+        queryset = Support.objects.filter(user =self.request.user)
+        serializer = SupportSerializer(queryset, many = True)
+        return serializer.data
     
 
 
@@ -24,20 +24,21 @@ class SupportViewSet(viewsets.ModelViewSet):
 
 class SupportReplyViewSet(viewsets.ModelViewSet):
      
-     serializer_class = SupportReplySerializer()
-     def get_queryset(self,request):
-         query_set = SupportReply.objects.filter(user=self.request.user)
-         Serializer_class=SupportReplySerializer(query_set)
-         return Serializer_class.data
+     serializer_class = SupportReplySerializer
+    #  queryset = SupportReply.objects.all()
+     def get_queryset(self):
+         query_set = SupportReply.objects.filter(user = self.request.user)
+         serializer=SupportReplySerializer(query_set, many = True)
+         return serializer.data
      
 
      @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated,])
-     def update(self, request, pk, *args, **kwargs):
+     def update_support(self, request, pk, *args, **kwargs):
         try:
             message = self.get_object()
             user = request.user
             file = request.data["file"]
-            SupportReply =SupportReply.objects.create(
+            supportreply =SupportReply.objects.create(
                 message=message, user=user, type=type
             )
             return Response("Done", status=status.HTTP_200_OK)

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, generics, views, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .serializers import StoreProductListSerializer, StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer,BankAccountSerializer,BusinessSerializer
+from .serializers import  StoreSerializer, ShippingZoneSerializer, ShippingMethodSerializer, PickupPointSerializer,BankAccountSerializer,BusinessSerializer
 
 from .models import Store, ShippingZone, ShippingMethod, PickupPoint, BankAccount
 from .permissions import IsAdminOrReadOnly, IsPickupPointOwner, IsStoreOwner

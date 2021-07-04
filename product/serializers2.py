@@ -172,7 +172,7 @@ class WholesaleProductVariantSerializer(serializers.ModelSerializer):
 
 
 class ProductReviewSerializer(serializers.ModelSerializer):
-    files = serializers.ModelSerializer(read_only=True)
+    files = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = ProductReview
@@ -185,8 +185,23 @@ class ProductReviewSerializer(serializers.ModelSerializer):
         ]
 
     def get_files(self, obj):
-        files = ProductReviewFile.objects.filter(review = obj).values_list("file.url", flat=True)
+        files = ProductReviewFile.objects.filter(review = obj).values_list('file', flat = True)
+        print(files)
         return files
+
+
+class ReviewInputSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductReview
+        fields = [
+            "rating",
+            "review",
+           
+        ]
+
+    
+
 
 class BrandListSerializer(serializers.ModelSerializer):
     

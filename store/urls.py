@@ -2,7 +2,7 @@ from django.db.models import base
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from store.views import StoreProductListViewSet, StoreViewSet, ShippingZoneViewSet, ShippingMethodViewSet, FullRegister
+from store.views import  StoreViewSet, ShippingZoneViewSet, ShippingMethodViewSet, FullRegister
 
 
 app_name = 'store'
