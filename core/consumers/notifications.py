@@ -11,13 +11,13 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.user = self.scope["user"]
         self.room_group_name = 'notifications_%s' % self.user.username
-        print(self.user)
         if self.user.username:
             await self.channel_layer.group_add(
                 self.room_group_name,
                 self.channel_name
             )
         data = await self.get_notifications(self.user)
+        print(data)
         await self.channel_layer.group_add(
             'notifications',
             self.channel_name

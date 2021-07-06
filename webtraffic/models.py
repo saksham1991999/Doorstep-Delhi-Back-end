@@ -10,13 +10,6 @@ from webtraffic.choices import (
 )
 
 
-class UserPreference(models.Model):
-    user = models.OneToOneField("accounts.User", on_delete=models.CASCADE)
-    category = models.CharField(
-        max_length=5, choices=website_category_choices, default="S"
-    )
-
-
 class Website(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     name = models.CharField(max_length=256, null=True, blank=True)

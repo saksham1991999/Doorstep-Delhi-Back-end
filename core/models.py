@@ -10,7 +10,11 @@ from asgiref.sync import async_to_sync
 class Notification(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=256)
-    image = models.ImageField()
+    title_hi = models.CharField(max_length=256)
+    description = models.TextField(blank=True, null=True)
+    description_hi = models.TextField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
+    link = models.CharField(max_length=256, blank=True, null=True)
     is_dismissed = models.BooleanField(default=False)
     is_promotional = models.BooleanField(default=False)
     datetime = models.DateTimeField(auto_now_add=True)

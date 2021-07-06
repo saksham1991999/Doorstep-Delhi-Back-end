@@ -33,6 +33,16 @@ class User(AbstractUser):
         return ""
 
 
+notification_lang_choices = (
+    ("hi", "hi"),
+    ("en", "en"),
+    ("na", "na")
+)
+class UserPreference(models.Model):
+    user = models.OneToOneField("accounts.User", on_delete=models.CASCADE)
+    notification_lang = models.CharField(max_length=2, choices=notification_lang_choices, default="en")
+
+
 class Address(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     full_name = models.CharField(max_length=512, blank=True)

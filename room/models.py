@@ -21,6 +21,13 @@ class Room(models.Model):
         return self.name
 
 
+class RoomRecommendedProduct(models.Model):
+    room = models.ForeignKey("room.Room", on_delete=models.CASCADE)
+    product = models.ForeignKey("product.Product", on_delete=models.CASCADE)
+    wholesale_variants = models.ManyToManyField("product.WholesaleProductVariant")
+    priority = models.PositiveSmallIntegerField(default=1)
+
+
 user_role_choices = (
     ("A", "Admin"),
     ("U", "User"),

@@ -12,9 +12,14 @@ class NotificationSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "title_hi",
+            "description",
+            "description_hi",
             "image",
+            "link",
             "datetime",
             "is_dismissible",
+            "is_promotional",
         ]
 
     def get_is_dismissible(self, obj):

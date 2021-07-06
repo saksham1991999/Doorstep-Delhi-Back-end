@@ -2,8 +2,8 @@ from django.db import models
 from shop.serializers import OrderSerializer
 from typing import AsyncContextManager
 from rest_framework import serializers
-from room.models import Message, Room, RoomUser,RoomWishlistProduct,WishlistProductVote,RoomOrder, RoomOrderLine, UserOrderLine, OrderEvent,Invoice, Message
-from product.serializers2 import WholesaleProductVariantSerializer
+from room.models import Message, Room, RoomRecommendedProduct, RoomUser,RoomWishlistProduct,WishlistProductVote,RoomOrder, RoomOrderLine, UserOrderLine, OrderEvent,Invoice, Message
+from product.serializers2 import WholesaleProductVariantSerializer, ProductListSerializer
 from accounts.serializers import AddressSerializer, UserSerializer
 from store.serializers import PickupPointSerializer, ShippingMethodSerializer
 
@@ -22,6 +22,20 @@ class RoomSerializer(serializers.ModelSerializer):
             "deleted_at",
             "users",
         ]
+
+
+class RoomRecommendationsSerializer(serializers.ModelSerializer):
+    product = ProductListSerializer()
+
+    class Meta:
+        model = RoomRecommendedProduct
+        fields = [
+            "id",
+            "product",
+            "wholesale_variants",
+            "priority",
+        ]
+
 
 class RoomListSerializer(serializers.ModelSerializer):
     class Meta:
