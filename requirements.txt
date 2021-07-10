@@ -82,3 +82,4 @@ django-3-jet
 daphne
 django-celery-results
 django-cloudinary-storage
+xhtml2pdf
