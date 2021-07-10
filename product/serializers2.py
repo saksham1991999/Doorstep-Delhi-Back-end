@@ -204,11 +204,15 @@ class ReviewInputSerializer(serializers.ModelSerializer):
 
 
 class BrandListSerializer(serializers.ModelSerializer):
-    
+    products_count = serializers.SerializerMethodField(read_only = True)
 
     class Meta:
         model = Brand
         fields = ["name" , "image" , "alt" , "average_rating"]
+
+    def get_products_count(self, obj):
+        count = products = Product.objects.filter(brand=obj).count()
+        return count
 
 
 class BrandDetailSerializer(serializers.ModelSerializer):
@@ -239,7 +243,7 @@ class HomeBrandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = ["brand_name","products"]
+        fields = ["brand_name", "image", "products"]
 
 
     def get_products(self, obj):
