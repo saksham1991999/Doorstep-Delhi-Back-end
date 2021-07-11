@@ -169,7 +169,7 @@ def populate_sale():
         [
             Sale(
                 name=fake.word(),
-                type=fake.random_element(elements=("entire_order", "shipping", "specific_product",)),
+                type=fake.random_element(elements=("fixed", "percentage",)),
                 start_date=make_aware(datetime.now()),
                 end_date=make_aware(fake.future_datetime(end_date='+10d')),
             )
