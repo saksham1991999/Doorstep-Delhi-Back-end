@@ -77,7 +77,7 @@ def populate_room_wishlist_product(room):
             wholesale_variant=variants[i]
         )
 
-        populate_wishlist_product_vote(wishlist_item)
+        # populate_wishlist_product_vote(wishlist_item)
 
 
 def populate_wishlist_product_vote(wishlist_item):
