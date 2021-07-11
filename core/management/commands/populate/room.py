@@ -77,7 +77,7 @@ def populate_room_wishlist_product(room):
             wholesale_variant=variants[i]
         )
 
-        populate_wishlist_product_vote(wishlist_item)
+        # populate_wishlist_product_vote(wishlist_item)
 
 
 def populate_wishlist_product_vote(wishlist_item):
@@ -102,7 +102,7 @@ def populate_room_order(room):
             room=room,
             created=make_aware(datetime.now()),
             status=(fake.random_element(elements=status_choices)),
-            tracking_client_id=fake.text(max_nb_chars=100),
+            tracking_client_id=fake.text(max_nb_chars=20),
             billing_address=addresses[random.randint(0, addresses.count() - 1)],
             shipping_address=addresses[random.randint(0, addresses.count() - 1)],
             shipping_method=ship_method[random.randint(0, ship_method.count() - 1)],

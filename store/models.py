@@ -11,21 +11,20 @@ class Store(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     shipping_zones = models.ManyToManyField("store.ShippingZone")
-    logo = models.ImageField(upload_to = "stores", null =True, blank =True)
-    website = models.URLField(null= True)
-    facebook_link = models.URLField(null= True)
-    instagram_link = models.URLField(null= True)
-    
+    logo = models.ImageField(upload_to="stores", null=True, blank=True)
+    website = models.URLField(null=True)
+    facebook_link = models.URLField(null=True)
+    instagram_link = models.URLField(null=True)
 
-    def __str__(self):  #udit
+    def __str__(self):  # udit
         return self.name
 
 
 class BankAccount(models.Model):
     store = models.ForeignKey("store.Store", on_delete=models.CASCADE)
-    holder_name =  models.CharField(max_length=128)
-    account_number =  models.CharField(max_length=18)
-    ifsc =  models.CharField(max_length=12)
+    holder_name = models.CharField(max_length=128)
+    account_number = models.CharField(max_length=18)
+    ifsc = models.CharField(max_length=12)
     account_type = models.CharField(max_length=1, choices=(("S", "Savings"), ("C", "Current")))
     bank_name = models.CharField(max_length=128)
 
