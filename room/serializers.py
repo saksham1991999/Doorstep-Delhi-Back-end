@@ -38,6 +38,7 @@ class RoomRecommendationsSerializer(serializers.ModelSerializer):
 
 
 class RoomListSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Room
         fields = [
@@ -46,6 +47,37 @@ class RoomListSerializer(serializers.ModelSerializer):
             "title",
             "image",
         ]
+
+
+class RoomLastMessageSerializer(serializers.ModelSerializer):
+    last_message = serializers.SerializerMethodField(read_only=True)
+    unseen_messages = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Room
+        fields = [
+            "id",
+            "name",
+            "title",
+            "image",
+            "last_message",
+            "unseen_messages",
+        ]
+
+    def get_last_message(self, obj):
+        message = Message.objects.filter(room=obj).first()
+        serializer = MessageSerializer([message], many=True)
+        return serializer.data
+
+    def get_unseen_messages(self, obj):
+        user = self.context.get('request', None)
+        if user:
+            room_user = RoomUser.objects.filter(user=user, room=obj)
+            messages = Message.objects.filter(room=obj, created_on__gte=room_user.viewed_at)
+            if messages.exists():
+                return messages.count()
+        return None
+
 
 class RoomUserSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(
@@ -179,12 +211,12 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "created",
             "external_url",
             "invoice_file"
-        ] 
+        ]
+
 
 class MessageSerializer(serializers.ModelSerializer):
     file_field = serializers.FileField(allow_empty_file = True)
     created_on = serializers.ReadOnlyField()
-    room = RoomSerializer()
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
